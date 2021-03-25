@@ -1,0 +1,43 @@
+{
+  "SearchForm": [
+    {
+      "ResName": "tdk:Bild",
+      "ResLabel": "Bild",
+      "TextProps": [
+        {
+          "propName": "tdk:smNr",
+          "linkedVia": "tdk:bildSMFund",
+          "label": "Study-Material-Nummer"
+        },
+        {
+          "propName": "tdk:fundNr",
+          "linkedVia": "tdk:bildSMFund",
+          "label": "Fundnummer"
+        }
+      ],
+      "ListProps": [
+        {
+          "propName": "tdk:smObjekttyp",
+          "linkedVia": "tdk:bildSMFund",
+          "label": "Objekttyp"
+        }
+      ]
+    },
+    {
+      "ResName": "tdk:Zeichnung",
+      "ResLabel": "Zeichnung",
+      "TextProps": [
+        {
+          "propName": "tdk:smNr",
+          "linkedVia": "$INCOMING$tdk:smZeichnung",
+          "label": "Study-Material-Nummer"
+        },
+        {
+          "propName": "tdk:fundNr",
+          "linkedVia": "$INCOMING$tdk:smZeichnung",
+          "label": "Fundnummer"
+        }
+      ]
+    }
+  ]
+}
