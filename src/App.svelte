@@ -1,15 +1,26 @@
 
 <script>
-    /*
-       This is the entry point for the App. It takes the json file and creates a SearchForm for each SearchForm entry
-     */
-	import SearchForm from './SearchForm.svelte'
-    import * as json from './test.json' // Imports the test.json file directly into the json variable.
+
+    import Playground from "./Playground.svelte"
+    import Router from 'svelte-spa-router'
+    import routes from './routes'
+    let items = ['Study-Material-Nummer', 'Fundnummer']
+    let dropDownVal = "";
+    let searchVal = "";
+
 </script>
+<!--
+<select bind:value={dropDownVal}>
+    {#each items as item}
+        <option value={item}>
+            {item}
+        </option>
+    {/each}
+</select>
+<input bind:value={searchVal}>
+<button href="#/playground/{dropDownVal}/{searchVal}">Search</button>
+    -->
+<Router {routes}/>
 
-{#each json['SearchForm'] as form} <!-- Loops through the json-Searchform array -->
-    <SearchForm form="{form}"/> <!-- Creates the SearchForm and assigns the dict -->
-{/each}
 <style>
-
 </style>
