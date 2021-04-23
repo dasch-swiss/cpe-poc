@@ -1,7 +1,8 @@
 <script>
-
-    export let value = "";
+    export let value;
     export let prop;
+    import {language} from '../store.js'
+
     /*
         This function return the gravsearch string that references this value. It takes into account whether its a property of the main resource or if the main resource is linked.
         @return: the gravsearch string
@@ -22,6 +23,7 @@
         }
         return toReturn;
     }
+
     /*
        A helper function to create the query when the search needs to be fired. Returns the filter string. Currently only
        supports text properties.
@@ -34,9 +36,10 @@
         const tag = '?' + prop['propName'].replace(':', '');
         return tag + ' knora-api:valueAsString ' + tag + 'Str .\n' + 'FILTER regex(' + tag + 'Str, "' + value + '", "i") .\n';
     }
+
     export function isEmpty() {
         return value === "";
     }
 </script>
-<p>Enter search value for {prop['label']}</p>
+<p>{$language === 'en' ? "Enter search value for" : "Suchwert eingeben für" } {prop['label'][$language]}</p>
 <input bind:value={value}>

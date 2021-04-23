@@ -1,26 +1,13 @@
-
+<!-- Entry point for the application. Calls Header, Main and Footer -->
 <script>
-
-    import Playground from "./Playground.svelte"
     import Router from 'svelte-spa-router'
     import routes from './routes'
-    let items = ['Study-Material-Nummer', 'Fundnummer']
-    let dropDownVal = "";
-    let searchVal = "";
-
+    import * as json from './test.json' // imports the json file and directly loads it into the variable json.
+    import JSONContentParser from "./SearchComponents/JSONContentParser.svelte";
 </script>
-<!--
-<select bind:value={dropDownVal}>
-    {#each items as item}
-        <option value={item}>
-            {item}
-        </option>
-    {/each}
-</select>
-<input bind:value={searchVal}>
-<button href="#/playground/{dropDownVal}/{searchVal}">Search</button>
-    -->
-<Router {routes}/>
 
+<JSONContentParser json={json['Header']['Content']}/> <!-- Displays the Header content -->
+<Router {routes}/> <!-- Displays the 'Main' as it loads the respective route -->
+<JSONContentParser json={json['Footer']['Content']}/> <!-- Displays the Footer content -->
 <style>
 </style>

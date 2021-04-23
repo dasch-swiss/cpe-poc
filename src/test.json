@@ -1,43 +1,116 @@
 {
-  "SearchForm": [
-    {
-      "ResName": "tdk:Bild",
-      "ResLabel": "Bild",
-      "TextProps": [
+  "DSP": {
+    "Server": "api.0805-test-server.dasch.swiss",
+    "Ontology": "0805/tdk_onto",
+    "ShortCode": "tdk"
+  },
+  "Header": {
+    "Content": {
+      "ClickableImage": [
         {
-          "propName": "tdk:smNr",
-          "linkedVia": "tdk:bildSMFund",
-          "label": "Study-Material-Nummer"
-        },
-        {
-          "propName": "tdk:fundNr",
-          "linkedVia": "tdk:bildSMFund",
-          "label": "Fundnummer"
+          "src": "img\\Unibas logo.png",
+          "link": "/"
         }
       ],
-      "ListProps": [
+      "LanguageSelector": [
         {
-          "propName": "tdk:smObjekttyp",
-          "linkedVia": "tdk:bildSMFund",
-          "label": "Objekttyp"
+          "languages": [
+            {
+              "label": "English",
+              "value": "en"
+            },
+            {
+              "label": "Deutsch",
+              "value": "de"
+            }
+          ]
         }
-      ]
-    },
-    {
-      "ResName": "tdk:Zeichnung",
-      "ResLabel": "Zeichnung",
-      "TextProps": [
+      ],
+      "SinglePropertySearch": [
         {
-          "propName": "tdk:smNr",
-          "linkedVia": "$INCOMING$tdk:smZeichnung",
-          "label": "Study-Material-Nummer"
-        },
-        {
-          "propName": "tdk:fundNr",
-          "linkedVia": "$INCOMING$tdk:smZeichnung",
-          "label": "Fundnummer"
+          "Props": [
+            {
+              "propName": "tdk:smNr",
+              "label": {
+                "de": "Study-Material-Nummer",
+                "en": "Study-Material-Number"
+              }
+            },
+            {
+              "propName": "tdk:fundNr",
+              "label": {
+                "de": "Fundnummer",
+                "en": "Find number"
+              }
+            }
+          ],
+          "LinkedSearchForm": {
+            "Id": "SEARCHFORM_1",
+            "URI": "/testpage"
+          }
         }
       ]
     }
-  ]
+  },
+  "Page": [
+    {
+      "URI": "/testpage",
+      "Content": {
+        "SearchForm": [
+          {
+            "ResName": "tdk:Bild",
+            "ResLabel": {
+             "de": "Bild",
+              "en": "Image"
+            },
+            "Id": "SEARCHFORM_1",
+            "TextProps": [
+              {
+                "propName": "tdk:smNr",
+                "linkedVia": "tdk:bildSMFund",
+                "label": {
+                  "de": "Study-Material-Nummer",
+                  "en": "Study-Material-Number"
+                }
+              },
+              {
+                "propName": "tdk:fundNr",
+                "linkedVia": "tdk:bildSMFund",
+                "label": {
+                  "de": "Fundnummer",
+                  "en": "Find number"
+                }
+              }
+            ]
+          },
+          {
+            "ResName": "tdk:Zeichnung",
+            "ResLabel": {
+              "de": "Zeichnung",
+              "en": "Drawing"
+            },
+            "TextProps": [
+              {
+                "propName": "tdk:smNr",
+                "linkedVia": "$INCOMING$tdk:smZeichnung",
+                "label": {
+                  "de": "Study-Material-Nummer",
+                  "en": "Study-Material-Number"
+                }
+              },
+              {
+                "propName": "tdk:fundNr",
+                "linkedVia": "$INCOMING$tdk:smZeichnung",
+                "label": {
+                  "de": "Fundnummer",
+                  "en": "Find number"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "Footer": []
 }
