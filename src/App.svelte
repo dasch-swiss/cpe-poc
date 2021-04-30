@@ -4,10 +4,15 @@
     import routes from './routes'
     import * as json from './test.json' // imports the json file and directly loads it into the variable json.
     import JSONContentParser from "./SearchComponents/JSONContentParser.svelte";
+
+    import Viewer from "./ViewerComponents/Viewer.svelte"
 </script>
 
 <JSONContentParser json={json['Header']['Content']}/> <!-- Displays the Header content -->
 <Router {routes}/> <!-- Displays the 'Main' as it loads the respective route -->
 <JSONContentParser json={json['Footer']['Content']}/> <!-- Displays the Footer content -->
+
+<Viewer></Viewer>
+
 <style>
 </style>
