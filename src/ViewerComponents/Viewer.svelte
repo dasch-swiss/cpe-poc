@@ -1,5 +1,7 @@
 <script>
-    console.log("viewer");
+    import * as json_file from './read_data.json'
+
+    console.log("viewer", json_file);
 
     async function request() {
         const res = await fetch("https://api.0826-test-server.dasch.swiss/ontology/0826/teimww/simple/v2");
