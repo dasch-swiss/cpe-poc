@@ -1,4 +1,6 @@
 <script>
+    import {onMount} from 'svelte'
+    import {token} from "./token_store";
     import * as json_file from './read_data.json'
 
     console.log("viewer", json_file);
@@ -20,26 +22,39 @@
                 body: JSON.stringify({"email":"root@example.com", "password":"test"})
             })
 
-        const json = await res.json();
-        console.log(json);
+        if (res.status === 200) {
+            const json = await res.json();
+            token.set(json.token);
+        } else {
+            console.error("Login failed", res);
+        }
     }
 
     async function resourceRequest() {
-        const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJLbm9yYSIsInN1YiI6Imh0dHA6Ly9yZGZoLmNoL3VzZXJzL3Jvb3QiLCJhdWQiOlsiS25vcmEiLCJTaXBpIl0sImV4cCI6MTYyMjM4NDMxMywiaWF0IjoxNjE5NzkyMzEzLCJqdGkiOiJnQUtDdzV5eVN2dXhrZm84alFMTzlBIn0.19v739FpqeCS5ybGhOPMZIGxHpWxh0EbiTRHCmXBjaA";
-        const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/resources/${encodeURIComponent(json_file["URL"])}`, {
-            headers: new Headers({
-                'Authorization': `Bearer ${token}`
-            })
-        });
+        token.subscribe(async value => {
+            if (value) {
+                const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/resources/${encodeURIComponent(json_file["URL"])}`, {
+                    headers: new Headers({
+                        'Authorization': `Bearer ${value}`
+                    })
+                });
 
-        const json = await res.json();
-        console.log(json);
+                const json = await res.json();
+                console.log(json);
+
+            } else {
+                console.log("fail", value);
+            }
+        });
     }
+
+    onMount(async () => {
+        await login();
+    })
 </script>
 
 <main>
     <h1>Viewer Component</h1>
     <button on:click={ontologyRequest}>Ontology</button>
     <button on:click={resourceRequest}>Resource</button>
-    <button on:click={login}>Login</button>
 </main>
