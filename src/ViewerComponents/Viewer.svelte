@@ -3,6 +3,8 @@
     import {token} from "./token_store";
     import * as json_file from './read_data.json'
 
+    json_file["properties"].forEach(element => console.log(element));
+
     async function login() {
         const res = await fetch("https://api.0826-test-server.dasch.swiss/v2/authentication",
             {
@@ -48,7 +50,7 @@
     async function resourceRequest() {
         token.subscribe(async value => {
             if (value) {
-                const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/resources/${encodeURIComponent(json_file["URL"])}`, {
+                const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/resources/${encodeURIComponent(json_file["url"])}`, {
                     headers: new Headers({
                         'Authorization': `Bearer ${value}`
                     })
