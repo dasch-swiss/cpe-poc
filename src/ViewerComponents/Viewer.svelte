@@ -3,8 +3,6 @@
     import {token} from "./token_store";
     import * as json_file from './read_data.json'
 
-    json_file["properties"].forEach(element => console.log(element));
-
     async function login() {
         const res = await fetch("https://api.0826-test-server.dasch.swiss/v2/authentication",
             {
@@ -56,11 +54,27 @@
                     })
                 });
 
-                const json = await res.json();
-                console.log(json);
+                if (res.ok) {
+                    const json = await res.json();
+                    console.log(json);
+                    convert(json);
+                }
 
             } else {
                 console.error("No token available for further requests", value);
+            }
+        });
+    }
+
+    function convert(data) {
+        json_file["properties"].forEach(element => {
+            console.log(element);
+            if (data[element]) {
+                if (Array.isArray(data[element])) {
+                    console.log("found -> Array", data[element]);
+                } else {
+                    console.log("found -> Not Array", data[element], data[element]["@type"]);
+                }
             }
         });
     }

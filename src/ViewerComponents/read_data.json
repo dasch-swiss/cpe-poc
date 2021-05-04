@@ -4,6 +4,8 @@
   "properties": [
     "teimww:hasDisplayedTitle",
     "teimww:hasPage",
-    "teimww:hasText"
+    "teimww:hasText",
+    "teimww:containsValue",
+    "teimww:occursInValue"
   ]
 }
