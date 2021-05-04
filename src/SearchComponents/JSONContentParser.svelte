@@ -7,6 +7,10 @@
     export let server, ontology, shortCode;
     import SearchForm from './SearchForm.svelte'
     import LanguageSelector from './LanguageSelector.svelte'
+    import LinkButton from "./LinkButton.svelte";
+    import PdfViewer from 'svelte-pdf';
+    import ExpertSearch from "./ExpertSearch.svelte";
+    import GravsearchTemplate from "./GravsearchTemplate.svelte";
 </script>
 {#if json} <!-- For Safety. This way this component can be called with falsy or undefined json -->
     {#each json['ClickableImage'] || [] as img}
@@ -20,8 +24,20 @@
     {#each json['SinglePropertySearch'] || [] as search}
         <SinglePropertySearch props={search['Props']} link={search['LinkedSearchForm']}/>
     {/each}
+    {#each json['LinkButton'] || [] as button}
+        <LinkButton link={button['link']} label={button['label']}/>
+    {/each}
     {#each json['LanguageSelector'] || [] as selector}
         <LanguageSelector json={selector}/>
+    {/each}
+    {#each json['PDFDisplay'] || [] as pdf}
+        <PdfViewer url={pdf['file']}/>
+    {/each}
+    {#each json['ExpertSearch'] || [] as expert}
+        <ExpertSearch {ontology} {server}/>
+    {/each}
+    {#each json['GravsearchTemplate'] || [] as temp}
+        <GravsearchTemplate template={temp['Template']} parameters={temp['Params']}/>
     {/each}
 {/if}
 

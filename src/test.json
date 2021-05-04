@@ -6,6 +6,29 @@
   },
   "Header": {
     "Content": {
+      "LinkButton": [
+        {
+          "link": "/publikationen",
+          "label": {
+            "en": "Publications",
+            "de": "Publikationen"
+          }
+        },
+        {
+          "link": "/expert",
+          "label": {
+            "en": "Expert Search",
+            "de": "Expertensuche"
+          }
+        },
+        {
+          "link": "/handbook",
+          "label": {
+            "en": "Hand book",
+            "de": "Handbuch"
+          }
+        }
+      ],
       "ClickableImage": [
         {
           "src": "img\\Unibas logo.png",
@@ -54,13 +77,42 @@
   },
   "Page": [
     {
+      "URI": "/publikationen",
+      "Content": {}
+    },
+    {
+      "URI": "/expert",
+      "Content": {
+        "ExpertSearch": [
+          {
+            "Dummy": "True"
+          }
+        ]
+      }
+    },
+    {
+      "URI": "/displayimage",
+      "Content": {
+      }
+    },
+    {
+      "URI": "/handbook",
+      "Content": {
+        "PDFDisplay": [
+          {
+            "file": "files\\handbook.pdf"
+          }
+        ]
+      }
+    },
+    {
       "URI": "/testpage",
       "Content": {
         "SearchForm": [
           {
             "ResName": "tdk:Bild",
             "ResLabel": {
-             "de": "Bild",
+              "de": "Bild",
               "en": "Image"
             },
             "Id": "SEARCHFORM_1",

@@ -1,16 +1,10 @@
-import Playground from './testing/Playground.svelte'
-import SinglePropertySearch from './SearchComponents/SinglePropertySearch.svelte'
-import Home from './testing/Home.svelte'
-import * as json from './test.json'
+import {json} from './store'
+import {get} from 'svelte/store'
 import Page from './SearchComponents/Page.svelte'
-let routes = {
-    /* Testing Section */
-    '/': Home,
-    '/playground/:predefinedProp?/:predefinedVal?': Playground,
-    '/single': SinglePropertySearch,
-
-}
-for (const page of json['Page']) {
+let routes = {};
+const jVal = get(json);
+for (const page of jVal['Page']) {
     routes[page['URI'] + '/:predefForm?/:predefinedProp?/:predefinedVal?']  = Page;
 }
+console.log(routes);
 export default routes
