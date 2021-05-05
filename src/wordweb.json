@@ -1,11 +1,23 @@
 {
-  "server": "api.0826-test-server.dasch.swiss",
-  "url": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
-  "properties": [
-    "teimww:hasDisplayedTitle",
-    "teimww:hasPage",
-    "teimww:hasText",
-    "teimww:containsValue",
-    "teimww:occursInValue"
-  ]
+  "DSP": {
+    "Server": "api.0826-test-server.dasch.swiss",
+    "Ontology": "0826/teimww",
+    "ShortCode": "teimww"
+  },
+  "Header": {},
+  "Footer": {},
+  "Page": {
+    "Content": {
+      "Viewer": {
+        "Url": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
+        "Properties": [
+          "teimww:hasDisplayedTitle",
+          "teimww:hasPage",
+          "teimww:hasText",
+          "teimww:containsValue",
+          "teimww:occursInValue"
+        ]
+      }
+    }
+  }
 }
