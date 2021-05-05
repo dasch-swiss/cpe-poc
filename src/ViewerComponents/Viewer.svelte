@@ -1,28 +1,27 @@
 <script>
     import {onMount} from 'svelte'
-    import {token} from "./token_store";
-    import * as json_file from './read_data.json'
+    import {token, ww_json} from '../store';
 
     async function login() {
-        const res = await fetch("https://api.0826-test-server.dasch.swiss/v2/authentication",
+        const res = await fetch('https://api.0826-test-server.dasch.swiss/v2/authentication',
             {
                 headers: new Headers({
                     'Content-Type': 'application/json'
                 }),
-                method: "POST",
-                body: JSON.stringify({"email":"root@example.com", "password":"test"})
+                method: 'POST',
+                body: JSON.stringify({'email':'root@example.com', 'password':'test'})
             })
 
         if (res.status === 200) {
             const json = await res.json();
             token.set(json.token);
         } else {
-            console.error("Login failed", res);
+            console.error('Login failed', res);
         }
     }
 
     async function ontologyRequest() {
-        const res = await fetch("https://api.0826-test-server.dasch.swiss/ontology/0826/teimww/simple/v2");
+        const res = await fetch('https://api.0826-test-server.dasch.swiss/ontology/0826/teimww/simple/v2');
         const json = await res.json();
         console.log(json);
     }
@@ -40,7 +39,7 @@
                 console.log(json);
 
             } else {
-                console.error("No token available for further requests", value);
+                console.error('No token available for further requests', value);
             }
         });
     }
@@ -48,7 +47,7 @@
     async function resourceRequest() {
         token.subscribe(async value => {
             if (value) {
-                const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/resources/${encodeURIComponent(json_file["url"])}`, {
+                const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/resources/${encodeURIComponent($ww_json['Page']['Content']['Viewer']['Url'])}`, {
                     headers: new Headers({
                         'Authorization': `Bearer ${value}`
                     })
@@ -61,19 +60,19 @@
                 }
 
             } else {
-                console.error("No token available for further requests", value);
+                console.error('No token available for further requests', value);
             }
         });
     }
 
     function convert(data) {
-        json_file["properties"].forEach(element => {
+        $ww_json['Page']['Content']['Viewer']['Properties'].forEach(element => {
             console.log(element);
             if (data[element]) {
                 if (Array.isArray(data[element])) {
-                    console.log("found -> Array", data[element]);
+                    console.log('found -> Array', data[element]);
                 } else {
-                    console.log("found -> Not Array", data[element], data[element]["@type"]);
+                    console.log('found -> Not Array', data[element], data[element]['@type']);
                 }
             }
         });
