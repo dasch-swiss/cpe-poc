@@ -11,9 +11,11 @@
       "Viewer": {
         "Url": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
         "Properties": [
+          "teimww:hasPrefixDisplayedTitle",
           "teimww:hasDisplayedTitle",
           "teimww:hasPage",
           "teimww:hasText",
+          "teimww:hasFunctionVoice",
           "teimww:containsValue",
           "teimww:occursInValue"
         ]
