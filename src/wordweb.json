@@ -14,8 +14,13 @@
           "teimww:hasPrefixDisplayedTitle",
           "teimww:hasDisplayedTitle",
           "teimww:hasPage",
+          "teimww:hasPageHist",
           "teimww:hasText",
+          "teimww:hasTextHist",
           "teimww:hasFunctionVoice",
+          "teimww:hasResearchField",
+          "teimww:hasStatus",
+          "teimww:hasMarking",
           "teimww:containsValue",
           "teimww:occursInValue"
         ]

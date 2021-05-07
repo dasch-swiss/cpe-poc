@@ -9,3 +9,7 @@ import * as ww from './wordweb.json'
 export const ww_json = writable(ww);
 // token received from login and saved for further requests
 export const token = writable(null);
+// all lists of a specific project
+export const lists = writable(null);
+
+export const ontologies = writable(null);
