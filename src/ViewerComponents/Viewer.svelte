@@ -80,15 +80,15 @@
     }
 
     function convert(data) {
-        $ww_json['Page']['Content']['Viewer']['Properties'].forEach(element => {
+        $ww_json['Page']['Content']['Viewer']['Props'].forEach(element => {
             console.log(element);
-            if (data[element]) {
-                if (Array.isArray(data[element])) {
+            if (data[element['propName']]) {
+                if (Array.isArray(data[element['propName']])) {
                     console.log('found -> Array');
-                    data[element].forEach(prop => processProp(element, prop));
+                    data[element['propName']].forEach(prop => processProp(element, prop));
                 } else {
                     console.log('found -> Not Array');
-                    processProp(element, data[element]);
+                    processProp(element, data[element['propName']]);
                 }
             }
         });
@@ -100,15 +100,20 @@
                 console.log(property['knora-api:valueAsString']);
                 // $ontologies.forEach(a => console.log(a['@id'], element));
                 $ontologies.find(ontology => {
-                    if (ontology['@id'] === element) {
+                    if (ontology['@id'] === element['propName']) {
                         // console.log("found", ontology['rdfs:label']);
                         properties = [...properties, { name: ontology['rdfs:label'], value: property['knora-api:valueAsString']}];
                     }
                 })
                 break;
-            // case 'knora-api:DateValue':
+            case 'knora-api:DateValue':
             //     console.log(property['knora-api:valueAsString']);
-            //     break;
+                $ontologies.find(ontology => {
+                    if (ontology['@id'] === element['propName']) {
+                        properties = [...properties, { name: ontology['rdfs:label'], value: property['knora-api:valueAsString']}];
+                    }
+                })
+                break;
             case 'knora-api:ListValue':
                 const listObject = await listNodeRequest(property['knora-api:listValueAsListNode']['@id']);
                 console.log(listObject, listObject['knora-api:hasRootNode']['@id']);
@@ -144,17 +149,34 @@
     <button on:click={resourceRequest}>Resource</button>
 
     {#if properties.length > 0}
-    <section>
         <h1>Resource Info</h1>
-        {#each properties as p}
-            <div><span class="prop-name">{p.name}:</span> {@html p.value}</div>
-        {/each}
-    </section>
+        <section>
+            {#each properties as p}
+                <div class="header">{p.name}</div>
+                <div>{@html p.value}</div>
+            {/each}
+        </section>
     {/if}
 </main>
 
 <style>
-    .prop-name {
+    section {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+        border: 1px solid black;
+        font-size: smaller;
+    }
+
+    @media (max-width: 600px) {
+        section {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+    }
+
+    .header {
         font-weight: bold;
     }
 </style>
