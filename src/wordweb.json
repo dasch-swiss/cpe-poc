@@ -6,68 +6,136 @@
   },
   "Header": {},
   "Footer": {},
-  "Page": {
-    "Content": {
-      "Viewer": {
-        "Url": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
-        "Props": [
-          {
-            "propName": "teimww:hasPrefixDisplayedTitle",
-            "linkResource": {}
-          },
-          {
-            "propName": "teimww:hasDisplayedTitle",
-            "linkResource": null
-          },
-          {
-            "propName": "teimww:hasText"
-          },
-          {
-            "propName": "teimww:hasTextHist"
-          },
-          {
-            "propName": "teimww:hasPage"
-          },
-          {
-            "propName": "teimww:hasPageHist"
-          },
-          {
-            "propName": "teimww:hasFunctionVoice"
-          },
-          {
-            "propName": "teimww:hasResearchField"
-          },
-          {
-            "propName": "teimww:hasStatus"
-          },
-          {
-            "propName": "teimww:hasMarking"
-          },
-          {
-            "propName": "teimww:containsValue",
-            "linkResource": {
-              "Props": [
-                {
-                  "propName": "teimww:hasLexiaTitle"
-                }
-              ]
+  "Page": [
+    {
+      "URI": "???",
+      "Content": {
+        "ResourceViewer": {
+          "Id": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
+          "Props": [
+            {
+              "propName": "teimww:hasPrefixDisplayedTitle",
+              "linkResource": {}
+            },
+            {
+              "propName": "teimww:hasDisplayedTitle",
+              "linkResource": null
+            },
+            {
+              "propName": "teimww:hasText"
+            },
+            {
+              "propName": "teimww:hasTextHist"
+            },
+            {
+              "propName": "teimww:hasPage"
+            },
+            {
+              "propName": "teimww:hasPageHist"
+            },
+            {
+              "propName": "teimww:hasFunctionVoice"
+            },
+            {
+              "propName": "teimww:hasResearchField"
+            },
+            {
+              "propName": "teimww:hasStatus"
+            },
+            {
+              "propName": "teimww:hasMarking"
+            },
+            {
+              "propName": "teimww:containsValue",
+              "linkResource": {
+                "Props": [
+                  {
+                    "propName": "teimww:hasLexiaTitle"
+                  }
+                ]
+              }
+            },
+            {
+              "propName": "teimww:occursInValue",
+              "linkResource": {
+                "Props": [
+                  {
+                    "propName": "teimww:hasBookTitle"
+                  },
+                  {
+                    "propName": "teimww:hasCreationDate"
+                  }
+                ]
+              }
             }
-          },
-          {
-            "propName": "teimww:occursInValue",
-            "linkResource": {
-              "Props": [
-                {
-                  "propName": "teimww:hasBookTitle"
-                },
-                {
-                  "propName": "teimww:hasCreationDate"
-                }
-              ]
+          ]
+        }
+      }
+    },
+    {
+      "URI": "???",
+      "Content": {
+        "ResourceViewer": {
+          "Id": "http://rdfh.ch/0826/-K_x-wlkRLWdcXXwlyGiHw",
+          "Props": [
+            {
+              "propName": "teimww:hasPrefixDisplayedTitle",
+              "linkResource": {}
+            },
+            {
+              "propName": "teimww:hasDisplayedTitle",
+              "linkResource": null
+            },
+            {
+              "propName": "teimww:hasText"
+            },
+            {
+              "propName": "teimww:hasTextHist"
+            },
+            {
+              "propName": "teimww:hasPage"
+            },
+            {
+              "propName": "teimww:hasPageHist"
+            },
+            {
+              "propName": "teimww:hasFunctionVoice"
+            },
+            {
+              "propName": "teimww:hasResearchField"
+            },
+            {
+              "propName": "teimww:hasStatus"
+            },
+            {
+              "propName": "teimww:hasMarking"
+            },
+            {
+              "propName": "teimww:containsValue",
+              "linkResource": {
+                "Props": [
+                  {
+                    "propName": "teimww:hasLexiaTitle"
+                  }
+                ]
+              }
+            },
+            {
+              "propName": "teimww:occursInValue",
+              "linkResource": {
+                "Props": [
+                  {
+                    "propName": "teimww:hasBookTitle"
+                  },
+                  {
+                    "propName": "teimww:hasCreationDate"
+                  }
+                ]
+              }
             }
-          }
-        ]
+          ]
+        }
       }
     }
-  }
+  ]
 }

@@ -1,12 +1,12 @@
 <script>
     import {onMount} from 'svelte';
-    import {of} from 'rxjs';
-    import {token, ww_json, lists, ontologies} from '../store';
+    import {token, lists, ontologies} from '../store';
 
-    let properties = [];
+    export let resource, ontology, server;
+    let properties = [{name: "test", value: ["Hamlet", "Marshmallow", "Queen and the good King"]}];
 
     async function login() {
-        const res = await fetch('https://api.0826-test-server.dasch.swiss/v2/authentication',
+        const res = await fetch(`https://${server}/v2/authentication`,
             {
                 headers: new Headers({
                     'Content-Type': 'application/json'
@@ -24,15 +24,15 @@
     }
 
     async function ontologyRequest() {
-        const res = await fetch('https://api.0826-test-server.dasch.swiss/ontology/0826/teimww/simple/v2');
+        const res = await fetch(`https://${server}/ontology/${ontology}/simple/v2`);
         const json = await res.json();
         ontologies.set(json['@graph']);
-        console.log($ontologies);
+        // console.log($ontologies);
     }
 
     async function listRequest() {
         if ($token) {
-            const res = await fetch(`https://api.0826-test-server.dasch.swiss/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/0826'})}`, {
+            const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/0826'})}`, {
                 headers: new Headers({
                     'Authorization': `Bearer ${$token}`
                 })
@@ -40,7 +40,7 @@
 
             const json = await res.json();
             lists.set(json.lists);
-            console.log($lists);
+            // console.log($lists);
         } else {
             console.error('No token available for further requests', $token);
         }
@@ -48,7 +48,7 @@
 
     async function listNodeRequest(iri) {
         if ($token) {
-            const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/node/${encodeURIComponent(iri)}`, {
+            const res = await fetch(`https://${server}/v2/node/${encodeURIComponent(iri)}`, {
                 headers: new Headers({
                     'Authorization': `Bearer ${$token}`
                 })
@@ -62,7 +62,7 @@
 
     async function resourceRequest() {
         if ($token) {
-            const res = await fetch(`https://api.0826-test-server.dasch.swiss/v2/resources/${encodeURIComponent($ww_json['Page']['Content']['Viewer']['Url'])}`, {
+            const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Content']['ResourceViewer']['Id'])}`, {
                 headers: new Headers({
                     'Authorization': `Bearer ${$token}`
                 })
@@ -80,14 +80,12 @@
     }
 
     function convert(data) {
-        $ww_json['Page']['Content']['Viewer']['Props'].forEach(element => {
-            console.log(element);
+        resource['Content']['ResourceViewer']['Props'].forEach(element => {
+            console.log(data, element);
             if (data[element['propName']]) {
                 if (Array.isArray(data[element['propName']])) {
-                    console.log('found -> Array');
                     data[element['propName']].forEach(prop => processProp(element, prop));
                 } else {
-                    console.log('found -> Not Array');
                     processProp(element, data[element['propName']]);
                 }
             }
@@ -97,17 +95,13 @@
     async function processProp(element, property) {
         switch (property['@type']) {
             case 'knora-api:TextValue':
-                console.log(property['knora-api:valueAsString']);
-                // $ontologies.forEach(a => console.log(a['@id'], element));
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === element['propName']) {
-                        // console.log("found", ontology['rdfs:label']);
                         properties = [...properties, { name: ontology['rdfs:label'], value: property['knora-api:valueAsString']}];
                     }
                 })
                 break;
             case 'knora-api:DateValue':
-            //     console.log(property['knora-api:valueAsString']);
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === element['propName']) {
                         properties = [...properties, { name: ontology['rdfs:label'], value: property['knora-api:valueAsString']}];
@@ -116,22 +110,40 @@
                 break;
             case 'knora-api:ListValue':
                 const listObject = await listNodeRequest(property['knora-api:listValueAsListNode']['@id']);
-                console.log(listObject, listObject['knora-api:hasRootNode']['@id']);
+                // console.log(listObject, listObject['knora-api:hasRootNode']['@id']);
                 $lists.find(list => {
                     if (list.id === listObject['knora-api:hasRootNode']['@id']) {
                         // console.log("found", list['labels'][0]['value']);
-                        properties = [...properties, {name: list['labels'][0]['value'], value: listObject['rdfs:label']}];
+                        properties = [...properties, {name: list['labels'][1]['value'], value: listObject['rdfs:label']}];
                     }
                 })
-                console.log(listObject['rdfs:label']);
+                // console.log(listObject['rdfs:label']);
                 break;
-            // case 'knora-api:LinkValue':
-            //     console.log(property['knora-api:linkValueHasTarget']);
-            //     '@id';
-            //     break;
+            case 'knora-api:LinkValue':
+                console.log(property['knora-api:linkValueHasTarget']);
+                const bla = await linkRequest(property['knora-api:linkValueHasTarget']['@id'])
+                console.log(bla, element['linkResource']['Props']);
+                element['linkResource']['Props'].forEach(el => {
+                    console.log(bla[el['propName']]);
+                    if (bla[el['propName']]) {
+                        let type = bla[el['propName']]['@type']
+                        properties = [...properties, {name: element['propName'], value: bla[el['propName']]['knora-api:valueAsString']}];
+                    }
+                })
+                break;
             default:
                 break;
         }
+    }
+
+    async function linkRequest(id) {
+        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(id)}`, {
+            headers: new Headers({
+                'Authorization': `Bearer ${$token}`
+            })
+        });
+
+        return await res.json();
     }
 
     onMount(async () => {
@@ -142,30 +154,43 @@
 </script>
 
 <main>
-    <h1>Viewer Component</h1>
-<!--    <button on:click={ontologyRequest}>Ontology</button>-->
-<!--    <button on:click={listRequest}>List</button>-->
+    <h2>Resource Viewer</h2>
 <!--    <button on:click={() => listNodeRequest('http://rdfh.ch/lists/0826/TxtGA2V6RQuMstb9YjxYtg')}>Node</button>-->
-    <button on:click={resourceRequest}>Resource</button>
+    <button on:click={resourceRequest}>Fetch data</button>
 
     {#if properties.length > 0}
-        <h1>Resource Info</h1>
         <section>
+            <div class="res-title">Resource Information</div>
+<!--            <div>sadf</div>-->
             {#each properties as p}
-                <div class="header">{p.name}</div>
-                <div>{@html p.value}</div>
+                <div class="prop-header">{p.name}</div>
+                {#if Array.isArray(p.value)}
+                    <div>
+                        {#each p.value as value}
+                            <div>{@html value}</div>
+                        {/each}
+                    </div>
+                {:else}
+                    <div>{@html p.value}</div>
+                {/if}
             {/each}
         </section>
     {/if}
 </main>
 
 <style>
+    .res-title {
+        flex: 0 1 100%;
+        grid-column: 1 / -1;
+        font-size: x-large;
+    }
+
     section {
         padding: 1.5rem;
         display: grid;
         grid-template-columns: auto 1fr;
         gap: 1rem;
-        border: 1px solid black;
+        border: 1px solid darkgray;
         font-size: smaller;
     }
 
@@ -176,7 +201,7 @@
         }
     }
 
-    .header {
+    .prop-header {
         font-weight: bold;
     }
 </style>
