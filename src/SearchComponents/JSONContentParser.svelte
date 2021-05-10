@@ -34,7 +34,7 @@
         <PdfViewer url={pdf['file']}/>
     {/each}
     {#each json['ExpertSearch'] || [] as expert}
-        <ExpertSearch {ontology} {server}/>
+        <ExpertSearch {ontology} {server} {shortCode}/>
     {/each}
     {#each json['GravsearchTemplate'] || [] as temp}
         <GravsearchTemplate template={temp['Template']} parameters={temp['Params']}/>
