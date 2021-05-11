@@ -61,9 +61,6 @@
                 "Props": [
                   {
                     "propName": "teimww:hasBookTitle"
-                  },
-                  {
-                    "propName": "teimww:hasCreationDate"
                   }
                 ]
               }
@@ -126,9 +123,6 @@
                 "Props": [
                   {
                     "propName": "teimww:hasBookTitle"
-                  },
-                  {
-                    "propName": "teimww:hasCreationDate"
                   }
                 ]
               }
