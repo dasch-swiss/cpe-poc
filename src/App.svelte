@@ -15,7 +15,13 @@
 <JSONContentParser json={$json['Footer']['Content']}/> <!-- Displays the Footer content -->
 
 {#each $ww_json['Page'] as res}
-    <ResourceViewer resource={res} server={$ww_json['DSP']['Server']} ontology={$ww_json['DSP']['Ontology']} user="{$ww_json['DSP']['User']}"/>
+    <ResourceViewer
+            resource={res}
+            server={$ww_json['DSP']['Server']}
+            ontology={$ww_json['DSP']['Ontology']}
+            user="{$ww_json['DSP']['User']}"
+            shortname="{$ww_json['DSP']['Shortname']}"
+            shortcode="{$ww_json['DSP']['Shortcode']}"/>
 {/each}
 
 <style>

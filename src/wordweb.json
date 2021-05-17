@@ -2,7 +2,8 @@
   "DSP": {
     "Server": "api.0826-test-server.dasch.swiss",
     "Ontology": "0826/teimww",
-    "ShortCode": "teimww",
+    "Shortname": "teimww",
+    "Shortcode": "0826",
     "User": {
       "Email": "root@example.com",
       "Pwd": "test"
@@ -64,7 +65,20 @@
               "linkResource": {
                 "Props": [
                   {
-                    "propName": "teimww:hasBookTitle"
+                    "propName": "teimww:hasBookTitle",
+                    "customName": "Title"
+                  },
+                  {
+                    "propName": "teimww:hasCreationDate"
+                  },
+                  {
+                    "propName": "teimww:hasLanguage"
+                  },
+                  {
+                    "propName": "teimww:hasBookInternalId"
+                  },
+                  {
+                    "propName": "teimww:isWrittenByValue"
                   }
                 ]
               }

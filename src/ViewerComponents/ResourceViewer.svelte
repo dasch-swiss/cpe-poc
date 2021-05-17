@@ -2,7 +2,7 @@
     import {onMount} from 'svelte';
     import {token, lists, ontologies} from '../store';
 
-    export let resource, ontology, server, user;
+    export let resource, ontology, server, user, shortname, shortcode;
     let properties = {}
 
     async function login() {
@@ -32,7 +32,7 @@
 
     async function listRequest() {
         if ($token) {
-            const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/0826'})}`, {
+            const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/' + shortcode})}`, {
                 headers: new Headers({
                     'Authorization': `Bearer ${$token}`
                 })
@@ -108,6 +108,17 @@
                     }
                 })
                 break;
+            case 'knora-api:IntValue':
+                $ontologies.find(ontology => {
+                    if (ontology['@id'] === element['propName']) {
+                        if (properties[ontology['rdfs:label']]) {
+                            properties[ontology['rdfs:label']].push(property['knora-api:intValueAsInt']);
+                        } else {
+                            properties[ontology['rdfs:label']] = [property['knora-api:intValueAsInt']];
+                        }
+                    }
+                })
+                break;
             case 'knora-api:DateValue':
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === element['propName']) {
@@ -122,13 +133,14 @@
                 break;
             case 'knora-api:ListValue':
                 const listObject = await listNodeRequest(property['knora-api:listValueAsListNode']['@id']);
+                console.log(listObject);
                 // console.log(listObject, listObject['knora-api:hasRootNode']['@id']);
                 $lists.find(list => {
                     if (list.id === listObject['knora-api:hasRootNode']['@id']) {
-                        if (properties[list['labels'][1]['value']]) {
-                            properties[list['labels'][1]['value']].push(listObject['rdfs:label']);
+                        if (properties[list['labels'][0]['value']]) {
+                            properties[list['labels'][0]['value']].push(listObject['rdfs:label']);
                         } else {
-                            properties[list['labels'][1]['value']] = new Array(listObject['rdfs:label']);
+                            properties[list['labels'][0]['value']] = new Array(listObject['rdfs:label']);
                         }
                         // console.log('found', list['labels'][0]['value']);
                         console.log(properties);
@@ -140,7 +152,7 @@
                 const bla = await linkRequest(property['knora-api:linkValueHasTarget']['@id'])
                 // console.log(bla, element['linkResource']['Props']);
                 element['linkResource']['Props'].forEach(el => {
-                    // console.log(bla[el['propName']]);
+                    // console.log(bla[el['propName']], el, bla);
                     if (bla[el['propName']]) {
                         $ontologies.find(a => {
                             if (a['@id'] === el['propName']) {

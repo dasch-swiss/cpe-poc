@@ -1,0 +1,40 @@
+{
+  "DSP": {
+    "Server": "api.0805-test-server.dasch.swiss",
+    "Ontology": "0805/tdk_onto",
+    "Shortname": "tdk",
+    "Shortcode": "0805",
+    "User": {
+      "Email": "tdk0805import@example.com",
+      "Pwd": "test"
+    }
+  },
+  "Header": {},
+  "Footer": {},
+  "Page": [
+    {
+      "URI": "???",
+      "Content": {
+        "ResourceViewer": {
+          "Id": "http://rdfh.ch/0805/-ZpD9n7yQDeHoj1P-afqxw",
+          "Props": [
+            {
+              "propName": "tdk_onto:bildAutor",
+              "linkResource": {}
+            },
+            {
+              "propName": "tdk_onto:bildRaum",
+              "linkResource": null
+            },
+            {
+              "propName": "tdk_onto:bildGrab"
+            },
+            {
+              "propName": "tdk_onto:bildBemerkung"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
