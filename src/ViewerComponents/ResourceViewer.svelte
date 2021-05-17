@@ -2,7 +2,7 @@
     import {onMount} from 'svelte';
     import {token, lists, ontologies} from '../store';
 
-    export let resource, ontology, server;
+    export let resource, ontology, server, user;
     let properties = {}
 
     async function login() {
@@ -12,7 +12,7 @@
                     'Content-Type': 'application/json'
                 }),
                 method: 'POST',
-                body: JSON.stringify({'email':'root@example.com', 'password':'test'})
+                body: JSON.stringify({'email': user['Email'], 'password': user['Pwd']})
             })
 
         if (res.status === 200) {
@@ -69,8 +69,10 @@
             });
 
             if (res.ok) {
-                properties = [];
+                properties = {};
                 const json = await res.json();
+                properties['ARK Url'] = new Array(`<a href=${json['knora-api:arkUrl']['@value']} target='_blank'>${json['knora-api:arkUrl']['@value']}</a>`)
+                properties['Resource ID'] = new Array(resource['Content']['ResourceViewer']['Id']);
                 console.log(json);
                 convert(json);
             }
@@ -128,7 +130,7 @@
                         } else {
                             properties[list['labels'][1]['value']] = new Array(listObject['rdfs:label']);
                         }
-                        // console.log("found", list['labels'][0]['value']);
+                        // console.log('found', list['labels'][0]['value']);
                         console.log(properties);
                     }
                 })
@@ -140,13 +142,17 @@
                 element['linkResource']['Props'].forEach(el => {
                     // console.log(bla[el['propName']]);
                     if (bla[el['propName']]) {
-                        let type = bla[el['propName']]['@type']
-                        if (properties[element['propName']]) {
-                            properties[element['propName']].push(bla[el['propName']]['knora-api:valueAsString']);
-                        } else {
-                            properties[element['propName']] = new Array(bla[el['propName']]['knora-api:valueAsString']);
-                        }
-                        console.log(properties);
+                        $ontologies.find(a => {
+                            if (a['@id'] === el['propName']) {
+                                let type = bla[el['propName']]['@type']
+                                if (properties[a['rdfs:label']]) {
+                                    properties[a['rdfs:label']].push(bla[el['propName']]['knora-api:valueAsString']);
+                                } else {
+                                    properties[a['rdfs:label']] = new Array(bla[el['propName']]['knora-api:valueAsString']);
+                                }
+                                console.log(properties);
+                            }
+                        })
                     }
                 })
                 break;
@@ -179,9 +185,9 @@
 
     {#if Object.entries(properties).length > 0}
         <section>
-            <div class="res-title">Resource Information</div>
+            <div class='res-title'>Resource Information</div>
             {#each Object.entries(properties) as [propName, propValue]}
-                <div class="prop-header">{propName}</div>
+                <div class='prop-header'>{propName}</div>
                 <div>
                     {#each propValue as val}
                         <div>{@html val}</div>
