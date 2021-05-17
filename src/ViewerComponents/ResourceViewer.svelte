@@ -4,8 +4,15 @@
 
     export let resource, ontology, server, user, shortname, shortcode;
     let properties = {}
+    let error = false;
+
+    onMount(async () => {
+        // await login();
+    })
 
     async function login() {
+        error = false;
+
         const res = await fetch(`https://${server}/v2/authentication`,
             {
                 headers: new Headers({
@@ -15,73 +22,88 @@
                 body: JSON.stringify({'email': user['Email'], 'password': user['Pwd']})
             })
 
-        if (res.status === 200) {
-            const json = await res.json();
-            token.set(json.token);
-        } else {
-            console.error('Login failed', res);
+        // Checks if request succeeded
+        if (!res.ok) {
+            error = true;
+            console.error(res);
+            return;
         }
+
+        const json = await res.json();
+        token.set(json.token);
+        // console.log($token);
+        await listRequest();
+    }
+
+    async function listRequest() {
+        const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/' + shortcode})}`, {
+            headers: new Headers({
+                'Authorization': `Bearer ${$token}`
+            })
+        });
+
+        // Checks if request succeeded
+        if (!res.ok) {
+            error = true;
+            console.error(res);
+            return;
+        }
+
+        const json = await res.json();
+        lists.set(json.lists);
+        // console.log($lists);
+        await ontologyRequest();
     }
 
     async function ontologyRequest() {
         const res = await fetch(`https://${server}/ontology/${ontology}/simple/v2`);
+
+        // Checks if request succeeded
+        if (!res.ok) {
+            error = true;
+            console.error(res);
+            return;
+        }
+
         const json = await res.json();
         ontologies.set(json['@graph']);
         // console.log($ontologies);
-    }
-
-    async function listRequest() {
-        if ($token) {
-            const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/' + shortcode})}`, {
-                headers: new Headers({
-                    'Authorization': `Bearer ${$token}`
-                })
-            });
-
-            const json = await res.json();
-            lists.set(json.lists);
-            // console.log($lists);
-        } else {
-            console.error('No token available for further requests', $token);
-        }
-    }
-
-    async function listNodeRequest(iri) {
-        if ($token) {
-            const res = await fetch(`https://${server}/v2/node/${encodeURIComponent(iri)}`, {
-                headers: new Headers({
-                    'Authorization': `Bearer ${$token}`
-                })
-            });
-
-            return await res.json();
-        } else {
-            console.error('No token available for further requests', $token);
-        }
+        await resourceRequest();
     }
 
     async function resourceRequest() {
-        if ($token) {
-            const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Content']['ResourceViewer']['Id'])}`, {
-                headers: new Headers({
-                    'Authorization': `Bearer ${$token}`
-                })
-            });
+        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Content']['ResourceViewer']['Id'])}`, {
+            headers: new Headers({
+                'Authorization': `Bearer ${$token}`
+            })
+        });
 
-            if (res.ok) {
-                properties = {};
-                const json = await res.json();
-                properties['ARK Url'] = new Array(`<a href=${json['knora-api:arkUrl']['@value']} target='_blank'>${json['knora-api:arkUrl']['@value']}</a>`)
-                properties['Resource ID'] = new Array(resource['Content']['ResourceViewer']['Id']);
-                console.log(json);
-                convert(json);
-            }
-        } else {
-            console.error('No token available for further requests', $token);
+        // Checks if request succeeded
+        if (!res.ok) {
+            error = true;
+            console.error(res);
+            return;
         }
+
+        properties = {};
+        const json = await res.json();
+        // console.log(json);
+        properties['ARK Url'] = new Array(`<a href=${json['knora-api:arkUrl']['@value']} target='_blank'>${json['knora-api:arkUrl']['@value']}</a>`)
+        properties['Resource ID'] = new Array(resource['Content']['ResourceViewer']['Id']);
+        convertProperties(json);
     }
 
-    function convert(data) {
+    async function listNodeRequest(iri) {
+        const res = await fetch(`https://${server}/v2/node/${encodeURIComponent(iri)}`, {
+            headers: new Headers({
+                'Authorization': `Bearer ${$token}`
+            })
+        });
+
+        return await res.json();
+    }
+
+    function convertProperties(data) {
         resource['Content']['ResourceViewer']['Props'].forEach(element => {
             // console.log(data, element);
             if (data[element['propName']]) {
@@ -222,31 +244,34 @@
 
         return await res.json();
     }
-
-    onMount(async () => {
-        await login();
-        await listRequest();
-        await ontologyRequest();
-    })
 </script>
 
 <main>
     <h2>Resource Viewer</h2>
-<!--    <button on:click={() => listNodeRequest('http://rdfh.ch/lists/0826/TxtGA2V6RQuMstb9YjxYtg')}>Node</button>-->
-    <button on:click={resourceRequest}>Fetch data</button>
+    {#if error}
+        <div>
+            There was a error! The Resource data couldn't be loaded.
+            <button on:click={() => login()}>Try again</button>
+        </div>
+    {:else}
+        <div>
+            <!--    <button on:click={() => listNodeRequest('http://rdfh.ch/lists/0826/TxtGA2V6RQuMstb9YjxYtg')}>Node</button>-->
+            <button on:click={() => login()}>Get Data</button>
 
-    {#if Object.entries(properties).length > 0}
-        <section>
-            <div class='res-title'>Resource Information</div>
-            {#each Object.entries(properties) as [propName, propValue]}
-                <div class='prop-header'>{propName}</div>
-                <div>
-                    {#each propValue as val}
-                        <div>{@html val}</div>
+            {#if Object.entries(properties).length > 0}
+                <section>
+                    <div class='res-title'>Resource Information</div>
+                    {#each Object.entries(properties) as [propName, propValue]}
+                        <div class='prop-header'>{propName}</div>
+                        <div>
+                            {#each propValue as val}
+                                <div>{@html val}</div>
+                            {/each}
+                        </div>
                     {/each}
-                </div>
-            {/each}
-        </section>
+                </section>
+            {/if}
+        </div>
     {/if}
 </main>
 
