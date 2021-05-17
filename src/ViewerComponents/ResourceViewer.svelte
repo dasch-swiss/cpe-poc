@@ -96,7 +96,33 @@
 
     async function processProp(element, property) {
         switch (property['@type']) {
+            case 'knora-api:DecimalValue':
+                // TODO -> ['knora-api:decimalValueAsDecimal']['@value'] = "1.5"
+                break;
+            case 'knora-api:BooleanValue':
+                // TODO -> ['knora-api:booleanValueAsBoolean'] = true
+                break;
+            case 'knora-api:ColorValue':
+                // TODO -> ['knora-api:colorValueAsColor'] = "#ff3333"
+                break;
+            case 'knora-api:TimeValue':
+                // TODO -> ['knora-api:timeValueAsTimeStamp']['@value'] = "2019-08-30T10:45:20.173572Z"
+                break;
+            case 'knora-api:UriValue':
+                // TODO -> ['knora-api:uriValueAsUri']['@value'] = "http://www.google.ch"
+                break;
+            case 'knora-api:GeomValue':
+                // TODO -> ['knora-api:geometryValueAsGeometry'] = "{\"status\":\"active\",\"lineColor\":\"#ff3333\",\"lineWidth\":2,\"points\":[{\"x\":0.08098591549295775,\"y\":0.16741071428571427},{\"x\":0.7394366197183099,\"y\":0.7299107142857143}],\"type\":\"rectangle\",\"original_index\":0}"
+                break;
+            case 'knora-api:GeonameValue':
+                // TODO -> ['knora-api:geonameValueAsGeonameCode'] = "2661604"
+                break;
+            case 'knora-api:IntervalValue':
+                // TODO -> ['knora-api:intervalValueHasStart']['@value'] = "0"
+                // TODO -> ['knora-api:intervalValueHasEnd']['@value'] = "216000"
+                break;
             case 'knora-api:TextValue':
+                // Simple Text
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === element['propName']) {
                         if (properties[ontology['rdfs:label']]) {
@@ -107,6 +133,9 @@
                         console.log(properties);
                     }
                 })
+
+                // Rich Text
+                // TODO -> ['knora-api:textValueAsXml'] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<text><p>test with <strong>markup</strong></p></text>"
                 break;
             case 'knora-api:IntValue':
                 $ontologies.find(ontology => {
@@ -120,6 +149,17 @@
                 })
                 break;
             case 'knora-api:DateValue':
+                // In case the details will be needed
+                // ['knora-api:dateValueHasCalendar'] = "GREGORIAN"
+                // ['knora-api:dateValueHasEndDay'] = 13;
+                // ['knora-api:dateValueHasEndEra'] =  "CE";
+                // ['knora-api:dateValueHasEndMonth'] = 5;
+                // ['knora-api:dateValueHasEndYear'] = 2018;
+                // ['knora-api:dateValueHasStartDay'] = 13;
+                // ['knora-api:dateValueHasStartEra'] = "CE";
+                // ['knora-api:dateValueHasStartMonth'] = 5;
+                // ['knora-api:dateValueHasStartYear'] = 2018;
+
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === element['propName']) {
                         if (properties[ontology['rdfs:label']]) {
