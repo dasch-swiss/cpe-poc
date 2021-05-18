@@ -5,7 +5,7 @@
 
     //import * as json from './mls.json' // imports the json file and directly loads it into the variable json.
     import JSONContentParser from "./SearchComponents/JSONContentParser.svelte"
-    import {json, ww_json} from './store.js'
+    import {json, project_json} from './store.js'
 
     import ResourceViewer from "./ViewerComponents/ResourceViewer.svelte";
 </script>
@@ -14,14 +14,14 @@
 <Router {routes}/> <!-- Displays the 'Main' as it loads the respective route -->
 <JSONContentParser json={$json['Footer']['Content']}/> <!-- Displays the Footer content -->
 
-{#each $ww_json['Page'] as res}
+{#each $project_json['Page'] as res}
     <ResourceViewer
             resource={res}
-            server={$ww_json['DSP']['Server']}
-            ontology={$ww_json['DSP']['Ontology']}
-            user="{$ww_json['DSP']['User']}"
-            shortname="{$ww_json['DSP']['Shortname']}"
-            shortcode="{$ww_json['DSP']['Shortcode']}"/>
+            server={$project_json['DSP']['Server']}
+            ontology={$project_json['DSP']['Ontology']}
+            user="{$project_json['DSP']['User']}"
+            shortname="{$project_json['DSP']['Shortname']}"
+            shortcode="{$project_json['DSP']['Shortcode']}"/>
 {/each}
 
 <style>

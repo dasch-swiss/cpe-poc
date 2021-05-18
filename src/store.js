@@ -3,13 +3,13 @@ import * as j from './test.json'
 export const language = writable('en');
 export const json = writable(j);
 
-// imports test data from wordweb project
-import * as ww from './wordweb.json'
-// makes data from wordweb available to the outside
-export const ww_json = writable(ww);
+// test data from project json
+import * as data from './wordweb.json'
+// makes data from a specific available to the outside
+export const project_json = writable(data);
 // token received from login and saved for further requests
 export const token = writable(null);
 // all lists of a specific project
 export const lists = writable(null);
-
+// ontologies of a specific project
 export const ontologies = writable(null);
