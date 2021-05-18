@@ -78,7 +78,17 @@
                     "propName": "teimww:hasBookInternalId"
                   },
                   {
-                    "propName": "teimww:isWrittenByValue"
+                    "propName": "teimww:isWrittenByValue",
+                    "linkResource": {
+                      "Props": [
+                        {
+                          "propName": "teimww:hasFirstName"
+                        },
+                        {
+                          "propName": "teimww:hasLastName"
+                        }
+                      ]
+                    }
                   }
                 ]
               }

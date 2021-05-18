@@ -87,9 +87,15 @@
 
         properties = {};
         const json = await res.json();
-        // console.log(json);
-        properties['ARK Url'] = new Array(`<a href=${json['knora-api:arkUrl']['@value']} target='_blank'>${json['knora-api:arkUrl']['@value']}</a>`)
-        properties['Resource ID'] = new Array(resource['Content']['ResourceViewer']['Id']);
+        console.log(json);
+        properties['knora-api:arkUrl'] = {
+            values: new Array(`<a href=${json['knora-api:arkUrl']['@value']} target='_blank'>${json['knora-api:arkUrl']['@value']}</a>`),
+            label: "ARK url"
+        };
+        properties['@id'] = {
+            values: new Array(resource['Content']['ResourceViewer']['Id']),
+            label: "Resource ID"
+        };
         convertProperties(json);
     }
 
@@ -147,10 +153,13 @@
                 // Simple Text
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === property['propName']) {
-                        if (properties[ontology['rdfs:label']]) {
-                            properties[ontology['rdfs:label']].push(reqProperty['knora-api:valueAsString']);
+                        if (properties[property['propName']]) {
+                            properties[property['propName']]['values'].push(reqProperty['knora-api:valueAsString']);
                         } else {
-                            properties[ontology['rdfs:label']] = new Array(reqProperty['knora-api:valueAsString']);
+                            properties[property['propName']] = {
+                                values: new Array(reqProperty['knora-api:valueAsString']),
+                                label: ontology['rdfs:label']
+                            };
                         }
                         // console.log(properties);
                     }
@@ -162,10 +171,13 @@
             case 'knora-api:IntValue':
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === property['propName']) {
-                        if (properties[ontology['rdfs:label']]) {
-                            properties[ontology['rdfs:label']].push(reqProperty['knora-api:intValueAsInt']);
+                        if (properties[property['propName']]) {
+                            properties[property['propName']]['values'].push(reqProperty['knora-api:intValueAsInt']);
                         } else {
-                            properties[ontology['rdfs:label']] = [reqProperty['knora-api:intValueAsInt']];
+                            properties[property['propName']] = {
+                                values: [reqProperty['knora-api:intValueAsInt']],
+                                label: ontology['rdfs:label']
+                            };
                         }
                     }
                 })
@@ -184,10 +196,13 @@
 
                 $ontologies.find(ontology => {
                     if (ontology['@id'] === property['propName']) {
-                        if (properties[ontology['rdfs:label']]) {
-                            properties[ontology['rdfs:label']].push(reqProperty['knora-api:valueAsString']);
+                        if (properties[property['propName']]) {
+                            properties[property['propName']]['values'].push(reqProperty['knora-api:valueAsString']);
                         } else {
-                            properties[ontology['rdfs:label']] = new Array(reqProperty['knora-api:valueAsString']);
+                            properties[property['propName']] = {
+                                values: new Array(reqProperty['knora-api:valueAsString']),
+                                label: ontology['rdfs:label']
+                            };
                         }
                         // console.log(properties);
                     }
@@ -199,34 +214,33 @@
                 $lists.find(list => {
                     if (list.id === listObject['knora-api:hasRootNode']['@id']) {
                         // TODO There are sometimes more than one label
-                        if (properties[list['labels'][0]['value']]) {
-                            properties[list['labels'][0]['value']].push(listObject['rdfs:label']);
+                        if (properties[listObject['knora-api:hasRootNode']['@id']]) {
+                            properties[listObject['knora-api:hasRootNode']['@id']]['values'].push(listObject['rdfs:label']);
                         } else {
-                            properties[list['labels'][0]['value']] = new Array(listObject['rdfs:label']);
+                            properties[listObject['knora-api:hasRootNode']['@id']] = {
+                                values: new Array(listObject['rdfs:label']),
+                                label: list['labels'][0]['value']
+                            };
                         }
-                        // console.log('found', list['labels'][0]['value']);
-                        // console.log(properties);
+                        console.log(properties);
                     }
                 })
                 break;
             case 'knora-api:LinkValue':
-                // console.log(reqProperty['knora-api:linkValueHasTarget']);
+                // Checks if there is a linkResource property in the JSON structure
+                if (!property['linkResource']) {
+                    return;
+                }
+
                 const reqLinkTarget = await linkRequest(reqProperty['knora-api:linkValueHasTarget']['@id'])
-                // console.log(reqLinkTarget, property['linkResource']['Props']);
                 property['linkResource']['Props'].forEach(linkProperty => {
                     // console.log(reqLinkTarget[linkProperty['propName']], linkProperty, reqLinkTarget);
                     if (reqLinkTarget[linkProperty['propName']]) {
-                        $ontologies.find(ontology => {
-                            if (ontology['@id'] === linkProperty['propName']) {
-                                let type = reqLinkTarget[linkProperty['propName']]['@type']
-                                if (properties[ontology['rdfs:label']]) {
-                                    properties[ontology['rdfs:label']].push(reqLinkTarget[linkProperty['propName']]['knora-api:valueAsString']);
-                                } else {
-                                    properties[ontology['rdfs:label']] = new Array(reqLinkTarget[linkProperty['propName']]['knora-api:valueAsString']);
-                                }
-                                // console.log(properties);
-                            }
-                        })
+                        if (Array.isArray(reqLinkTarget[linkProperty['propName']])) {
+                            reqLinkTarget[linkProperty['propName']].forEach(reqLinkProperty => processProp(linkProperty, reqLinkProperty));
+                        } else {
+                            processProp(linkProperty, reqLinkTarget[linkProperty['propName']]);
+                        }
                     }
                 })
                 break;
@@ -261,10 +275,10 @@
             {#if Object.entries(properties).length > 0}
                 <section>
                     <div class='res-title'>Resource Information</div>
-                    {#each Object.entries(properties) as [propName, propValue]}
-                        <div class='prop-header'>{propName}</div>
+                    {#each Object.entries(properties) as [key, value]}
+                        <div class='prop-header'>{value.label}</div>
                         <div>
-                            {#each propValue as val}
+                            {#each value.values as val}
                                 <div>{@html val}</div>
                             {/each}
                         </div>
