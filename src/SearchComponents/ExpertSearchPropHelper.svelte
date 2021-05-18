@@ -22,7 +22,7 @@
         return chosenProp.id;
     }
     export function getPropGravId(){
-        return '?' + chosenProp.id.replace(ontology.substring(ontology.search('/') + 1) + ':', '');
+        return '?' + chosenProp.id.replace(ontology + ':', '');
     }
     export function setDeleted() {
         deleted = true;
@@ -47,7 +47,7 @@
         return toReturn;
     }
     function hasChild() {
-        return chosenProp && chosenProp.object.search(ontology.substring(ontology.search('/') + 1) + ':') !== -1
+        return chosenProp && chosenProp.object.search(ontology + ':') !== -1
     }
     function notify(){
         dispatch('message', {text: 'updated'});

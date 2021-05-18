@@ -5,11 +5,13 @@
      */
     import SearchField from './SearchField.svelte'
     import {onMount} from 'svelte';
+    import {getLabelForResource, getLabelsForResources, getPropByName} from "../dsp-services";
+
     let props = []; //Stores the props to access their functions.
     export let form; //The json containing the information to build the SearchForm
     export let predefProp;
     export let predefVal;
-    export let ontology, server, shortCode;
+    export let ontology, server, shortCode, shortName;
     import {language} from "../store";
 
     /*
@@ -18,14 +20,14 @@
      */
     function createQuery() {
         let toReturn = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\n' +
-            'PREFIX ' + shortCode + ': <http://' + server + '/ontology/' + ontology + '/v2#>\n' +
+            'PREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' +
             'PREFIX knora-api-simple: <http://api.knora.org/ontology/knora-api/simple/v2#>\n' +
             'CONSTRUCT {\n' +
             '?mainres knora-api:isMainResource true .\n'; // Standard beginning of a gravsearchquery. Including knora-api as well as knora-api-simple for corner cases (such as filtering for dates). TODO: prefix and api-url need to be passed as arguments
         for (const prop of props) {
             toReturn += prop.getPropString(); // add the prop string for every prop.
         }
-        toReturn += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + form['ResName'] + ' .\n' // Standard for every query. CONSTRUCT section is closed, WHERE section openend.
+        toReturn += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + shortName + ':' + form['ResName'] + ' .\n' // Standard for every query. CONSTRUCT section is closed, WHERE section openend.
         for (const prop of props) {
             if (prop.isEmpty()) { //if the filterstring is empty for a prop, we need to put OPTIONAL, otherwise the query filters for its existence
                 toReturn += 'OPTIONAL {\n';
@@ -35,7 +37,6 @@
                 toReturn += prop.getPropString();
                 toReturn += prop.getFilter()
             }
-
         }
         toReturn += '}'
         console.log(toReturn);
@@ -58,13 +59,16 @@
            await fireQuery();
        }
     });
-
+    let promise = getLabelForResource(form['ResName']);
 </script>
 
 <main>
-    <h1>{$language === 'en' ? 'Search for' : 'Suchen nach'} {form['ResLabel'][$language]}</h1>
+    {#await promise}
+        {:then resLabel}
+        <h1>{$language === 'en' ? 'Search for' : 'Suchen nach'} {resLabel[$language]}</h1>
+    {/await}
     {#each form['TextProps'] as prop, i} <!-- Create a SearchField for each prop in the json -->
-        <SearchField bind:this={props[i]} prop={prop} value={predefProp === prop['propName']? predefVal : ''}/>
+        <SearchField bind:this={props[i]} prop={prop} {shortName} value={predefProp === prop['propName']? predefVal : ''}/>
     {/each}
     <button on:click={fireQuery}>{$language === 'en' ? "Search" : "Suchen"}</button>
 </main>

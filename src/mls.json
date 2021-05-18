@@ -17,7 +17,10 @@
         "GravsearchTemplate": [
           {
             "Template": "PREFIX knora-api: <http://api.knora.org/ontology/knora-api/simple/v2#>\n    PREFIX mls: <{{ ontology }}/ontology/0807/mls/simple/v2#>\n    CONSTRUCT {\n        ?lexicon knora-api:isMainResource true .\n        ?lexicon mls:hasCitationForm ?text .\n        ?lexicon mls:hasYear ?year .\n        ?lexicon mls:hasLexiconComment ?comment .\n        ?lexicon mls:hasLexiconWeblink ?weblink .\n        ?lexicon mls:hasShortname ?shortname .\n    } WHERE {\n        ?lexicon a knora-api:Resource .\n        ?lexicon a mls:Lexicon .\n        ?lexicon mls:hasCitationForm ?text .\n        OPTIONAL { ?lexicon mls:hasYear ?year . }\n        OPTIONAL { ?lexicon mls:hasLexiconComment ?comment . }\n        OPTIONAL { ?lexicon mls:hasLexiconWeblink ?weblink . }\n        OPTIONAL { ?lexicon mls:hasShortname ?shortname . }\n    }\n    ORDER BY ASC(?year)\n    OFFSET {{ page }}\n",
-            "Params": ["ontology", "page"]
+            "Params": [
+              "ontology",
+              "page"
+            ]
           }
         ]
       }

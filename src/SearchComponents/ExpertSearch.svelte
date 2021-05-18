@@ -3,6 +3,8 @@
     import {language} from "../store";
     import {onMount} from 'svelte';
     import ExpertSearchPropHelper from "./ExpertSearchPropHelper.svelte";
+    import {getOntology, getPropByName} from "../dsp-services";
+    import {get} from "svelte/store";
     class Resource {
         constructor(id, label, props) {
             this.id = id;
@@ -24,7 +26,7 @@
         }
     }
 
-    export let ontology, server, shortCode;
+    export let ontology, server, shortName, shortCode;
     let resources = []
     let helpers = [];
     let query = "";
@@ -38,14 +40,11 @@
         return toReturn;
     }
 
-    async function getOntology() {
+    async function getOnto() {
         const toReturn = [];
         let listIri = '';
-        const res = await fetch('https://' + server + '/v2/ontologies/allentities/' + encodeURIComponent('http://' + server + '/ontology/' + ontology + '/v2') + '?allLanguages=true', {
-            method: 'GET'
-        })
-        const json = await res.json();
-        for (const o of json['@graph']) {
+        const onto = await getOntology();
+        for (const o of onto) {
             if (o.hasOwnProperty('knora-api:isResourceClass') && o['knora-api:isResourceClass']) {
                 toReturn.push(new Resource(o['@id'], translateLabels(o['rdfs:label']), []))
             }
@@ -77,17 +76,17 @@
                 string += helper.getString() + '\n';
             }
         }
-        string = replaceOntoWithShortCode(string);
+        string = replaceOntoWithShortName(string);
        query = string;
     }
-    function replaceOntoWithShortCode(s){
-        let onto  = ontology.substring(ontology.indexOf('/') + 1) + ':';
-        let pre = shortCode + ':';
+    function replaceOntoWithShortName(s){
+        let onto  = ontology + ':';
+        let pre = shortName + ':';
         return s.replaceAll(onto, pre);
     }
     async function getFinalQuery(){
        const enteredString = query + gravInput;
-        let queryString = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\nPREFIX ' + shortCode + ': <http://' + server + '/ontology/' + ontology + '/v2#>\n' + '\nCONSTRUCT {\n';
+        let queryString = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\nPREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' + '\nCONSTRUCT {\n';
         if (enteredString === '') {
             queryString += '?mainres knora-api:isMainResource true .} WHERE {\n ?mainres a knora-api:Resource .\n?mainres a ' + selectedResource.id + ' .}';
         } else {
@@ -107,7 +106,7 @@
                         continue;
                     }
                     if (arr[1].indexOf(':') === -1) { // prefix: missing
-                        line = arr[0] + ' '  + shortCode + ':' + arr[1] + ' ' + arr[2] + ' ' + arr[3];
+                        line = arr[0] + ' '  + shortName + ':' + arr[1] + ' ' + arr[2] + ' ' + arr[3];
                     }
                 }
                 queryString += '\n' + line;
@@ -117,14 +116,14 @@
                 const arr = line.split(' ');
                 if (arr.length === 4) {
                     if (arr[1].indexOf(':') === -1) { // prefix: missing
-                        line = arr[0] + ' '  + shortCode + ':' + arr[1] + ' ' + arr[2] + ' ' + arr[3];
+                        line = arr[0] + ' '  + shortName + ':' + arr[1] + ' ' + arr[2] + ' ' + arr[3];
                     }
                 }
                 queryString += '\n' + line;
             }
             queryString += '}';
         }
-        queryString = replaceOntoWithShortCode(queryString);
+        queryString = replaceOntoWithShortName(queryString);
         console.log(queryString);
         const res = await fetch( 'https://' + server + '/v2/searchextended', {
             method: 'POST',
@@ -134,7 +133,7 @@
         const json = await res.json();
         console.log(json)
     }
-    getOntology();
+    getOnto();
     let selectedResource;
 </script>
 <select bind:value={selectedResource} on:change={() => {for (const helper of helpers){helper.setDeleted();} noOfProps++; getQuery();}}>

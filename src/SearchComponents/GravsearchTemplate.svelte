@@ -1,5 +1,7 @@
 <script>
     export let template, parameters;
+    import {language} from "../store";
+
     let params = {};
     const server = "api.dasch.swiss";
     for (const p of parameters){
@@ -20,7 +22,6 @@
         for (const p of parameters){
             params[p] = document.getElementById("ipfield" + p).value;
         }
-        console.log(params);
         let output = '';
         let status = Status.COPY;
         let token = '';
@@ -78,6 +79,6 @@
 </script>
 
 {#each parameters as p}
-    <input id={"ipfield" + p}/>
+    <input id={"ipfield" + p} placeholder="{$language === 'en' ? 'Enter search value for ': 'Suchwert eingeben für ' }{p}"/>
 {/each}
 <button on:click={fireQuery}>Search</button>

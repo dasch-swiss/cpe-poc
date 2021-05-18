@@ -4,7 +4,7 @@
     import ClickableImage from './ClickableImage.svelte';
     export let json;
     export let params; //if arguments need to be passed from the URI.
-    export let server, ontology, shortCode;
+    export let server, ontology, shortCode, shortName;
     import SearchForm from './SearchForm.svelte'
     import LanguageSelector from './LanguageSelector.svelte'
     import LinkButton from "./LinkButton.svelte";
@@ -18,7 +18,7 @@
     {/each}
     {#each json['SearchForm'] || [] as form} <!-- Loops through the json-Searchform array or an empty array if undefined -->
         <!-- Creates the SearchForm and assigns the dict, passes parameters if the ID matches -->
-        <SearchForm form="{form}" predefProp={params['predefForm'] === form['Id']? params['predefinedProp'] : ''} predefVal={params['predefForm'] === form['Id'] ? params['predefinedVal'] : ''} {server} {ontology} {shortCode}/>
+        <SearchForm form="{form}" predefProp={params['slot1'] === form['Id']? params['slot2'] : ''} predefVal={params['slot1'] === form['Id'] ? params['slot3'] : ''} {server} {ontology} {shortCode} {shortName}/>
     {/each}
     <!-- Same as above for SinglePropertySearch, does not support params for URI yet (as they are not needed at this point) -->
     {#each json['SinglePropertySearch'] || [] as search}
@@ -34,7 +34,7 @@
         <PdfViewer url={pdf['file']}/>
     {/each}
     {#each json['ExpertSearch'] || [] as expert}
-        <ExpertSearch {ontology} {server} {shortCode}/>
+        <ExpertSearch {ontology} {server} {shortCode} {shortName}/>
     {/each}
     {#each json['GravsearchTemplate'] || [] as temp}
         <GravsearchTemplate template={temp['Template']} parameters={temp['Params']}/>
