@@ -56,7 +56,7 @@
     }
 
     async function ontologyRequest() {
-        const res = await fetch(`https://${server}/ontology/${ontology}/simple/v2`);
+        const res = await fetch(`https://${server}/ontology/${shortcode}/${ontology}/simple/v2`);
 
         // Checks if request succeeded
         if (!res.ok) {

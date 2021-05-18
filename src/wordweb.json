@@ -1,9 +1,9 @@
 {
   "DSP": {
     "Server": "api.0826-test-server.dasch.swiss",
-    "Ontology": "0826/teimww",
-    "Shortname": "teimww",
-    "Shortcode": "0826",
+    "Ontology": "teimww",
+    "ShortCode": "0826",
+    "ShortName": "teimww",
     "User": {
       "Email": "root@example.com",
       "Pwd": "test"

@@ -1,9 +1,9 @@
 {
   "DSP": {
     "Server": "api.0805-test-server.dasch.swiss",
-    "Ontology": "0805/tdk_onto",
-    "Shortname": "tdk",
-    "Shortcode": "0805",
+    "Ontology": "tdk_onto",
+    "ShortCode": "0805",
+    "ShortName": "tdk",
     "User": {
       "Email": "tdk0805import@example.com",
       "Pwd": "test"

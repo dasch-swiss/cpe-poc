@@ -20,8 +20,8 @@
             server={$project_json['DSP']['Server']}
             ontology={$project_json['DSP']['Ontology']}
             user="{$project_json['DSP']['User']}"
-            shortname="{$project_json['DSP']['Shortname']}"
-            shortcode="{$project_json['DSP']['Shortcode']}"/>
+            shortname="{$project_json['DSP']['ShortName']}"
+            shortcode="{$project_json['DSP']['ShortCode']}"/>
 {/each}
 
 <style>
