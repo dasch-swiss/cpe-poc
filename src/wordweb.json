@@ -65,14 +65,15 @@
               "linkResource": {
                 "Props": [
                   {
-                    "propName": "teimww:hasBookTitle",
-                    "customName": "Title"
+                    "propName": "teimww:hasBookTitle"
                   },
                   {
-                    "propName": "teimww:hasCreationDate"
+                    "propName": "teimww:hasCreationDate",
+                    "customName": "Date"
                   },
                   {
-                    "propName": "teimww:hasLanguage"
+                    "propName": "teimww:hasLanguage",
+                    "customName": "The language of book"
                   },
                   {
                     "propName": "teimww:hasBookInternalId"
@@ -82,10 +83,8 @@
                     "linkResource": {
                       "Props": [
                         {
-                          "propName": "teimww:hasFirstName"
-                        },
-                        {
-                          "propName": "teimww:hasLastName"
+                          "propName": "teimww:hasLastName",
+                          "customName": "Author name"
                         }
                       ]
                     }

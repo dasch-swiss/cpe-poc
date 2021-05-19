@@ -158,7 +158,8 @@
                         } else {
                             properties[property['propName']] = {
                                 values: new Array(reqProperty['knora-api:valueAsString']),
-                                label: ontology['rdfs:label']
+                                label: ontology['rdfs:label'],
+                                customName: property['customName'] ? property['customName'] : null
                             };
                         }
                         // console.log(properties);
@@ -176,7 +177,8 @@
                         } else {
                             properties[property['propName']] = {
                                 values: [reqProperty['knora-api:intValueAsInt']],
-                                label: ontology['rdfs:label']
+                                label: ontology['rdfs:label'],
+                                customName: property['customName'] ? property['customName'] : null
                             };
                         }
                     }
@@ -201,7 +203,8 @@
                         } else {
                             properties[property['propName']] = {
                                 values: new Array(reqProperty['knora-api:valueAsString']),
-                                label: ontology['rdfs:label']
+                                label: ontology['rdfs:label'],
+                                customName: property['customName'] ? property['customName'] : null
                             };
                         }
                         // console.log(properties);
@@ -219,7 +222,8 @@
                         } else {
                             properties[listObject['knora-api:hasRootNode']['@id']] = {
                                 values: new Array(listObject['rdfs:label']),
-                                label: list['labels'][0]['value']
+                                label: list['labels'][0]['value'],
+                                customName: property['customName'] ? property['customName'] : null
                             };
                         }
                         console.log(properties);
@@ -276,7 +280,7 @@
                 <section>
                     <div class='res-title'>Resource Information</div>
                     {#each Object.entries(properties) as [key, value]}
-                        <div class='prop-header'>{value.label}</div>
+                        <div class='prop-header'>{value.customName ? value.customName : value.label}</div>
                         <div>
                             {#each value.values as val}
                                 <div>{@html val}</div>
