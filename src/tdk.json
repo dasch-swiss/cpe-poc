@@ -19,18 +19,29 @@
           "Id": "http://rdfh.ch/0805/-ZpD9n7yQDeHoj1P-afqxw",
           "Props": [
             {
-              "propName": "tdk_onto:bildAutor",
-              "linkResource": {}
+              "propName": "tdk_onto:bildAutor"
             },
             {
-              "propName": "tdk_onto:bildRaum",
-              "linkResource": null
+              "propName": "tdk_onto:bildRaum"
             },
             {
               "propName": "tdk_onto:bildGrab"
             },
             {
               "propName": "tdk_onto:bildBemerkung"
+            },
+            {
+              "propName": "tdk_onto:bildKampagneValue",
+              "linkResource": {
+                "Props": [
+                  {
+                    "propName": "tdk_onto:kampagneTeilnehmer"
+                  },
+                  {
+                    "propName": "tdk_onto:kampagneUmgebung"
+                  }
+                ]
+              }
             }
           ]
         }
