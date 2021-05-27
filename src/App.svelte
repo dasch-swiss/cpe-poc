@@ -8,6 +8,7 @@
     import {json, project_json} from './store.js'
 
     import ResourceViewer from "./ViewerComponents/ResourceViewer.svelte";
+    import ImageViewer from "./ViewerComponents/ImageViewer.svelte";
 </script>
 
 <JSONContentParser json={$json['Header']['Content']}/> <!-- Displays the Header content -->
@@ -15,13 +16,23 @@
 <JSONContentParser json={$json['Footer']['Content']}/> <!-- Displays the Footer content -->
 
 {#each $project_json['Page'] as res}
-    <ResourceViewer
-            resource={res}
-            server={$project_json['DSP']['Server']}
-            ontology={$project_json['DSP']['Ontology']}
-            user="{$project_json['DSP']['User']}"
-            shortname="{$project_json['DSP']['ShortName']}"
-            shortcode="{$project_json['DSP']['ShortCode']}"/>
+    {#if res["Content"]["ResourceViewer"]}
+        <ResourceViewer
+                resource={res}
+                server={$project_json['DSP']['Server']}
+                ontology={$project_json['DSP']['Ontology']}
+                user="{$project_json['DSP']['User']}"
+                shortname="{$project_json['DSP']['ShortName']}"
+                shortcode="{$project_json['DSP']['ShortCode']}"/>
+    {:else if res["Content"]['ImageViewer']}
+        <ImageViewer
+                resource={res}
+                server={$project_json['DSP']['Server']}
+                ontology={$project_json['DSP']['Ontology']}
+                user="{$project_json['DSP']['User']}"
+                shortname="{$project_json['DSP']['ShortName']}"
+                shortcode="{$project_json['DSP']['ShortCode']}"/>
+    {/if}
 {/each}
 
 <style>

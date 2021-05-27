@@ -46,6 +46,15 @@
           ]
         }
       }
+    },
+    {
+      "URI": "???",
+      "Content": {
+        "ImageViewer": {
+          "Id": "http://rdfh.ch/0805/-280OTrsR_2b-N1KADTNZg",
+          "Props": []
+        }
+      }
     }
   ]
 }
