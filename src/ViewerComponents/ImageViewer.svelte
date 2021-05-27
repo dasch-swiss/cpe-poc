@@ -54,17 +54,22 @@
         console.log("image", json);
 
         if (json["knora-api:hasStillImageFileValue"]) {
-            if (json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"])
-            console.log(json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]["@value"]);
 
-            opd = new OpenSeadragon({
-                id: viewer.id,
-                prefixUrl: "images/",
-                tileSources: {
-                    type: 'image',
-                    url:  json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]["@value"]
-                }
-            });
+            if (json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]) {
+                opd = new OpenSeadragon({
+                    id: viewer.id,
+                    prefixUrl: "images/",
+                    tileSources: {
+                        type: 'image',
+                        url:  json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]["@value"]
+                    }
+                });
+            } else {
+                error = true;
+            }
+
+        } else {
+            error = true;
         }
     }
 
@@ -82,9 +87,24 @@
 </script>
 
 <main>
-    <h2>Openseadragon</h2>
-    {#if !opd}
+    <h2>Image Viewer</h2>
+    {#if error}
+        <div>
+            There was a error! The Image couldn't be loaded.
+            <button on:click={() => login()}>Try again</button>
+        </div>
+    {:else}
         <button on:click={() => login()}>Get Image</button>
+        <section bind:this={viewer}></section>
     {/if}
-    <div bind:this={viewer} style="width: 600px; height: 400px;"></div>
+
 </main>
+
+<style>
+    section {
+        width: 600px;
+        height: 400px;
+        padding: 1.5rem;
+        border: 1px solid darkgray;
+    }
+</style>
