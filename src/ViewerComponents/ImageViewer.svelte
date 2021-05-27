@@ -73,16 +73,16 @@
         }
     }
 
-    function getImage() {
-        opd = new OpenSeadragon({
-            id: "openseadragon1",
-            prefixUrl: "images/",
-            tileSources: {
-                type: 'image',
-                url:  'img/duomo.jpg'
-            }
-        });
-    }
+    // function getImage() {
+    //     opd = new OpenSeadragon({
+    //         id: "openseadragon1",
+    //         prefixUrl: "images/",
+    //         tileSources: {
+    //             type: 'image',
+    //             url:  'img/duomo.jpg'
+    //         }
+    //     });
+    // }
 
 </script>
 
