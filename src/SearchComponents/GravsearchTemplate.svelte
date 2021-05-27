@@ -1,6 +1,6 @@
 <script>
     export let template, parameters;
-    import {language} from "../store";
+    import {language} from "../store.js";
 
     let params = {};
     const server = "api.dasch.swiss";

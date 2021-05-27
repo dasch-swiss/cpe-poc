@@ -1,6 +1,6 @@
 <script>
     import {location} from 'svelte-spa-router'
-    import {json} from '../store'
+    import {json} from '../store.js'
     import JSONContentParser from './JSONContentParser.svelte'
     export let params;
     for (const key in params) {

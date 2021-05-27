@@ -4,7 +4,7 @@
     export let link;
     let dropDownVal = props[0];
     let searchVal = "";
-    import {language} from "../store";
+    import {language} from "../store.js";
     import {getLabelsForProperties} from "../dsp-services";
 
     function nav() {

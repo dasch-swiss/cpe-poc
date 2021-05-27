@@ -1,4 +1,4 @@
-import {json} from './store'
+import {json} from './store.js'
 import {get} from 'svelte/store'
 import Page from './SearchComponents/Page.svelte'
 let routes = {};

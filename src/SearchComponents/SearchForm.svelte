@@ -12,13 +12,13 @@
     export let predefProp;
     export let predefVal;
     export let ontology, server, shortCode, shortName;
-    import {language} from "../store";
+    import {language} from "../store.js";
 
     /*
         A function to create the query considering the state of the nested SearchFields.
         @return: the gravsearch query
      */
-    function createQuery() {
+    async function createQuery() {
         let toReturn = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\n' +
             'PREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' +
             'PREFIX knora-api-simple: <http://api.knora.org/ontology/knora-api/simple/v2#>\n' +
@@ -35,7 +35,7 @@
                 toReturn += '}\n';
             } else { //if it is non-empty we add the filter text.
                 toReturn += prop.getPropString();
-                toReturn += prop.getFilter()
+                toReturn += await prop.getFilter()
             }
         }
         toReturn += '}'
@@ -48,7 +48,7 @@
     async function fireQuery() {
         const res = await fetch( 'https://' + server + '/v2/searchextended', {
             method: 'POST',
-            body: createQuery()
+            body: await createQuery()
 
         })
         const json = await res.json()
@@ -67,7 +67,7 @@
         {:then resLabel}
         <h1>{$language === 'en' ? 'Search for' : 'Suchen nach'} {resLabel[$language]}</h1>
     {/await}
-    {#each form['TextProps'] as prop, i} <!-- Create a SearchField for each prop in the json -->
+    {#each form['Props'] as prop, i} <!-- Create a SearchField for each prop in the json -->
         <SearchField bind:this={props[i]} prop={prop} {shortName} value={predefProp === prop['propName']? predefVal : ''}/>
     {/each}
     <button on:click={fireQuery}>{$language === 'en' ? "Search" : "Suchen"}</button>

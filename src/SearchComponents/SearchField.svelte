@@ -1,9 +1,12 @@
 <script>
-    import {getLabelForProp} from "../dsp-services";
-
+    /* Assumes text property */
+    import {getLabelForProp, getListByPropName, getObjectTypeForProp} from "../dsp-services";
+    import {getFilterByNameAndVal} from './SearchUtility';
     export let value;
     export let prop;
     export let shortName;
+    let dateDepth;
+    let name = prop["propName"]; // helper to avoid refreshing on await command in html.
     import {language} from '../store.js'
 
     /*
@@ -12,17 +15,23 @@
     */
     export function getPropString() {
         let toReturn = '';
-        if ("linkedVia" in prop) { // this means that this property is not a property of the main resource but rather linked in some way.
-            if (prop['linkedVia'].indexOf('$INCOMING$') !== -1) { // if this key word is in found in the linkedvia string, we know that it is referenced via an incoming link to the main resource, therefore the order of arguments changes in the gravsearchstring.
+        let curr = prop;
 
-                toReturn += '?' + prop["propName"] + 'Link' + ' ' + shortName + ':' + prop['linkedVia'].replace('$INCOMING$', '') + ' ?mainres' + ' .\n' + //references the Linked resource.
-                    '?' + prop["propName"] + 'Link' + ' ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n'; //references the property
+        let linkStack = [];
+        while(curr){
+            linkStack.push(curr);
+            curr = curr['linkedVia'];
+        }
+        let parent = '?mainres';
+        let currProp;
+        while (linkStack.length > 0){
+            currProp = linkStack.pop();
+            if ("incoming" in currProp && currProp["incoming"] === "true"){
+                toReturn += '?' + currProp['propName'] +  ' ' + shortName + ':' + currProp['propName'] + ' ' + parent + ' .\n'  ;
             } else {
-                toReturn += '?mainres ' + shortName + ':' + prop['linkedVia'] + ' ?' + prop["propName"] + 'Link' + ' .\n' +
-                    '?' + prop["propName"] + 'Link' + ' ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n';
+                toReturn += parent + ' ' + shortName + ':' + currProp['propName'] + ' ?' + currProp['propName'] + ' .\n';
             }
-        } else {
-            toReturn += '?mainres ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n';
+            parent = '?' + currProp['propName'];
         }
         return toReturn;
     }
@@ -35,18 +44,51 @@
        @propName: the name of the property to create the filter form
        @return: returns the filter string
     */
-    export function getFilter() {
-        const tag = '?' + prop['propName'];
-        return tag + ' knora-api:valueAsString ' + tag + 'Str .\n' + 'FILTER regex(' + tag + 'Str, "' + value + '", "i") .\n';
+    export async function getFilter() {
+        return await getFilterByNameAndVal(prop['propName'], value, dateDepth);
+
     }
 
     export function isEmpty() {
         return value === "";
     }
     let promise = getLabelForProp(prop['propName']);
+    let secondPromise = getObjectTypeForProp(prop['propName']);
 </script>
 {#await promise}
     {:then propLabel}
     <p>{$language === 'en' ? "Enter search value for" : "Suchwert eingeben für" } {propLabel[$language]}</p>
 {/await}
-<input bind:value={value}>
+{#await secondPromise}
+    {:then obj}
+    {#if obj === 'knora-api:DateValue'}
+        <select bind:value={dateDepth} on:change={()=> {value = null;}}>
+            <option value="" disabled selected>{$language === 'en' ? 'Choose date depth' : 'Genauigkeit des Datums wählen'}</option>
+            <option value="month">{$language === 'en' ? 'Month' : 'Monat'}</option>
+            <option value="year">{$language === 'en' ? 'Year' : 'Jahr'}</option>
+        </select>
+        {#if dateDepth === 'month'}
+            <input bind:value={value} type="month"/>
+        {/if}
+        {#if dateDepth === 'year'}
+            <input placeholder="{$language=== 'en' ? 'Enter year in format YYYY' : 'Jahr im Format YYYY eingeben'}" bind:value={value} />
+        {/if}
+    {/if}
+    {#if obj === 'knora-api:ListValue'}
+        {#await getListByPropName(name)}
+        {:then list}
+        <select bind:value={value}>
+            <option value="" disabled selected>{$language === 'en' ? 'Choose value to filter for' : 'Filterwert wählen'}</option>
+
+
+                {#each list as item}
+                    <option value={item.id}>{item.label}</option><!-- Currently these labels arent returned with multiple languages, which is why this isn't used here -->
+                {/each}
+        </select>
+        {/await}
+    {/if}
+    {#if obj === 'knora-api:TextValue' || obj === 'knora-api:IntValue'}
+        <input placeholder="{$language === 'en' ? 'Enter search value' : 'Suchwert eingeben'}" bind:value={value}/>
+    {/if}
+{/await}
+

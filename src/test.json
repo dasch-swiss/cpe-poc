@@ -98,27 +98,39 @@
           {
             "ResName": "Bild",
             "Id": "SEARCHFORM_1",
-            "TextProps": [
+            "Props": [
               {
                 "propName": "smNr",
-                "linkedVia": "bildSMFund"
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
               },
               {
                 "propName": "fundNr",
-                "linkedVia": "bildSMFund"
-              }
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
+              },
+              {"propName":  "bildAutor"},
+              {"propName" : "bildDatum"}
             ]
           },
           {
             "ResName": "Zeichnung",
-            "TextProps": [
+            "Props": [
               {
                 "propName": "smNr",
-                "linkedVia": "$INCOMING$smZeichnung"
+                "linkedVia": {
+                  "propName": "smZeichnung",
+                  "incoming": "true"
+                }
               },
               {
                 "propName": "fundNr",
-                "linkedVia": "$INCOMING$smZeichnung"
+                "linkedVia": {
+                  "propName": "smZeichnung",
+                  "incoming": "true"
+                }
               }
             ]
           }
