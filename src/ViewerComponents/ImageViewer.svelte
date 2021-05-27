@@ -5,11 +5,11 @@
 
     export let resource, ontology, server, user, shortname, shortcode;
     let error = false;
+    let container
     let viewer
-    let opd
 
     onMount(() => {
-        viewer.id = Math.random().toString(36).substring(8);
+        container.id = Math.random().toString(36).substring(8);
     })
 
     async function login() {
@@ -56,8 +56,8 @@
         if (json["knora-api:hasStillImageFileValue"]) {
 
             if (json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]) {
-                opd = new OpenSeadragon({
-                    id: viewer.id,
+                viewer = new OpenSeadragon({
+                    id: container.id,
                     prefixUrl: "images/",
                     tileSources: {
                         type: 'image',
@@ -95,7 +95,7 @@
         </div>
     {:else}
         <button on:click={() => login()}>Get Image</button>
-        <section bind:this={viewer}></section>
+        <section bind:this={container}></section>
     {/if}
 
 </main>
