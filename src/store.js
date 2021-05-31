@@ -4,7 +4,7 @@ export const language = writable('en');
 export const json = writable(j);
 
 // test data from project json for resource viewer
-import * as data from './tdk.json'
+import * as data from './wordweb.json'
 // makes data from a specific available to the outside
 export const project_json = writable(data);
 // token received from login and saved for further requests
