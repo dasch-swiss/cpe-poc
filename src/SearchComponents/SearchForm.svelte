@@ -5,7 +5,7 @@
      */
     import SearchField from './SearchField.svelte'
     import {onMount} from 'svelte';
-    import {getLabelForResource, getLabelsForResources, getPropByName} from "../dsp-services";
+    import {getLabelForResource} from "../dsp-services";
 
     let props = []; //Stores the props to access their functions.
     export let form; //The json containing the information to build the SearchForm

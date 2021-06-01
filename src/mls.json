@@ -1,8 +1,9 @@
 {
   "DSP": {
-    "Server": "api.dasch.swiss",
-    "Ontology": "0807/mls",
-    "ShortCode": "mls"
+    "Server": "api.0805-test-server.dasch.swiss",
+    "Ontology": "tdk_onto",
+    "ShortCode": "0805",
+    "ShortName": "tdk"
   },
   "Header": {
     "Content": {}

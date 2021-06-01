@@ -22,6 +22,7 @@ export async function getOntology(){
     const json = await res.json();
     return json['@graph'];
 }
+
 export async function getLabelForProp(propName){
     const temp = await getPropByName(propName);
     const toReturn = {};
@@ -35,6 +36,7 @@ export async function getObjectTypeForProp(propName){
     const temp = await getPropByName(propName);
     return temp['knora-api:objectType']['@id'];
 }
+
 export async function getLabelForResource(resName){
     const temp = await getResByName(resName);
     const toReturn = {};
@@ -43,6 +45,7 @@ export async function getLabelForResource(resName){
     }
     return toReturn;
 }
+
 export async function getPropNamesForResourceByName(resName){
     if (!ontology){
         ontology = await getOntology();
@@ -61,6 +64,7 @@ export async function getPropNamesForResourceByName(resName){
     }
     return toReturn;
 }
+
 export async function getPropsWithObjAndLabelsForRes(resName){
     let toReturn = [];
     const props = await getPropNamesForResourceByName(resName);
@@ -72,6 +76,7 @@ export async function getPropsWithObjAndLabelsForRes(resName){
      }
     return toReturn;
 }
+
 export async function getLabelsForProperties(props){
     for (const prop of props){
         prop['label'] = {};
@@ -99,10 +104,12 @@ export async function getLabelsForResources(resources){
     console.log(toReturn);
     return toReturn;
 }
+
 export async function getAllResourcesWithLabels(){
     let resources = await getAllResourceNames();
     return await getLabelsForResources(resources);
 }
+
 export async function getAllResourceNames(){
     if (!ontology){
         ontology = await getOntology();
@@ -115,6 +122,7 @@ export async function getAllResourceNames(){
     }
     return toReturn;
 }
+
 export async function getPropByName(name){
     if (!ontology){
         ontology = await getOntology();
@@ -132,6 +140,7 @@ export async function getPropByName(name){
     console.log('Didnt find property with name ---' + name + '---');
     return null;
 }
+
 export async function getResByName(name){
     if (!ontology){
         ontology = await getOntology();
@@ -149,6 +158,7 @@ export async function getResByName(name){
     console.log('Didnt find resource with name ---' + name + '---');
     return null;
 }
+
 export async function getListByIri(iri){
     let toReturn = [];
     const res = await fetch('https://' + server + '/v2/lists/' + encodeURIComponent(iri) + '?allLanguages=true' , {
@@ -160,10 +170,12 @@ export async function getListByIri(iri){
     }
     return toReturn;
 }
+
 export async function getListIriByPropName(name){
     const prop = await getPropByName(name);
     return prop['salsah-gui:guiAttribute'].replace('hlist=', '').slice(1, -1); //TODO: This might be unsafe for other projects!
 }
+
 export async function getListByPropName(name){
   const iri = await getListIriByPropName(name);
   return await getListByIri(iri);

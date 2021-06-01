@@ -3,11 +3,8 @@
     import {language} from "../store.js";
     import ExpertSearchPropHelper from "./ExpertSearchPropHelper.svelte";
     import {
-        getAllResourceNames,
         getAllResourcesWithLabels,
-        getPropsWithObjAndLabelsForRes,
-        getPropByName,
-        getPropNamesForResourceByName
+        getPropsWithObjAndLabelsForRes
     } from "../dsp-services";
 
 
@@ -15,8 +12,9 @@
     let helpers = [];
     let query = "";
     let gravInput = "";
-    let noOfProps = 0; //This number does not reflect how many properties are actually shown, as it accounts for deleted ones as well (See comment in ExpertSearchPropHelper)
+    let noOfProps = 1; //This number does not reflect how many properties are actually shown, as it accounts for deleted ones as well (See comment in ExpertSearchPropHelper)
     let selectedResource;
+
     function addProp() {
         noOfProps++;
     }
@@ -87,11 +85,18 @@
         console.log(json)
     }
 
+    function setAllToDeleted(){
+        for (const helper of helpers){
+            helper.setDeleted();
+        }
+        getQuery();
+    }
+
     let resourceProm = getAllResourcesWithLabels();
 
 </script>
 <select bind:value={selectedResource}
-        on:change={() => {for (const helper of helpers){helper.setDeleted();} noOfProps++; getQuery();}}>
+        on:change={setAllToDeleted}>
     <option value="" disabled selected>{$language === 'en' ? 'Choose resource' : 'Resource wählen'}</option>
     {#await resourceProm}
     {:then resources}

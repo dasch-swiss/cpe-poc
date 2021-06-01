@@ -1,10 +1,10 @@
 <script>
 
-    import {getListByPropName, getPropsWithObjAndLabelsForRes, ListNode} from "../dsp-services";
+    import {getListByPropName, getPropsWithObjAndLabelsForRes} from "../dsp-services";
     import {language} from "../store.js";
     import ExpertSearchPropHelper from "./ExpertSearchPropHelper.svelte";
     import {createEventDispatcher} from 'svelte';
-    import {getFilterByNameAndVal, getFilterByNameValAndObj} from './SearchUtility';
+    import {getFilterByNameValAndObj} from './SearchUtility';
     const dispatch = createEventDispatcher();
     export let props, ontology, parentGravId;
     let deleted = false; //TODO: This solution is a bit "hacky", even though it has its advantages.
@@ -17,15 +17,19 @@
     export function getPropName(){
         return chosenProp['propName'];
     }
+
     export function getPropGravId(){
         return '?' + chosenProp['propName'].replace(ontology + ':', '');
     }
+
     export function setDeleted() {
         deleted = true;
     }
+
     export function isDeleted(){
         return deleted;
     }
+
     export function getString(){
         if (!chosenProp || !operator){
             return '';
@@ -43,9 +47,11 @@
         }
         return toReturn;
     }
+
     function hasChild() {
         return chosenProp && chosenProp['object'].search(ontology + ':') !== -1;
     }
+
     function notify(){
         dispatch('message', {text: 'updated'});
     }
