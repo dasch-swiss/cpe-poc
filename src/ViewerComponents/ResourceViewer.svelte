@@ -160,10 +160,10 @@
                 $ontologies.forEach(ontology => {
                     if (ontology['@id'] === propName) {
                         if (properties[propName]) {
-                            properties[propName]['values'].push(propValue['knora-api:intValueAsInt'])
+                            properties[propName]['values'].push(propValue['knora-api:intValueAsInt']);
                         } else {
                             properties[propName] = {
-                                values: new Array(propValue['knora-api:valueAsString']),
+                                values: [propValue['knora-api:intValueAsInt']],
                                 label: ontology['rdfs:label'],
                                 customName: null
                             }
