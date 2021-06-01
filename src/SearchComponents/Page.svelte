@@ -1,6 +1,6 @@
 <script>
     import {location} from 'svelte-spa-router'
-    import {json} from '../store'
+    import {json} from '../store.js'
     import JSONContentParser from './JSONContentParser.svelte'
     export let params;
     for (const key in params) {
@@ -21,4 +21,4 @@
         //TODO: Throw error
     }
 </script>
-<JSONContentParser json={j['Content']} params={params} ontology={$json['DSP']['Ontology']} server={$json['DSP']['Server']} shortCode = {$json['DSP']['ShortCode']}/>
+<JSONContentParser json={j['Content']} params={params} ontology={$json['DSP']['Ontology']} server={$json['DSP']['Server']} shortCode = {$json['DSP']['ShortCode']} shortName = {$json['DSP']['ShortName']}/>

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CPE Instance",
+  "description": "A Json to use CPE with",
+  "type": "object",
+  "properties": {
+    "DSP": {
+      "description": "Information required by DSP for requests",
+      "type": "object",
+      "properties": {
+        "Server": {
+          "description": "The api server address",
+          "type": "string"
+        },
+        "Ontology": {
+          "description": "The name of the ontology used",
+          "type": "string"
+        },
+        "ShortCode": {
+          "description": "The shortcode of the project used for the page",
+          "type": "string"
+        },
+        "ShortName": {
+          "description": "The shortname used for the project (mainly for labeling)",
+          "type": "string"
+        }
+
+      },
+      "required": [
+          "Server",
+          "Ontology",
+          "ShortCode",
+          "ShortName"
+        ],
+      "additionalProperties": false
+    },
+    "Header": {
+      "description": "Holds the content that is displayed on the top of every page",
+      "type": "object",
+      "properties": {
+        "Content": {
+          "$ref": "content.schema.json"
+        }
+      },
+        "required":["Content"],
+      "additionalProperties": false
+  },
+  "Page": {
+    "description": "An array of pages, that will be created under the URI provided",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "URI": {
+          "description": "The URI the page is going to be created under. If '/example' is provided, the page will be under example.com/#/example",
+          "type": "string"
+        },
+        "Content": {
+          "$ref": "content.schema.json"
+        }
+      },
+        "required":["URI","Content"]
+    },
+    "uniqueItems": true
+  },
+  "Footer": {
+    "description": "Holds the content that is displayed on the bottom of every page",
+    "type": "object",
+    "properties": {
+      "Content": {
+        "$ref": "content.schema.json"
+      }
+    },
+      "required":["Content"]
+  }
+},
+  "required": [
+    "DSP",
+    "Header",
+    "Page",
+    "Footer"
+  ]
+}

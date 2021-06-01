@@ -1,8 +1,9 @@
 {
   "DSP": {
     "Server": "api.0805-test-server.dasch.swiss",
-    "Ontology": "0805/tdk_onto",
-    "ShortCode": "tdk"
+    "Ontology": "tdk_onto",
+    "ShortCode": "0805",
+    "ShortName": "tdk"
   },
   "Header": {
     "Content": {
@@ -53,18 +54,10 @@
         {
           "Props": [
             {
-              "propName": "tdk:smNr",
-              "label": {
-                "de": "Study-Material-Nummer",
-                "en": "Study-Material-Number"
-              }
+              "propName": "smNr"
             },
             {
-              "propName": "tdk:fundNr",
-              "label": {
-                "de": "Fundnummer",
-                "en": "Find number"
-              }
+              "propName": "fundNr"
             }
           ],
           "LinkedSearchForm": {
@@ -84,15 +77,8 @@
       "URI": "/expert",
       "Content": {
         "ExpertSearch": [
-          {
-            "Dummy": "True"
-          }
+          {}
         ]
-      }
-    },
-    {
-      "URI": "/displayimage",
-      "Content": {
       }
     },
     {
@@ -110,52 +96,40 @@
       "Content": {
         "SearchForm": [
           {
-            "ResName": "tdk:Bild",
-            "ResLabel": {
-              "de": "Bild",
-              "en": "Image"
-            },
+            "ResName": "Bild",
             "Id": "SEARCHFORM_1",
-            "TextProps": [
+            "Props": [
               {
-                "propName": "tdk:smNr",
-                "linkedVia": "tdk:bildSMFund",
-                "label": {
-                  "de": "Study-Material-Nummer",
-                  "en": "Study-Material-Number"
+                "propName": "smNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
                 }
               },
               {
-                "propName": "tdk:fundNr",
-                "linkedVia": "tdk:bildSMFund",
-                "label": {
-                  "de": "Fundnummer",
-                  "en": "Find number"
+                "propName": "fundNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
                 }
-              }
+              },
+              {"propName":  "bildAutor"},
+              {"propName" : "bildDatum"}
             ]
           },
           {
-            "ResName": "tdk:Zeichnung",
-            "ResLabel": {
-              "de": "Zeichnung",
-              "en": "Drawing"
-            },
-            "TextProps": [
+            "ResName": "Zeichnung",
+            "Props": [
               {
-                "propName": "tdk:smNr",
-                "linkedVia": "$INCOMING$tdk:smZeichnung",
-                "label": {
-                  "de": "Study-Material-Nummer",
-                  "en": "Study-Material-Number"
+                "propName": "smNr",
+                "linkedVia": {
+                  "propName": "smZeichnung",
+                  "incoming": "true"
                 }
               },
               {
-                "propName": "tdk:fundNr",
-                "linkedVia": "$INCOMING$tdk:smZeichnung",
-                "label": {
-                  "de": "Fundnummer",
-                  "en": "Find number"
+                "propName": "fundNr",
+                "linkedVia": {
+                  "propName": "smZeichnung",
+                  "incoming": "true"
                 }
               }
             ]
@@ -164,5 +138,7 @@
       }
     }
   ],
-  "Footer": []
+  "Footer": {
+    "Content": {}
+  }
 }

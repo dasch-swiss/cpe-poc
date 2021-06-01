@@ -1,6 +1,6 @@
 <script>
     export let json;
-    import {language} from "../store";
+    import {language} from "../store.js";
 </script>
 {#each json['languages'] as lang}
     <button on:click={language.set(lang['value'])}>{lang['label']}</button>

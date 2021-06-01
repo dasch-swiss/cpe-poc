@@ -1,6 +1,6 @@
 <script>
     import {push} from 'svelte-spa-router'
-    import {language} from "../store";
+    import {language} from "../store.js";
 
     export let link;
     export let label;
