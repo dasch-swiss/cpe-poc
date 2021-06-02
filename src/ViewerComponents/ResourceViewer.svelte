@@ -113,11 +113,14 @@
         if (resource['Content']['ResourceViewer'].hasOwnProperty('Props')) {
 
             resource['Content']['ResourceViewer']['Props'].forEach(property => {
-                if (reqData[property['propName']]) {
-                    if (Array.isArray(reqData[property['propName']])) {
-                        reqData[property['propName']].forEach(reqProperty => saveCustomProp(property, reqProperty));
+
+                const name = reqData.hasOwnProperty(`${property['propName']}Value`) ? `${property['propName']}Value` : property['propName'];
+
+                if (reqData[name]) {
+                    if (Array.isArray(reqData[name])) {
+                        reqData[name].forEach(reqProperty => saveCustomProp(property, reqProperty));
                     } else {
-                        saveCustomProp(property, reqData[property['propName']]);
+                        saveCustomProp(property, reqData[name]);
                     }
                 }
             });

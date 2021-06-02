@@ -31,7 +31,7 @@
               "propName": "tdk_onto:bildBemerkung"
             },
             {
-              "propName": "tdk_onto:bildKampagneValue",
+              "propName": "tdk_onto:bildKampagne",
               "linkResource": {
                 "Props": [
                   {
@@ -50,9 +50,16 @@
     {
       "URI": "???",
       "Content": {
+        "ResourceViewer": {
+          "Id": "http://rdfh.ch/0805/-280OTrsR_2b-N1KADTNZg"
+        }
+      }
+    },
+    {
+      "URI": "???",
+      "Content": {
         "ImageViewer": {
-          "Id": "http://rdfh.ch/0805/-280OTrsR_2b-N1KADTNZg",
-          "Props": []
+          "Id": "http://rdfh.ch/0805/-280OTrsR_2b-N1KADTNZg"
         }
       }
     }

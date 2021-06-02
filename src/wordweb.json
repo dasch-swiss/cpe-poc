@@ -51,7 +51,7 @@
               "propName": "teimww:hasMarking"
             },
             {
-              "propName": "teimww:containsValue",
+              "propName": "teimww:contains",
               "linkResource": {
                 "Props": [
                   {
@@ -61,7 +61,7 @@
               }
             },
             {
-              "propName": "teimww:occursInValue",
+              "propName": "teimww:occursIn",
               "linkResource": {
                 "Props": [
                   {
@@ -79,7 +79,7 @@
                     "propName": "teimww:hasBookInternalId"
                   },
                   {
-                    "propName": "teimww:isWrittenByValue",
+                    "propName": "teimww:isWrittenBy",
                     "linkResource": {
                       "Props": [
                         {
