@@ -91,8 +91,22 @@
                   }
                 ]
               }
+            },
+            {
+              "propName": "teimww:isMentionedIn",
+              "linkResource": {
+                "Props": []
+              }
             }
           ]
+        }
+      }
+    },
+    {
+      "URI": "???",
+      "Content": {
+        "ResourceViewer": {
+          "Id": "http://rdfh.ch/0826/Dm7E0MhcQQSTZr2i2DxgJg"
         }
       }
     },
@@ -143,7 +157,7 @@
               "propName": "teimww:hasMarking"
             },
             {
-              "propName": "teimww:containsValue",
+              "propName": "teimww:contains",
               "linkResource": {
                 "Props": [
                   {
@@ -153,7 +167,7 @@
               }
             },
             {
-              "propName": "teimww:occursInValue",
+              "propName": "teimww:occursIn",
               "linkResource": {
                 "Props": [
                   {

@@ -12,6 +12,11 @@
         container.id = Math.random().toString(36).substring(8);
     })
 
+    /**
+     * Logs in to the provided server and saves the token into the store.
+     *
+     * @returns {Promise<void>}
+     */
     async function login() {
         error = false;
 
@@ -33,10 +38,15 @@
 
         const json = await res.json();
         token.set(json.token);
-        // console.log($token);
+
         await resourceRequest();
     }
 
+    /**
+     * Requests the resource and adds the file url to the open sea dragon instance.
+     *
+     * @returns {Promise<void>}
+     */
     async function resourceRequest() {
         const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Content']['ImageViewer']['Id'])}`, {
             headers: new Headers({
@@ -50,8 +60,8 @@
             console.error(res);
             return;
         }
+
         const json = await res.json();
-        console.log("image", json);
 
         if (json["knora-api:hasStillImageFileValue"]) {
 
