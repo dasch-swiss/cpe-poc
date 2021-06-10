@@ -3,6 +3,247 @@
   "title": "CPE Instance",
   "description": "A Json to use CPE with",
   "type": "object",
+  "definitions": {
+    "recursiveProp": {
+      "description": "A property",
+      "type": "object",
+      "properties": {
+        "propName": {
+          "description": "the name of the prop",
+          "type": "string"
+        },
+        "incoming": {
+          "description": "Only useful on linkedVia. Shows that a link is incoming. Set to 'true' if incoming",
+          "type": "string"
+        },
+        "linkedVia": {
+          "$ref": "#definitions/recursiveProp"
+        }
+      },
+      "required": [
+        "propName"
+      ],
+      "additionalProperties": false
+    },
+    "content": {
+      "description": "Possible content",
+      "type": "object",
+      "properties": {
+        "LinkButton": {
+          "description": "Provides a button that links to an URL on click",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "link": {
+                "description": "the link to redirect to",
+                "type": "string"
+              },
+              "label": {
+                "description": "Labels in the format 'language: value'",
+                "type": "object"
+              }
+            },
+            "required": [
+              "link",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "ClickableImage": {
+          "description": "An image that links to an URL on click",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "src": {
+                "description": "Link to the image. img\\ leads directly to public/img",
+                "type": "string"
+              },
+              "link": {
+                "description": "the link to redirect to",
+                "type": "string"
+              }
+            },
+            "required": [
+              "src",
+              "link"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "LanguageSelector": {
+          "description": "A menu to choose which language is displayed",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "languages": {
+                "description": "list of the languages one can choose from",
+                "type": "array",
+                "items": {
+                  "description": "a language",
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "description": "The displayed text on the menu for this language",
+                      "type": "string"
+                    },
+                    "value": {
+                      "description": "Needs to be the same as used in defining labels in the json as well as returned from DSP API",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "languages"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "SinglePropertySearch": {
+          "description": "A dropdown menu which links to a SearchForm",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Props": {
+                "description": "The array of properties",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "propName": {
+                      "description": "The name of a property in the dropdown",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "propName"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "LinkedSearchForm": {
+                "description": "Information for the linked Search form",
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "description": "Id used in the json to identify the search form",
+                    "type": "string"
+                  },
+                  "URI": {
+                    "description": "URI to the page the search form is on",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "Id",
+                  "URI"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "Props",
+              "LinkedSearchForm"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "ExpertSearch": {
+          "description": "Inserts an ExpertSearch without arguments needed",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          }
+        },
+        "PDFDisplay": {
+          "description": "Display a pdf",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "description": "Location of the file",
+                "type": "string"
+              }
+            },
+            "required": [
+              "file"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "SearchForm": {
+          "description": "A SearchForm where you specify the properties",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ResName": {
+                "description": "The resource type the form finds",
+                "type": "string"
+              },
+              "Id": {
+                "description": "The ID of this form, used by e.g. SinglePropertySearch",
+                "type": "string"
+              },
+              "Props": {
+                "description": "The list of properties",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/recursiveProp"
+                }
+              }
+            },
+            "required": [
+              "ResName",
+              "Props"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "GravsearchTemplate": {
+          "description": "Define a gravsearch with some parameters to be entered by the user",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Template": {
+                "description": "the template string",
+                "type": "string"
+              },
+              "Params": {
+                "description": "List the names of the parameters",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "Template",
+              "Params"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
   "properties": {
     "DSP": {
       "description": "Information required by DSP for requests",
@@ -24,14 +265,13 @@
           "description": "The shortname used for the project (mainly for labeling)",
           "type": "string"
         }
-
       },
       "required": [
-          "Server",
-          "Ontology",
-          "ShortCode",
-          "ShortName"
-        ],
+        "Server",
+        "Ontology",
+        "ShortCode",
+        "ShortName"
+      ],
       "additionalProperties": false
     },
     "Header": {
@@ -39,41 +279,48 @@
       "type": "object",
       "properties": {
         "Content": {
-          "$ref": "content.schema.json"
+          "$ref": "#definitions/content"
         }
       },
-        "required":["Content"],
+      "required": [
+        "Content"
+      ],
       "additionalProperties": false
-  },
-  "Page": {
-    "description": "An array of pages, that will be created under the URI provided",
-    "type": "array",
-    "items": {
+    },
+    "Page": {
+      "description": "An array of pages, that will be created under the URI provided",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "URI": {
+            "description": "The URI the page is going to be created under. If '/example' is provided, the page will be under example.com/#/example",
+            "type": "string"
+          },
+          "Content": {
+            "$ref": "#definitions/content"
+          }
+        },
+        "required": [
+          "URI",
+          "Content"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "Footer": {
+      "description": "Holds the content that is displayed on the bottom of every page",
       "type": "object",
       "properties": {
-        "URI": {
-          "description": "The URI the page is going to be created under. If '/example' is provided, the page will be under example.com/#/example",
-          "type": "string"
-        },
         "Content": {
-          "$ref": "content.schema.json"
+          "$ref": "#definitions/content"
         }
       },
-        "required":["URI","Content"]
-    },
-    "uniqueItems": true
+      "required": [
+        "Content"
+      ]
+    }
   },
-  "Footer": {
-    "description": "Holds the content that is displayed on the bottom of every page",
-    "type": "object",
-    "properties": {
-      "Content": {
-        "$ref": "content.schema.json"
-      }
-    },
-      "required":["Content"]
-  }
-},
   "required": [
     "DSP",
     "Header",
