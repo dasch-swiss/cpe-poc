@@ -7,8 +7,7 @@
     let error = false;
 
     onMount(async () => {
-        // For later
-        // await login();
+        await login();
     })
 
     /**
@@ -358,7 +357,6 @@
 </script>
 
 <main>
-    <h2>Resource Viewer</h2>
     {#if error}
         <div>
             There was a error! The Resource data couldn't be loaded.
@@ -366,11 +364,11 @@
         </div>
     {:else}
         <div>
-            <button on:click={() => login()}>Get Data</button>
-
             {#if Object.entries(properties).length > 0}
                 <section>
-                    <div class='res-title'>Resource Information</div>
+                    {#if resource['Content']['ResourceViewer']['customTitle']}
+                        <div class='res-title'>{resource['Content']['ResourceViewer']['customTitle']}</div>
+                    {/if}
                     {#each Object.entries(properties) as [key, value]}
                         <div class='prop-header'>{value.customName ? value.customName : value.label}</div>
                         <div>
@@ -394,6 +392,7 @@
     }
 
     section {
+        margin: 1rem 0;
         padding: 1.5rem;
         display: grid;
         grid-template-columns: auto 1fr;

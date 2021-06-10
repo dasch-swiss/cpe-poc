@@ -10,6 +10,7 @@
 
     onMount(() => {
         container.id = Math.random().toString(36).substring(8);
+        login();
     })
 
     /**
@@ -97,14 +98,12 @@
 </script>
 
 <main>
-    <h2>Image Viewer</h2>
     {#if error}
         <div>
             There was a error! The Image couldn't be loaded.
             <button on:click={() => login()}>Try again</button>
         </div>
     {:else}
-        <button on:click={() => login()}>Get Image</button>
         <section bind:this={container}></section>
     {/if}
 

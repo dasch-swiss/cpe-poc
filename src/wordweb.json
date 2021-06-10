@@ -17,6 +17,7 @@
       "Content": {
         "ResourceViewer": {
           "Id": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
+          "customTitle": "Resource information",
           "Props": [
             {
               "propName": "teimww:hasPrefixDisplayedTitle",
