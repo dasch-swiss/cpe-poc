@@ -3,7 +3,11 @@
     "Server": "api.0805-test-server.dasch.swiss",
     "Ontology": "tdk_onto",
     "ShortCode": "0805",
-    "ShortName": "tdk"
+    "ShortName": "tdk",
+    "User": {
+      "Email": "tdk0805import@example.com",
+      "Pwd": "test"
+    }
   },
   "Header": {
     "Content": {
@@ -70,6 +74,48 @@
   },
   "Page": [
     {
+      "URI": "/resource",
+      "Content": {
+        "ResourceViewers": [
+          {
+            "Id": "http://rdfh.ch/0805/-ZpD9n7yQDeHoj1P-afqxw",
+            "Props": [
+              {
+                "propName": "tdk_onto:bildAutor"
+              },
+              {
+                "propName": "tdk_onto:bildRaum"
+              },
+              {
+                "propName": "tdk_onto:bildGrab"
+              },
+              {
+                "propName": "tdk_onto:bildBemerkung"
+              },
+              {
+                "propName": "tdk_onto:bildKampagne",
+                "linkResource": {
+                  "Props": [
+                    {
+                      "propName": "tdk_onto:kampagneTeilnehmer"
+                    },
+                    {
+                      "propName": "tdk_onto:kampagneUmgebung"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "ImageViewers": [
+          {
+            "Id": "http://rdfh.ch/0805/-280OTrsR_2b-N1KADTNZg"
+          }
+        ]
+      }
+    },
+    {
       "URI": "/publikationen",
       "Content": {}
     },
@@ -111,8 +157,12 @@
                   "propName": "bildSMFund"
                 }
               },
-              {"propName":  "bildAutor"},
-              {"propName" : "bildDatum"}
+              {
+                "propName": "bildAutor"
+              },
+              {
+                "propName": "bildDatum"
+              }
             ]
           },
           {

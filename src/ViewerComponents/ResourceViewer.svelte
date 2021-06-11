@@ -92,7 +92,7 @@
      * @returns {Promise<void>}
      */
     async function resourceRequest() {
-        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Content']['ResourceViewer']['Id'])}`, {
+        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Id'])}`, {
             headers: new Headers({
                 'Authorization': `Bearer ${$token}`
             })
@@ -116,7 +116,7 @@
             },
             '@id': {
                 label: 'Resource ID',
-                values: new Array(resource['Content']['ResourceViewer']['Id'])
+                values: new Array(resource['Id'])
             }
         };
 
@@ -162,8 +162,8 @@
      * @param resData resource data from the request
      */
     function defaultOrCustomProps(resData) {
-        if (resource['Content']['ResourceViewer'].hasOwnProperty('Props')) {
-            processCustomProp(resData, resource['Content']['ResourceViewer']['Props']);
+        if (resource.hasOwnProperty('Props')) {
+            processCustomProp(resData, resource['Props']);
         } else {
             processDefaultProp(resData);
         }
@@ -351,7 +351,6 @@
             default:
                 break;
         }
-        console.log(properties);
     }
 
 </script>
@@ -366,8 +365,8 @@
         <div>
             {#if Object.entries(properties).length > 0}
                 <section>
-                    {#if resource['Content']['ResourceViewer']['customTitle']}
-                        <div class='res-title'>{resource['Content']['ResourceViewer']['customTitle']}</div>
+                    {#if resource['customTitle']}
+                        <div class='res-title'>{resource['customTitle']}</div>
                     {/if}
                     {#each Object.entries(properties) as [key, value]}
                         <div class='prop-header'>{value.customName ? value.customName : value.label}</div>

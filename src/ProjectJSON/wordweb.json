@@ -1,0 +1,181 @@
+{
+  "DSP": {
+    "Server": "api.0826-test-server.dasch.swiss",
+    "Ontology": "teimww",
+    "ShortCode": "0826",
+    "ShortName": "teimww",
+    "User": {
+      "Email": "root@example.com",
+      "Pwd": "test"
+    }
+  },
+  "Header": {
+    "Content": {
+      "ClickableImage": [
+        {
+          "src": "img\\Unibas logo.png",
+          "link": "/"
+        }
+      ]
+    }
+  },
+  "Footer": {},
+  "Page": [
+    {
+      "URI": "/resource",
+      "Content": {
+        "ResourceViewers": [
+          {
+            "Id": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
+            "customTitle": "Resource information",
+            "Props": [
+              {
+                "propName": "teimww:hasPrefixDisplayedTitle",
+                "linkResource": {}
+              },
+              {
+                "propName": "teimww:hasDisplayedTitle",
+                "linkResource": null
+              },
+              {
+                "propName": "teimww:hasText"
+              },
+              {
+                "propName": "teimww:hasTextHist"
+              },
+              {
+                "propName": "teimww:hasPage"
+              },
+              {
+                "propName": "teimww:hasPageHist"
+              },
+              {
+                "propName": "teimww:hasFunctionVoice"
+              },
+              {
+                "propName": "teimww:hasResearchField"
+              },
+              {
+                "propName": "teimww:hasStatus"
+              },
+              {
+                "propName": "teimww:hasMarking"
+              },
+              {
+                "propName": "teimww:contains",
+                "linkResource": {
+                  "Props": [
+                    {
+                      "propName": "teimww:hasLexiaTitle"
+                    }
+                  ]
+                }
+              },
+              {
+                "propName": "teimww:occursIn",
+                "linkResource": {
+                  "Props": [
+                    {
+                      "propName": "teimww:hasBookTitle"
+                    },
+                    {
+                      "propName": "teimww:hasCreationDate",
+                      "customName": "Date"
+                    },
+                    {
+                      "propName": "teimww:hasLanguage",
+                      "customName": "The language of book"
+                    },
+                    {
+                      "propName": "teimww:hasBookInternalId"
+                    },
+                    {
+                      "propName": "teimww:isWrittenBy",
+                      "linkResource": {
+                        "Props": [
+                          {
+                            "propName": "teimww:hasLastName",
+                            "customName": "Author name"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "propName": "teimww:isMentionedIn",
+                "linkResource": {
+                  "Props": []
+                }
+              }
+            ]
+          },
+          {
+            "Id": "http://rdfh.ch/0826/Dm7E0MhcQQSTZr2i2DxgJg"
+          },
+          {
+            "Id": "http://rdfh.ch/0826/Q41W8bMTSa2lpgEZ2AYenA"
+          },
+          {
+            "Id": "http://rdfh.ch/0826/-K_x-wlkRLWdcXXwlyGiHw",
+            "Props": [
+              {
+                "propName": "teimww:hasPrefixDisplayedTitle",
+                "linkResource": {}
+              },
+              {
+                "propName": "teimww:hasDisplayedTitle",
+                "linkResource": null
+              },
+              {
+                "propName": "teimww:hasText"
+              },
+              {
+                "propName": "teimww:hasTextHist"
+              },
+              {
+                "propName": "teimww:hasPage"
+              },
+              {
+                "propName": "teimww:hasPageHist"
+              },
+              {
+                "propName": "teimww:hasFunctionVoice"
+              },
+              {
+                "propName": "teimww:hasResearchField"
+              },
+              {
+                "propName": "teimww:hasStatus"
+              },
+              {
+                "propName": "teimww:hasMarking"
+              },
+              {
+                "propName": "teimww:contains",
+                "linkResource": {
+                  "Props": [
+                    {
+                      "propName": "teimww:hasLexiaTitle"
+                    }
+                  ]
+                }
+              },
+              {
+                "propName": "teimww:occursIn",
+                "linkResource": {
+                  "Props": [
+                    {
+                      "propName": "teimww:hasBookTitle"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -21,4 +21,12 @@
         //TODO: Throw error
     }
 </script>
-<JSONContentParser json={j['Content']} params={params} ontology={$json['DSP']['Ontology']} server={$json['DSP']['Server']} shortCode = {$json['DSP']['ShortCode']} shortName = {$json['DSP']['ShortName']}/>
+<JSONContentParser
+        json={j['Content']}
+        params={params}
+        ontology={$json['DSP']['Ontology']}
+        server={$json['DSP']['Server']}
+        shortCode = {$json['DSP']['ShortCode']}
+        shortName = {$json['DSP']['ShortName']}
+        user = {$json['DSP']['User']}
+/>

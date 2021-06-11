@@ -49,7 +49,7 @@
      * @returns {Promise<void>}
      */
     async function resourceRequest() {
-        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Content']['ImageViewer']['Id'])}`, {
+        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Id'])}`, {
             headers: new Headers({
                 'Authorization': `Bearer ${$token}`
             })
@@ -114,6 +114,7 @@
         width: 600px;
         height: 400px;
         padding: 1.5rem;
+        margin: 1rem 0;
         border: 1px solid darkgray;
     }
 </style>
