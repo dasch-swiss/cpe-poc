@@ -7,8 +7,10 @@
     import JSONContentParser from "./SearchComponents/JSONContentParser.svelte"
     import {json, project_json} from './store.js'
 
+
     import ResourceViewer from "./ViewerComponents/ResourceViewer.svelte";
     import ImageViewer from "./ViewerComponents/ImageViewer.svelte";
+
 </script>
 
 <JSONContentParser json={$json['Header']['Content']}/> <!-- Displays the Header content -->
