@@ -71,7 +71,27 @@
   "Page": [
     {
       "URI": "/publikationen",
-      "Content": {}
+      "Content": {
+        "SimilarSearch": [
+          {
+            "Iri": "http://rdfh.ch/0827/By7xxEn3TUWnzlpO5g-39g",
+            "Props": [
+              {
+                "propName": "fundNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
+              },
+              {
+                "propName": "smNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "URI": "/expert",
@@ -111,8 +131,12 @@
                   "propName": "bildSMFund"
                 }
               },
-              {"propName":  "bildAutor"},
-              {"propName" : "bildDatum"}
+              {
+                "propName": "bildAutor"
+              },
+              {
+                "propName": "bildDatum"
+              }
             ]
           },
           {
