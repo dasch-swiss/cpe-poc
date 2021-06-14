@@ -1,0 +1,214 @@
+{
+  "DSP": {
+    "Server": "api.0805-test-server.dasch.swiss",
+    "Ontology": "tdk_onto",
+    "ShortCode": "0805",
+    "ShortName": "tdk",
+    "User": {
+      "Email": "tdk0805import@example.com",
+      "Pwd": "test"
+    }
+  },
+  "Header": {
+    "Content": {
+      "LinkButton": [
+        {
+          "link": "/publikationen",
+          "label": {
+            "en": "Publications",
+            "de": "Publikationen"
+          }
+        },
+        {
+          "link": "/expert",
+          "label": {
+            "en": "Expert Search",
+            "de": "Expertensuche"
+          }
+        },
+        {
+          "link": "/handbook",
+          "label": {
+            "en": "Hand book",
+            "de": "Handbuch"
+          }
+        }
+      ],
+      "ClickableImage": [
+        {
+          "src": "img\\Unibas logo.png",
+          "link": "/"
+        }
+      ],
+      "LanguageSelector": [
+        {
+          "languages": [
+            {
+              "label": "English",
+              "value": "en"
+            },
+            {
+              "label": "Deutsch",
+              "value": "de"
+            }
+          ]
+        }
+      ],
+      "SinglePropertySearch": [
+        {
+          "Props": [
+            {
+              "propName": "smNr"
+            },
+            {
+              "propName": "fundNr"
+            }
+          ],
+          "LinkedSearchForm": {
+            "Id": "SEARCHFORM_1",
+            "URI": "/testpage"
+          }
+        }
+      ]
+    }
+  },
+  "Page": [
+    {
+      "URI": "/resource",
+      "Content": {
+        "ResourceViewers": [
+          {
+            "Id": "http://rdfh.ch/0805/-ZpD9n7yQDeHoj1P-afqxw",
+            "Props": [
+              {
+                "propName": "tdk_onto:bildAutor"
+              },
+              {
+                "propName": "tdk_onto:bildRaum"
+              },
+              {
+                "propName": "tdk_onto:bildGrab"
+              },
+              {
+                "propName": "tdk_onto:bildBemerkung"
+              },
+              {
+                "propName": "tdk_onto:bildKampagne",
+                "linkResource": {
+                  "Props": [
+                    {
+                      "propName": "tdk_onto:kampagneTeilnehmer"
+                    },
+                    {
+                      "propName": "tdk_onto:kampagneUmgebung"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "ImageViewers": [
+          {
+            "Id": "http://rdfh.ch/0805/-280OTrsR_2b-N1KADTNZg"
+          }
+        ]
+      }
+    },
+    {
+      "URI": "/publikationen",
+      "Content": {
+        "SimilarSearch": [
+          {
+            "Iri": "http://rdfh.ch/0827/By7xxEn3TUWnzlpO5g-39g",
+            "Props": [
+              {
+                "propName": "fundNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
+              },
+              {
+                "propName": "smNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "URI": "/expert",
+      "Content": {
+        "ExpertSearch": [
+          {}
+        ]
+      }
+    },
+    {
+      "URI": "/handbook",
+      "Content": {
+        "PDFDisplay": [
+          {
+            "file": "files\\handbook.pdf"
+          }
+        ]
+      }
+    },
+    {
+      "URI": "/testpage",
+      "Content": {
+        "SearchForm": [
+          {
+            "ResName": "Bild",
+            "Id": "SEARCHFORM_1",
+            "Props": [
+              {
+                "propName": "smNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
+              },
+              {
+                "propName": "fundNr",
+                "linkedVia": {
+                  "propName": "bildSMFund"
+                }
+              },
+              {
+                "propName": "bildAutor"
+              },
+              {
+                "propName": "bildDatum"
+              }
+            ]
+          },
+          {
+            "ResName": "Zeichnung",
+            "Props": [
+              {
+                "propName": "smNr",
+                "linkedVia": {
+                  "propName": "smZeichnung",
+                  "incoming": "true"
+                }
+              },
+              {
+                "propName": "fundNr",
+                "linkedVia": {
+                  "propName": "smZeichnung",
+                  "incoming": "true"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "Footer": {
+    "Content": {}
+  }
+}

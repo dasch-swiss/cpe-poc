@@ -1,4 +1,4 @@
-import {json} from "./store.js";
+import {json, lists, ontologies, token} from "./store.js";
 import {language} from './store';
 import {get} from 'svelte/store'
 const j = get(json);
@@ -15,12 +15,84 @@ export class ListNode {
 /*
 TODO: Need to implement a general getter for Prop and Res, where one can pass what to return via argument
  */
-export async function getOntology(){
+export async function login(user) {
+    const res = await fetch(`https://${server}/v2/authentication`,
+        {
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            method: 'POST',
+            body: JSON.stringify({'email': user['Email'], 'password': user['Pwd']})
+        })
+
+    // Checks if request succeeded
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+
+    const json = await res.json();
+    return json.token;
+}
+
+export async function getList() {
+    const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/' + shortCode})}`);
+
+    // Checks if request succeeded
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+
+    const json = await res.json();
+    return json.lists;
+}
+
+export async function getOntology() {
     const res = await fetch('https://' + server + '/v2/ontologies/allentities/' + encodeURIComponent('http://' + server + '/ontology/' + shortCode + '/' + ontologyIri + '/v2') + '?allLanguages=true', {
         method: 'GET'
     })
+
+    // Checks if request succeeded
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+
     const json = await res.json();
     return json['@graph'];
+}
+
+export async function getResByIri(iri, token) {
+    // Checks if token is valid
+    if (!token) {
+        throw new Error("No valid token");
+    }
+
+    const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(iri)}`, {
+        headers: new Headers({
+            'Authorization': `Bearer ${token}`
+        })
+    });
+
+    // Checks if request succeeded
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+
+    return await res.json();
+}
+
+export async function getListNode(iri, token) {
+    // Checks if token is valid
+    if (!token) {
+        throw new Error("No valid token");
+    }
+
+    const res = await fetch(`https://${server}/v2/node/${encodeURIComponent(iri)}`, {
+        headers: new Headers({
+            'Authorization': `Bearer ${token}`
+        })
+    });
+
+    return await res.json();
 }
 
 export async function getLabelForProp(propName){

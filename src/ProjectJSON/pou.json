@@ -1,0 +1,52 @@
+{
+  "DSP": {
+    "Server": "api.0827-test-server.dasch.swiss",
+    "Ontology": "pou",
+    "ShortCode": "0827",
+    "ShortName": "pou",
+    "User": {
+      "Email": "pou0827import@example.com",
+      "Pwd": "test"
+    }
+  },
+  "Header": {
+    "Content": {
+      "ClickableImage": [
+        {
+          "src": "img\\Unibas logo.png",
+          "link": "/"
+        }
+      ],
+      "LanguageSelector": [
+        {
+          "languages": [
+            {
+              "label": "English",
+              "value": "en"
+            },
+            {
+              "label": "Deutsch",
+              "value": "de"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Footer": {},
+  "Page": [
+    {
+      "URI": "/resource",
+      "Content": {
+        "ImageViewers": [
+          {
+            "Id": "http://rdfh.ch/0827/By7xxEn3TUWnzlpO5g-39g"
+          },
+          {
+            "Id": "http://rdfh.ch/0827/l_qSwYzCQq-mn5rX0MMlZg"
+          }
+        ]
+      }
+    }
+  ]
+}

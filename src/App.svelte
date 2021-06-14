@@ -7,14 +7,12 @@
     import JSONContentParser from "./SearchComponents/JSONContentParser.svelte"
     import {json} from './store.js'
 
-    import Viewer from "./ViewerComponents/Viewer.svelte"
+
 </script>
 
 <JSONContentParser json={$json['Header']['Content']}/> <!-- Displays the Header content -->
 <Router {routes}/> <!-- Displays the 'Main' as it loads the respective route -->
 <JSONContentParser json={$json['Footer']['Content']}/> <!-- Displays the Footer content -->
-<!--
-<Viewer></Viewer>
--->
+
 <style>
 </style>
