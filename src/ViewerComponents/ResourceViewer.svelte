@@ -1,158 +1,53 @@
 <script>
     import {onMount} from 'svelte';
-    import {token, lists, ontologies} from '../store';
+    import {login, getList, getOntology, getResByIri, getListNode} from "../dsp-services";
+    import {language, token, lists, ontologies} from '../store';
 
     export let resource, ontology, server, user, shortname, shortcode;
     let properties = {}
     let error = false;
 
-    onMount(async () => {
-        await login();
+    onMount(() => {
+        getData();
     })
 
     /**
-     * Logs in to the provided server and saves the token into the store.
-     *
-     * @returns {Promise<void>}
+     * Gets the resource data after it fetched token, list, ontology.
      */
-    async function login() {
-        error = false;
+    async function getData() {
+        try {
+            error = false;
+            // Requests token and saves into the store
+            const logResult = await login(user);
+            token.set(logResult);
+            // Requests the list and saves into the store
+            const listResult = await getList();
+            lists.set(listResult);
+            // Requests the ontology and saves into the store
+            const ontResult = await getOntology();
+            ontologies.set(ontResult);
+            // Requests the resource
+            const resData = await getResByIri(resource['Id'], $token);
+            console.log(resData);
 
-        const res = await fetch(`https://${server}/v2/authentication`,
-            {
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }),
-                method: 'POST',
-                body: JSON.stringify({'email': user['Email'], 'password': user['Pwd']})
-            })
+            // Adds important properties
+            properties = {
+                'knora-api:arkUrl': {
+                    labels: {'en': 'ARK Url', 'de': 'ARK Url'},
+                    values: new Array(`<a href=${resData['knora-api:arkUrl']['@value']} target='_blank'>${resData['knora-api:arkUrl']['@value']}</a>`)
+                },
+                '@id': {
+                    labels: {'en': 'Resource ID', 'de': 'Resource ID'},
+                    values: new Array(resource['Id'])
+                }
+            };
 
-        // Checks if request succeeded
-        if (!res.ok) {
+            defaultOrCustomProps(resData);
+
+        } catch (e) {
             error = true;
-            console.error(res);
-            return;
+            console.log(e);
         }
-
-        const json = await res.json();
-        token.set(json.token);
-
-        await listRequest();
-    }
-
-    /**
-     * Requests all the list of the specific project and saves it into the store.
-     *
-     * @returns {Promise<void>}
-     */
-    async function listRequest() {
-        const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/' + shortcode})}`, {
-            headers: new Headers({
-                'Authorization': `Bearer ${$token}`
-            })
-        });
-
-        // Checks if request succeeded
-        if (!res.ok) {
-            error = true;
-            console.error(res);
-            return;
-        }
-
-        const json = await res.json();
-        lists.set(json.lists);
-
-        await ontologyRequest();
-    }
-
-    /**
-     * Requests the ontology of the specific project and saves it into the store.
-     *
-     * @returns {Promise<void>}
-     */
-    async function ontologyRequest() {
-        const res = await fetch(`https://${server}/ontology/${shortcode}/${ontology}/simple/v2`);
-
-        // Checks if request succeeded
-        if (!res.ok) {
-            error = true;
-            console.error(res);
-            return;
-        }
-
-        const json = await res.json();
-        ontologies.set(json['@graph']);
-
-        await resourceRequest();
-    }
-
-    /**
-     * Requests the resource, takes its the ark url and id and adds to the property object.
-     *
-     * @returns {Promise<void>}
-     */
-    async function resourceRequest() {
-        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Id'])}`, {
-            headers: new Headers({
-                'Authorization': `Bearer ${$token}`
-            })
-        });
-
-        // Checks if request succeeded
-        if (!res.ok) {
-            error = true;
-            console.error(res);
-            return;
-        }
-
-        const json = await res.json();
-        console.log(json);
-
-        // Adds important properties
-        properties = {
-            'knora-api:arkUrl': {
-                label: 'ARK Url',
-                values: new Array(`<a href=${json['knora-api:arkUrl']['@value']} target='_blank'>${json['knora-api:arkUrl']['@value']}</a>`)
-            },
-            '@id': {
-                label: 'Resource ID',
-                values: new Array(resource['Id'])
-            }
-        };
-
-        defaultOrCustomProps(json);
-    }
-
-    /**
-     * Request the node of a specific list.
-     *
-     * @param id ID of the node list
-     * @returns {Promise<any>} response of the request as JSON
-     */
-    async function listNodeRequest(id) {
-        const res = await fetch(`https://${server}/v2/node/${encodeURIComponent(id)}`, {
-            headers: new Headers({
-                'Authorization': `Bearer ${$token}`
-            })
-        });
-
-        return await res.json();
-    }
-
-    /**
-     * Requests the linked resource.
-     *
-     * @param id ID of the resource
-     * @returns {Promise<any>} response of the request as JSON
-     */
-    async function linkRequest(id) {
-        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(id)}`, {
-            headers: new Headers({
-                'Authorization': `Bearer ${$token}`
-            })
-        });
-
-        return await res.json();
     }
 
     /**
@@ -255,7 +150,7 @@
                         } else {
                             properties[pName] = {
                                 values: new Array(propValue['knora-api:valueAsString']),
-                                label: ontology['rdfs:label'],
+                                labels: changeLabels(ontology['rdfs:label']),
                                 customName: cName ? cName : null
                             }
                         }
@@ -272,7 +167,7 @@
                         } else {
                             properties[pName] = {
                                 values: [propValue['knora-api:intValueAsInt']],
-                                label: ontology['rdfs:label'],
+                                labels: changeLabels(ontology['rdfs:label']),
                                 customName: cName ? cName : null
                             }
                         }
@@ -298,7 +193,7 @@
                         } else {
                             properties[pName] = {
                                 values: new Array(propValue['knora-api:valueAsString']),
-                                label: ontology['rdfs:label'],
+                                labels: changeLabels(ontology['rdfs:label']),
                                 customName: cName ? cName : null
                             };
                         }
@@ -306,17 +201,17 @@
                 })
                 break;
             case 'knora-api:ListValue':
-                const listObject = await listNodeRequest(propValue['knora-api:listValueAsListNode']['@id']);
-                // console.log(listObject, listObject['knora-api:hasRootNode']['@id']);
+                // TODO try catch should be inserted
+                const listObject = await getListNode(propValue['knora-api:listValueAsListNode']['@id'], $token);
+
                 $lists.forEach(list => {
                     if (list.id === listObject['knora-api:hasRootNode']['@id']) {
-                        // TODO There are sometimes more than one label
                         if (properties[listObject['knora-api:hasRootNode']['@id']]) {
                             properties[listObject['knora-api:hasRootNode']['@id']]['values'].push(listObject['rdfs:label']);
                         } else {
                             properties[listObject['knora-api:hasRootNode']['@id']] = {
                                 values: new Array(listObject['rdfs:label']),
-                                label: list['labels'][0]['value'],
+                                labels: changeLabels(list['labels']),
                                 customName: cName ? cName : null
                             };
                         }
@@ -329,7 +224,8 @@
                         return;
                     }
 
-                    const reqLinkTarget = await linkRequest(propValue['knora-api:linkValueHasTarget']['@id'])
+                    // TODO try catch should be inserted
+                    const reqLinkTarget = await getResByIri(propValue['knora-api:linkValueHasTarget']['@id'], $token);
                     processCustomProp(reqLinkTarget, customProp['linkResource']['Props']);
 
                 } else {
@@ -340,7 +236,7 @@
                             } else {
                                 properties[pName] = {
                                     values: new Array(propValue['knora-api:linkValueHasTarget']['@id']),
-                                    label: ontology['rdfs:label'],
+                                    labels:  changeLabels(ontology['rdfs:label']),
                                     customName: cName ? cName : null
                                 };
                             }
@@ -353,13 +249,38 @@
         }
     }
 
+    /**
+     * Change the labels from an array to an object with languages as keys.
+     *
+     * @param labels
+     * @returns {{}|*}
+     */
+    function changeLabels(labels) {
+        let result = {}
+        if (labels.length > 0) {
+            labels.map(label => {
+                if (label['@language']) {
+                    result[label['@language']] = label['@value'];
+                } else if (label['language']) {
+                    result[label['language']] = label['value'];
+                }
+            });
+        } else {
+            return labels;
+        }
+
+        return result;
+    }
+
 </script>
 
 <main>
     {#if error}
-        <div>
-            There was a error! The Resource data couldn't be loaded.
-            <button on:click={() => login()}>Try again</button>
+        <div class="error">
+            Oops! Unable to fetch the resource.
+            <div>
+                <button on:click={() => getData()}>Try again</button>
+            </div>
         </div>
     {:else}
         <div>
@@ -369,7 +290,7 @@
                         <div class='res-title'>{resource['customTitle']}</div>
                     {/if}
                     {#each Object.entries(properties) as [key, value]}
-                        <div class='prop-header'>{value.customName ? value.customName : value.label}</div>
+                        <div class='prop-header'>{value.customName ? value.customName : value.labels[$language]}</div>
                         <div>
                             {#each value.values as val}
                                 <div>{@html val}</div>
@@ -384,6 +305,17 @@
 </main>
 
 <style>
+    .error {
+        color: darkred;
+        border: 1px solid darkred;
+        margin: 1rem 0;
+        padding: 1.5rem;
+    }
+
+    button {
+        margin: 0.5rem 0 0 0;
+    }
+
     .res-title {
         flex: 0 1 100%;
         grid-column: 1 / -1;

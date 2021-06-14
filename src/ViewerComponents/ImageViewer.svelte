@@ -1,5 +1,6 @@
 <script>
     import {onMount} from 'svelte';
+    import {getResByIri, login} from "../dsp-services";
     import {token} from "../store";
     import OpenSeadragon from 'openseadragon';
 
@@ -10,77 +11,40 @@
 
     onMount(() => {
         container.id = Math.random().toString(36).substring(8);
-        login();
+        getData();
     })
 
-    /**
-     * Logs in to the provided server and saves the token into the store.
-     *
-     * @returns {Promise<void>}
-     */
-    async function login() {
-        error = false;
 
-        const res = await fetch(`https://${server}/v2/authentication`,
-            {
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }),
-                method: 'POST',
-                body: JSON.stringify({'email': user['Email'], 'password': user['Pwd']})
-            })
+    async function getData() {
+        try {
+            error = false;
+            // Requests token and saves into the store
+            const logResult = await login(user);
+            token.set(logResult);
+            // Requests the resource
+            const resData = await getResByIri(resource['Id'], $token);
 
-        // Checks if request succeeded
-        if (!res.ok) {
-            error = true;
-            console.error(res);
-            return;
-        }
+            if (resData["knora-api:hasStillImageFileValue"]) {
 
-        const json = await res.json();
-        token.set(json.token);
+                if (resData["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]) {
+                    viewer = new OpenSeadragon({
+                        id: container.id,
+                        prefixUrl: "images/",
+                        tileSources: {
+                            type: 'image',
+                            url:  resData["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]["@value"]
+                        }
+                    });
+                } else {
+                    error = true;
+                }
 
-        await resourceRequest();
-    }
-
-    /**
-     * Requests the resource and adds the file url to the open sea dragon instance.
-     *
-     * @returns {Promise<void>}
-     */
-    async function resourceRequest() {
-        const res = await fetch(`https://${server}/v2/resources/${encodeURIComponent(resource['Id'])}`, {
-            headers: new Headers({
-                'Authorization': `Bearer ${$token}`
-            })
-        });
-
-        // Checks if request succeeded
-        if (!res.ok) {
-            error = true;
-            console.error(res);
-            return;
-        }
-
-        const json = await res.json();
-
-        if (json["knora-api:hasStillImageFileValue"]) {
-
-            if (json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]) {
-                viewer = new OpenSeadragon({
-                    id: container.id,
-                    prefixUrl: "images/",
-                    tileSources: {
-                        type: 'image',
-                        url:  json["knora-api:hasStillImageFileValue"]["knora-api:fileValueAsUrl"]["@value"]
-                    }
-                });
             } else {
                 error = true;
             }
-
-        } else {
+        } catch (e) {
             error = true;
+            console.log(e);
         }
     }
 
@@ -99,9 +63,11 @@
 
 <main>
     {#if error}
-        <div>
-            There was a error! The Image couldn't be loaded.
-            <button on:click={() => login()}>Try again</button>
+        <div class="error">
+            Oops! Unable to fetch the image.
+            <div>
+                <button on:click={() => getData()}>Try again</button>
+            </div>
         </div>
     {:else}
         <section bind:this={container}></section>
@@ -110,6 +76,17 @@
 </main>
 
 <style>
+    .error {
+        color: darkred;
+        border: 1px solid darkred;
+        margin: 1rem 0;
+        padding: 1.5rem;
+    }
+
+    button {
+        margin: 0.5rem 0 0 0;
+    }
+
     section {
         width: 600px;
         height: 400px;

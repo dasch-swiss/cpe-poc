@@ -16,6 +16,20 @@
           "src": "img\\Unibas logo.png",
           "link": "/"
         }
+      ],
+      "LanguageSelector": [
+        {
+          "languages": [
+            {
+              "label": "English",
+              "value": "en"
+            },
+            {
+              "label": "Deutsch",
+              "value": "de"
+            }
+          ]
+        }
       ]
     }
   },
