@@ -41,6 +41,7 @@
                         prop["value"] = linkedRes[ontology + ':' + prop['propName']]["knora-api:intValueAsInt"].toString();
                         break;
                     default:
+                        // TODO: Throw error
                         console.log("No suitable type found");
                         break;
                 }
