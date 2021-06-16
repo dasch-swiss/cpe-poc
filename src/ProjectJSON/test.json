@@ -120,7 +120,7 @@
       "Content": {
         "SimilarSearch": [
           {
-            "Iri": "http://rdfh.ch/0827/By7xxEn3TUWnzlpO5g-39g",
+            "Iri": "http://rdfh.ch/0805/BnLEV5zMSbO38BgNqHFh6w",
             "Props": [
               {
                 "propName": "fundNr",
@@ -133,6 +133,9 @@
                 "linkedVia": {
                   "propName": "bildSMFund"
                 }
+              },
+              {
+                "propName": "bildGrab"
               }
             ]
           }
