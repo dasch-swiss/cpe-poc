@@ -4,17 +4,25 @@
     import {language, token, lists, ontologies} from '../store';
 
     export let resource, ontology, server, user, shortname, shortcode;
+    export let search_result;
     let properties = {}
     let error = false;
 
     onMount(() => {
-        getData();
+        if (resource) {
+            // getData();
+        } else if (search_result) {
+            getData(search_result);
+        } else {
+            console.log("No valid input to show");
+        }
+
     })
 
     /**
      * Gets the resource data after it fetched token, list, ontology.
      */
-    async function getData() {
+    async function getData(search) {
         try {
             error = false;
             // Requests token and saves into the store
@@ -27,7 +35,8 @@
             const ontResult = await getOntology();
             ontologies.set(ontResult);
             // Requests the resource
-            const resData = await getResByIri(resource['Id'], $token);
+            const iri = search ? search['@id'] : resource['Id'];
+            const resData = await getResByIri(iri , $token);
             console.log(resData);
 
             // Adds important properties
@@ -38,7 +47,7 @@
                 },
                 '@id': {
                     labels: {'en': 'Resource ID', 'de': 'Resource ID'},
-                    values: new Array(resource['Id'])
+                    values: new Array(iri)
                 }
             };
 
@@ -57,7 +66,7 @@
      * @param resData resource data from the request
      */
     function defaultOrCustomProps(resData) {
-        if (resource.hasOwnProperty('Props')) {
+        if (resource && resource.hasOwnProperty('Props')) {
             processCustomProp(resData, resource['Props']);
         } else {
             processDefaultProp(resData);
@@ -286,7 +295,7 @@
         <div>
             {#if Object.entries(properties).length > 0}
                 <section>
-                    {#if resource['customTitle']}
+                    {#if resource && resource['customTitle']}
                         <div class='res-title'>{resource['customTitle']}</div>
                     {/if}
                     {#each Object.entries(properties) as [key, value]}

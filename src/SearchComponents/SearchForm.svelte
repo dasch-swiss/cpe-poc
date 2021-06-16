@@ -4,14 +4,16 @@
         fire the search.
      */
     import SearchField from './SearchField.svelte'
+    import ResourceViewer from '../ViewerComponents/ResourceViewer.svelte';
     import {onMount} from 'svelte';
     import {getLabelForResource} from "../dsp-services";
 
     let props = []; //Stores the props to access their functions.
+    let result;
     export let form; //The json containing the information to build the SearchForm
     export let predefProp;
     export let predefVal;
-    export let ontology, server, shortCode, shortName;
+    export let ontology, server, shortCode, shortName, user;
     import {language} from "../store.js";
 
     /*
@@ -51,12 +53,12 @@
             body: await createQuery()
 
         })
-        const json = await res.json()
-        console.log(json)
+        return await res.json();
     }
     onMount(async () => {
        if (predefProp !== '' && predefVal !== '') {
-           await fireQuery();
+           result = await fireQuery();
+           console.log(result);
        }
     });
     let promise = getLabelForResource(form['ResName']);
@@ -71,4 +73,15 @@
         <SearchField bind:this={props[i]} prop={prop} {shortName} value={predefProp === prop['propName']? predefVal : ''}/>
     {/each}
     <button on:click={fireQuery}>{$language === 'en' ? "Search" : "Suchen"}</button>
+    {#if result}
+        {#each result['@graph'] as res}
+            <ResourceViewer
+                    server={server}
+                    ontology={ontology}
+                    user={user}
+                    shortname={shortName}
+                    shortcode={shortCode}
+                    search_result={res}/>
+        {/each}
+    {/if}
 </main>

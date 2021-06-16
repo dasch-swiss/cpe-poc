@@ -20,7 +20,7 @@
     {/each}
     {#each json['SearchForm'] || [] as form} <!-- Loops through the json-Searchform array or an empty array if undefined -->
         <!-- Creates the SearchForm and assigns the dict, passes parameters if the ID matches -->
-        <SearchForm form="{form}" predefProp={params['slot1'] === form['Id']? params['slot2'] : ''} predefVal={params['slot1'] === form['Id'] ? params['slot3'] : ''} {server} {ontology} {shortCode} {shortName}/>
+        <SearchForm form="{form}" predefProp={params['slot1'] === form['Id']? params['slot2'] : ''} predefVal={params['slot1'] === form['Id'] ? params['slot3'] : ''} {server} {ontology} {shortCode} {shortName} {user}/>
     {/each}
     <!-- Same as above for SinglePropertySearch, does not support params for URI yet (as they are not needed at this point) -->
     {#each json['SinglePropertySearch'] || [] as search}
