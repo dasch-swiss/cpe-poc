@@ -2,6 +2,7 @@
 <script>
     import SinglePropertySearch from "./SinglePropertySearch.svelte";
     import ClickableImage from './ClickableImage.svelte';
+
     export let json;
     export let params; //if arguments need to be passed from the URI.
     export let server, ontology, shortCode, shortName, user;
@@ -13,6 +14,7 @@
     import GravsearchTemplate from "./GravsearchTemplate.svelte";
     import ResourceViewer from "../ViewerComponents/ResourceViewer.svelte";
     import ImageViewer from "../ViewerComponents/ImageViewer.svelte";
+    import SimilarSearch from "./SimilarSearch.svelte";
 </script>
 {#if json} <!-- For Safety. This way this component can be called with falsy or undefined json -->
     {#each json['ClickableImage'] || [] as img}
@@ -40,6 +42,9 @@
     {/each}
     {#each json['GravsearchTemplate'] || [] as temp}
         <GravsearchTemplate template={temp['Template']} parameters={temp['Params']}/>
+    {/each}
+    {#each json['SimilarSearch'] || [] as sim}
+        <SimilarSearch iri={sim['Iri']} props={sim['Props']} {user} {ontology} {server} {shortCode} {shortName}/>
     {/each}
     {#each json['ResourceViewers'] || [] as res}
         <ResourceViewer

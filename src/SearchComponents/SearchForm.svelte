@@ -25,16 +25,16 @@
             'CONSTRUCT {\n' +
             '?mainres knora-api:isMainResource true .\n'; // Standard beginning of a gravsearchquery. Including knora-api as well as knora-api-simple for corner cases (such as filtering for dates). TODO: prefix and api-url need to be passed as arguments
         for (const prop of props) {
-            toReturn += prop.getPropString(); // add the prop string for every prop.
+            toReturn += prop.getString(); // add the prop string for every prop.
         }
         toReturn += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + shortName + ':' + form['ResName'] + ' .\n' // Standard for every query. CONSTRUCT section is closed, WHERE section openend.
         for (const prop of props) {
             if (prop.isEmpty()) { //if the filterstring is empty for a prop, we need to put OPTIONAL, otherwise the query filters for its existence
                 toReturn += 'OPTIONAL {\n';
-                toReturn += prop.getPropString();
+                toReturn += prop.getString();
                 toReturn += '}\n';
             } else { //if it is non-empty we add the filter text.
-                toReturn += prop.getPropString();
+                toReturn += prop.getString();
                 toReturn += await prop.getFilter()
             }
         }

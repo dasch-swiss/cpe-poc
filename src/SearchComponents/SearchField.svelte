@@ -1,7 +1,7 @@
 <script>
     /* Assumes text property */
     import {getLabelForProp, getListByPropName, getObjectTypeForProp} from "../dsp-services";
-    import {getFilterByNameAndVal} from './SearchUtility';
+    import {getFilterByNameAndVal, getPropString} from './SearchUtility';
     export let value;
     export let prop;
     export let shortName;
@@ -13,27 +13,9 @@
         This function return the gravsearch string that references this value. It takes into account whether its a property of the main resource or if the main resource is linked.
         @return: the gravsearch string
     */
-    export function getPropString() {
-        let toReturn = '';
-        let curr = prop;
+    export function getString() {
 
-        let linkStack = [];
-        while(curr){
-            linkStack.push(curr);
-            curr = curr['linkedVia'];
-        }
-        let parent = '?mainres';
-        let currProp;
-        while (linkStack.length > 0){
-            currProp = linkStack.pop();
-            if ("incoming" in currProp && currProp["incoming"] === "true"){
-                toReturn += '?' + currProp['propName'] +  ' ' + shortName + ':' + currProp['propName'] + ' ' + parent + ' .\n'  ;
-            } else {
-                toReturn += parent + ' ' + shortName + ':' + currProp['propName'] + ' ?' + currProp['propName'] + ' .\n';
-            }
-            parent = '?' + currProp['propName'];
-        }
-        return toReturn;
+        return getPropString(prop);
     }
 
     /*
