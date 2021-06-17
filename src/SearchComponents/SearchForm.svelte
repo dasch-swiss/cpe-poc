@@ -19,6 +19,26 @@
         @return: the gravsearch query
      */
     async function createQuery() {
+        // let optionalPropertyStrings = [];
+        // let requiredPropertyStrings = [];
+        // for (const prop of props){
+        //     const val = prop.getString();
+        //     if (prop.isEmpty()){
+        //         if (!optionalPropertyStrings.includes(val) && !requiredPropertyStrings.includes(val)){
+        //             optionalPropertyStrings.push(prop.getString());
+        //         }
+        //     } else {
+        //         if (!requiredPropertyStrings.includes(val)){
+        //             const index = optionalPropertyStrings.indexOf(val);
+        //             if (index !== -1){
+        //                 optionalPropertyStrings.splice(index, 1);
+        //             }
+        //             requiredPropertyStrings.push(prop.getString());
+        //         }
+        //     }
+        // }
+        // console.log(optionalPropertyStrings);
+        // console.log(requiredPropertyStrings);
         let toReturn = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\n' +
             'PREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' +
             'PREFIX knora-api-simple: <http://api.knora.org/ontology/knora-api/simple/v2#>\n' +
@@ -29,24 +49,19 @@
         }
         toReturn += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + shortName + ':' + form['ResName'] + ' .\n' // Standard for every query. CONSTRUCT section is closed, WHERE section openend.
         for (const prop of props) {
-            if (prop.isEmpty()) { //if the filterstring is empty for a prop, we need to put OPTIONAL, otherwise the query filters for its existence
-                toReturn += 'OPTIONAL {\n';
-                toReturn += prop.getString();
-                toReturn += '}\n';
-            } else { //if it is non-empty we add the filter text.
-                toReturn += prop.getString();
-                toReturn += await prop.getFilter()
-            }
+            toReturn += prop.getOptionalString();
+            toReturn += await prop.getFilter()
         }
         toReturn += '}'
         console.log(toReturn);
         return toReturn;
     }
+
     /*
         Fires the query.
      */
     async function fireQuery() {
-        const res = await fetch( 'https://' + server + '/v2/searchextended', {
+        const res = await fetch('https://' + server + '/v2/searchextended', {
             method: 'POST',
             body: await createQuery()
 
@@ -54,21 +69,24 @@
         const json = await res.json()
         console.log(json)
     }
+
+
     onMount(async () => {
-       if (predefProp !== '' && predefVal !== '') {
-           await fireQuery();
-       }
+        if (predefProp !== '' && predefVal !== '') {
+            await fireQuery();
+        }
+
     });
     let promise = getLabelForResource(form['ResName']);
 </script>
 
 <main>
     {#await promise}
-        {:then resLabel}
+    {:then resLabel}
         <h1>{$language === 'en' ? 'Search for' : 'Suchen nach'} {resLabel[$language]}</h1>
     {/await}
-    {#each form['Props'] as prop, i} <!-- Create a SearchField for each prop in the json -->
-        <SearchField bind:this={props[i]} prop={prop} {shortName} value={predefProp === prop['propName']? predefVal : ''}/>
+    {#each form['Props'] as prop} <!-- Create a SearchField for each prop in the json -->
+        <SearchField bind:this={props[props.length]} prop={prop} {predefProp} {predefVal} parent="?mainres"/>
     {/each}
     <button on:click={fireQuery}>{$language === 'en' ? "Search" : "Suchen"}</button>
 </main>
