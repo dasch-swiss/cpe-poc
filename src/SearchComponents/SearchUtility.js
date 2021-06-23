@@ -4,29 +4,29 @@ import {get} from 'svelte/store';
 const jVal = get(json);
 let ontology = jVal['DSP']['Ontology'];
 let shortName = jVal['DSP']['ShortName'];
-export function getPropString(prop){
-    let toReturn = '';
-    let curr = prop;
 
-    let linkStack = [];
-    while(curr){
-        linkStack.push(curr);
-        curr = curr['linkedVia'];
-    }
-    let parent = '?mainres';
-    let currProp;
-    while (linkStack.length > 0){
-        currProp = linkStack.pop();
-        if ("incoming" in currProp && currProp["incoming"] === "true"){
-            toReturn += '?' + currProp['propName'] +  ' ' + shortName + ':' + currProp['propName'] + ' ' + parent + ' .\n'  ;
+export function getPropString(prop){
+    return getPropStringHelper(prop, "?mainres");
+}
+
+export function getPropStringHelper(prop, parent){
+    let toReturn = '';
+    if ("linkResource" in prop){
+        if ("incoming" in prop["linkResource"] && prop["linkResource"]["incoming"]){
+            toReturn += '?' + prop['propName'] +  ' ' + shortName + ':' + prop['propName'] + ' ' + parent + ' .\n'  ;
         } else {
-            toReturn += parent + ' ' + shortName + ':' + currProp['propName'] + ' ?' + currProp['propName'] + ' .\n';
+            toReturn += parent + ' ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n';
         }
-        parent = '?' + currProp['propName'];
+
+    } else {
+        toReturn += parent + ' ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n';
     }
+
     return toReturn;
 }
+
 export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
+
     const propGravId = '?' + propName.replace(ontology + ':', '');
     switch(obj){
         case 'knora-api:DateValue':
@@ -40,6 +40,7 @@ export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
             return propGravId + ' knora-api:intValueAsInt ' + propGravId + 'Int .\nFILTER(' + propGravId + 'Int  = ' + value + ') .\n'; //TODO: might be bugged, test
     }
 }
+
 export async function getFilterByNameAndVal(propName, value, dateDepth = ''){
     let obj = await getObjectTypeForProp(propName);
     return getFilterByNameValAndObj(propName, value, obj, dateDepth);
