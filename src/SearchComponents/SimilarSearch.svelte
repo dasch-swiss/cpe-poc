@@ -10,6 +10,7 @@
     let resType;
     let data;
     let searchInfo = [];
+    
     async function getData() {
         const logResult = await login(user);  // TODO: Login should happen at app start and only be checked in dsp-services, not in components
         token.set(logResult);
@@ -22,6 +23,7 @@
         }
         await search();
     }
+
     async function getPropValue(prop, data, linkQueue = []){
         if (prop.hasOwnProperty("linkResource")){
             for (const linkProp of prop["linkResource"]["Props"]){
@@ -53,6 +55,7 @@
             }
         }
     }
+
     function getStringForProp(prop){
         let parent = '?mainres';
         let toReturn = '';
@@ -69,6 +72,7 @@
         console.log(prop);
         return toReturn;
     }
+
     async function search(){
         let searchResults = [];
         for (const prop of searchInfo){

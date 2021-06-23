@@ -18,25 +18,22 @@
     */
     export function getString() {
         let toReturn = getPropStringHelper(prop, parent);
-        if (children.length > 0){
-            for (const child of children){
-                toReturn += child.getString();
-            }
+        for (const child of children) {
+            toReturn += child.getString();
         }
         return toReturn;
     }
-    export function getOptionalString(){
+
+    export function getOptionalString() {
         let toReturn = '';
-        if (isEmpty()){
+        if (isEmpty()) {
             toReturn += 'OPTIONAL {\n';
         }
         toReturn += getPropStringHelper(prop, parent);
-        if (children.length > 0){
-            for (const child of children){
-                toReturn += child.getOptionalString();
-            }
+        for (const child of children) {
+            toReturn += child.getOptionalString();
         }
-        if (isEmpty()){
+        if (isEmpty()) {
             toReturn += '}\n';
         }
         return toReturn;
@@ -51,12 +48,12 @@
        @return: returns the filter string
     */
     export async function getFilter() {
-        if (isEmpty()){
+        if (isEmpty()) {
             return '';
         }
-        if (children.length > 0){
+        if (children.length > 0) {
             let toReturn = "";
-            for (const child of children){
+            for (const child of children) {
                 toReturn += await child.getFilter();
             }
             return toReturn;
@@ -66,9 +63,9 @@
     }
 
     export function isEmpty() {
-        if (prop.hasOwnProperty("linkResource")){
-            for (const child of children){
-                if (!child.isEmpty()){
+        if (prop.hasOwnProperty("linkResource")) {
+            for (const child of children) {
+                if (!child.isEmpty()) {
                     return false;
                 }
             }
@@ -76,20 +73,22 @@
         }
         return value === "";
     }
+
     value = predefProp === prop['propName'] ? predefVal : '';
     let promise = getLabelForProp(prop['propName']);
     let secondPromise = getObjectTypeForProp(prop['propName']);
 </script>
 {#if !prop.hasOwnProperty("linkResource")}
     {#await promise}
-        {:then propLabel}
+    {:then propLabel}
         <p>{$language === 'en' ? "Enter search value for" : "Suchwert eingeben für" } {propLabel[$language]}</p>
     {/await}
     {#await secondPromise}
-        {:then obj}
+    {:then obj}
         {#if obj === 'knora-api:DateValue'}
             <select bind:value={dateDepth} on:change={()=> {value = null;}}>
-                <option value="" disabled selected>{$language === 'en' ? 'Choose date depth' : 'Genauigkeit des Datums wählen'}</option>
+                <option value="" disabled
+                        selected>{$language === 'en' ? 'Choose date depth' : 'Genauigkeit des Datums wählen'}</option>
                 <option value="month">{$language === 'en' ? 'Month' : 'Monat'}</option>
                 <option value="year">{$language === 'en' ? 'Year' : 'Jahr'}</option>
             </select>
@@ -97,20 +96,23 @@
                 <input bind:value={value} type="month"/>
             {/if}
             {#if dateDepth === 'year'}
-                <input placeholder="{$language=== 'en' ? 'Enter year in format YYYY' : 'Jahr im Format YYYY eingeben'}" bind:value={value} />
+                <input placeholder="{$language=== 'en' ? 'Enter year in format YYYY' : 'Jahr im Format YYYY eingeben'}"
+                       bind:value={value}/>
             {/if}
         {/if}
         {#if obj === 'knora-api:ListValue'}
             {#await getListByPropName(name)}
             {:then list}
-            <select bind:value={value}>
-                <option value="" disabled selected>{$language === 'en' ? 'Choose value to filter for' : 'Filterwert wählen'}</option>
+                <select bind:value={value}>
+                    <option value="" disabled
+                            selected>{$language === 'en' ? 'Choose value to filter for' : 'Filterwert wählen'}</option>
 
 
                     {#each list as item}
-                        <option value={item.id}>{item.label}</option><!-- Currently these labels arent returned with multiple languages, which is why this isn't used here -->
+                        <option value={item.id}>{item.label}</option>
+                        <!-- Currently these labels arent returned with multiple languages, which is why this isn't used here -->
                     {/each}
-            </select>
+                </select>
             {/await}
         {/if}
         {#if obj === 'knora-api:TextValue' || obj === 'knora-api:IntValue'}
@@ -119,6 +121,7 @@
     {/await}
 {:else}
     {#each prop["linkResource"]["Props"] as link}
-        <SearchField bind:this={children[children.length]} prop={link} {predefProp} {predefVal} parent={'?' + prop['propName']}/>
+        <SearchField bind:this={children[children.length]} prop={link} {predefProp} {predefVal}
+                     parent={'?' + prop['propName']}/>
     {/each}
 {/if}

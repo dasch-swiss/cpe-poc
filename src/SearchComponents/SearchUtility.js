@@ -8,6 +8,7 @@ let shortName = jVal['DSP']['ShortName'];
 export function getPropString(prop){
     return getPropStringHelper(prop, "?mainres");
 }
+
 export function getPropStringHelper(prop, parent){
     let toReturn = '';
     if ("linkResource" in prop){
@@ -23,6 +24,7 @@ export function getPropStringHelper(prop, parent){
 
     return toReturn;
 }
+
 export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
 
     const propGravId = '?' + propName.replace(ontology + ':', '');
@@ -38,6 +40,7 @@ export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
             return propGravId + ' knora-api:intValueAsInt ' + propGravId + 'Int .\nFILTER(' + propGravId + 'Int  = ' + value + ') .\n'; //TODO: might be bugged, test
     }
 }
+
 export async function getFilterByNameAndVal(propName, value, dateDepth = ''){
     let obj = await getObjectTypeForProp(propName);
     return getFilterByNameValAndObj(propName, value, obj, dateDepth);
