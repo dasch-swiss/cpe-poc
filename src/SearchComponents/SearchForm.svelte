@@ -4,7 +4,7 @@
         fire the search.
      */
     import SearchField from './SearchField.svelte'
-    import ResourceViewer from '../ViewerComponents/ResourceViewer.svelte';
+    import SingleResource from '../ViewerComponents/Resource/SingleResource.svelte';
     import {onMount} from 'svelte';
     import {getLabelForResource} from "../dsp-services";
 
@@ -75,7 +75,7 @@
     <button on:click={fireQuery}>{$language === 'en' ? "Search" : "Suchen"}</button>
     {#if result}
         {#each result['@graph'] as res}
-            <ResourceViewer
+            <SingleResource
                     server={server}
                     ontology={ontology}
                     user={user}

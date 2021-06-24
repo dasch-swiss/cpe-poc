@@ -11,9 +11,10 @@
     import PdfViewer from 'svelte-pdf';
     import ExpertSearch from "./ExpertSearch.svelte";
     import GravsearchTemplate from "./GravsearchTemplate.svelte";
-    import ResourceViewer from "../ViewerComponents/ResourceViewer.svelte";
-    import ImageViewer from "../ViewerComponents/ImageViewer.svelte";
+    import SingleResource from "../ViewerComponents/Resource/SingleResource.svelte";
+    import SingleImage from "../ViewerComponents/Image/SingeImage.svelte";
 </script>
+
 {#if json} <!-- For Safety. This way this component can be called with falsy or undefined json -->
     {#each json['ClickableImage'] || [] as img}
         <ClickableImage src={img['src']} link={img['link']}/>
@@ -42,7 +43,7 @@
         <GravsearchTemplate template={temp['Template']} parameters={temp['Params']}/>
     {/each}
     {#each json['ResourceViewers'] || [] as res}
-        <ResourceViewer
+        <SingleResource
                 resource={res}
                 server={server}
                 ontology={ontology}
@@ -51,7 +52,7 @@
                 shortcode={shortCode}/>
     {/each}
     {#each json['ImageViewers'] || [] as res}
-        <ImageViewer
+        <SingleImage
                 resource={res}
                 server={server}
                 ontology={ontology}
@@ -60,6 +61,3 @@
                 shortcode={shortCode}/>
     {/each}
 {/if}
-
-
-

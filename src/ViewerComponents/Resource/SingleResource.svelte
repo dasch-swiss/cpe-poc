@@ -1,16 +1,19 @@
 <script>
     import {onMount} from 'svelte';
-    import {login, getList, getOntology, getResByIri, getListNode} from "../dsp-services";
-    import {language, token, lists, ontologies} from '../store';
+    import {login, getList, getOntology, getResByIri, getListNode} from "../../dsp-services";
+    import {language, token, lists, ontologies} from '../../store';
 
     export let resource, ontology, server, user, shortname, shortcode;
     export let search_result;
     let properties = {}
     let error = false;
 
+    /**
+     * Checks if data comes from a search result or resource (= json file) and starts getting the data.
+     */
     onMount(() => {
         if (resource) {
-            // getData();
+            getData();
         } else if (search_result) {
             getData(search_result);
         } else {
@@ -26,14 +29,21 @@
         try {
             error = false;
             // Requests token and saves into the store
-            const logResult = await login(user);
-            token.set(logResult);
+            // TODO Check if token is not empty but invalid
+            if (!$token) {
+                const logResult = await login(user);
+                token.set(logResult);
+            }
             // Requests the list and saves into the store
-            const listResult = await getList();
-            lists.set(listResult);
+            if (!$lists) {
+                const listResult = await getList();
+                lists.set(listResult);
+            }
             // Requests the ontology and saves into the store
-            const ontResult = await getOntology();
-            ontologies.set(ontResult);
+            if (!$ontologies) {
+                const ontResult = await getOntology();
+                ontologies.set(ontResult);
+            }
             // Requests the resource
             const iri = search ? search['@id'] : resource['Id'];
             const resData = await getResByIri(iri , $token);
@@ -280,7 +290,6 @@
 
         return result;
     }
-
 </script>
 
 <main>
