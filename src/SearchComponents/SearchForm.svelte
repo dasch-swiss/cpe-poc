@@ -26,8 +26,6 @@
     let promise = getLabelForResource(form['ResName']);
 
     async function setRequestInfos() {
-        const a = await createQuery();
-        console.log("A", a);
         requestInfos = {
             url: `https://${server}/v2/searchextended`,
             gravsearch: await createQuery(),
