@@ -162,14 +162,14 @@
                 break;
             case 'knora-api:TextValue':
                 // Simple Text
-                $ontologies.forEach(ontology => {
-                    if (ontology['@id'] === pName) {
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
                         if (properties[pName]) {
                             properties[pName]['values'].push(propValue['knora-api:valueAsString'])
                         } else {
                             properties[pName] = {
                                 values: new Array(propValue['knora-api:valueAsString']),
-                                labels: changeLabels(ontology['rdfs:label']),
+                                labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
                             }
                         }
@@ -179,14 +179,14 @@
                 // TODO -> ['knora-api:textValueAsXml'] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<text><p>test with <strong>markup</strong></p></text>"
                 break;
             case 'knora-api:IntValue':
-                $ontologies.forEach(ontology => {
-                    if (ontology['@id'] === pName) {
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
                         if (properties[pName]) {
                             properties[pName]['values'].push(propValue['knora-api:intValueAsInt']);
                         } else {
                             properties[pName] = {
                                 values: [propValue['knora-api:intValueAsInt']],
-                                labels: changeLabels(ontology['rdfs:label']),
+                                labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
                             }
                         }
@@ -205,14 +205,14 @@
                 // ['knora-api:dateValueHasStartMonth'] = 5;
                 // ['knora-api:dateValueHasStartYear'] = 2018;
 
-                $ontologies.forEach(ontology => {
-                    if (ontology['@id'] === pName) {
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
                         if (properties[pName]) {
                             properties[pName]['values'].push(propValue['knora-api:valueAsString']);
                         } else {
                             properties[pName] = {
                                 values: new Array(propValue['knora-api:valueAsString']),
-                                labels: changeLabels(ontology['rdfs:label']),
+                                labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
                             };
                         }
@@ -239,23 +239,23 @@
                 break;
             case 'knora-api:LinkValue':
                 if (customProp) {
-                    if (!customProp['linkResource'] ) {
+                    if (!customProp['linkedResource'] ) {
                         return;
                     }
 
                     // TODO try catch should be inserted
                     const reqLinkTarget = await getResByIri(propValue['knora-api:linkValueHasTarget']['@id'], $token);
-                    processCustomProp(reqLinkTarget, customProp['linkResource']['Props']);
+                    processCustomProp(reqLinkTarget, customProp['linkedResource']['Props']);
 
                 } else {
-                    $ontologies.forEach(ontology => {
-                        if (ontology['@id'] === pName) {
+                    $ontologies.forEach(onto => {
+                        if (onto['@id'] === pName) {
                             if (properties[pName]) {
                                 properties[pName]['values'].push(propValue['knora-api:linkValueHasTarget']['@id']);
                             } else {
                                 properties[pName] = {
                                     values: new Array(propValue['knora-api:linkValueHasTarget']['@id']),
-                                    labels:  changeLabels(ontology['rdfs:label']),
+                                    labels:  changeLabels(onto['rdfs:label']),
                                     customName: cName ? cName : null
                                 };
                             }

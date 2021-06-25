@@ -94,7 +94,7 @@
               },
               {
                 "propName": "tdk_onto:bildKampagne",
-                "linkResource": {
+                "linkedResource": {
                   "Props": [
                     {
                       "propName": "tdk_onto:kampagneTeilnehmer"
@@ -117,7 +117,31 @@
     },
     {
       "URI": "/publikationen",
-      "Content": {}
+      "Content": {
+        "SimilarSearch": [
+          {
+            "Iri": "http://rdfh.ch/0805/BnLEV5zMSbO38BgNqHFh6w",
+            "Props": [
+              {
+                "propName": "bildSMFund",
+                "linkedResource": {
+                  "Props": [
+                    {
+                      "propName": "smNr"
+                    },
+                    {
+                      "propName": "fundNr"
+                    }
+                  ]
+                }
+              },
+              {
+                "propName": "bildGrab"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "URI": "/expert",
@@ -146,15 +170,16 @@
             "Id": "SEARCHFORM_1",
             "Props": [
               {
-                "propName": "smNr",
-                "linkedVia": {
-                  "propName": "bildSMFund"
-                }
-              },
-              {
-                "propName": "fundNr",
-                "linkedVia": {
-                  "propName": "bildSMFund"
+                "propName": "bildSMFund",
+                "linkedResource": {
+                  "Props": [
+                    {
+                      "propName": "smNr"
+                    },
+                    {
+                      "propName": "fundNr"
+                    }
+                  ]
                 }
               },
               {
@@ -163,26 +188,66 @@
               {
                 "propName": "bildDatum"
               }
-            ]
+            ],
+            "ResultsRepresentation": {
+              "MultipleResources": [
+                {
+                  "Props": [
+                    {
+                      "propName": "bildAutor"
+                    },
+                    {
+                      "propName": "bildRaum"
+                    },
+                    {
+                      "propName": "bildGrab"
+                    },
+                    {
+                      "propName": "bildBemerkung"
+                    },
+                    {
+                      "propName": "bildKampagne",
+                      "linkedResource": {
+                        "Props": [
+                          {
+                            "propName": "kampagneTeilnehmer"
+                          },
+                          {
+                            "propName": "kampagneUmgebung"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
           },
           {
             "ResName": "Zeichnung",
             "Props": [
               {
-                "propName": "smNr",
-                "linkedVia": {
-                  "propName": "smZeichnung",
-                  "incoming": "true"
-                }
-              },
-              {
-                "propName": "fundNr",
-                "linkedVia": {
-                  "propName": "smZeichnung",
-                  "incoming": "true"
+                "propName": "smZeichnung",
+                "linkedResource": {
+                  "incoming": "true",
+                  "Props": [
+                    {
+                      "propName": "smNr"
+                    },
+                    {
+                      "propName": "fundNr"
+                    }
+                  ]
                 }
               }
-            ]
+            ],
+            "ResultsRepresentation": {
+              "MultipleResources": [
+                {
+                  "Props": []
+                }
+              ]
+            }
           }
         ]
       }

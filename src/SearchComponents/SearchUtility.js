@@ -3,6 +3,28 @@ import {json} from '../store.js';
 import {get} from 'svelte/store';
 const jVal = get(json);
 let ontology = jVal['DSP']['Ontology'];
+let shortName = jVal['DSP']['ShortName'];
+
+export function getPropString(prop){
+    return getPropStringHelper(prop, "?mainres");
+}
+
+export function getPropStringHelper(prop, parent){
+    let toReturn = '';
+    if ("linkedResource" in prop){
+        if ("incoming" in prop["linkedResource"] && prop["linkedResource"]["incoming"]){
+            toReturn += '?' + prop['propName'] +  ' ' + shortName + ':' + prop['propName'] + ' ' + parent + ' .\n'  ;
+        } else {
+            toReturn += parent + ' ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n';
+        }
+
+    } else {
+        toReturn += parent + ' ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n';
+    }
+
+    return toReturn;
+}
+
 export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
     const propGravId = '?' + propName.replace(ontology + ':', '');
     switch(obj){
@@ -14,9 +36,10 @@ export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
         case 'knora-api:TextValue':
             return propGravId + ' knora-api:valueAsString ' + propGravId + 'Str .\nFILTER regex(' + propGravId + 'Str, "' + value + '", "i") .\n';
         case 'knora-api:IntValue':
-            return propGravId + 'knora-api:intValueAsInt' + propGravId + 'Int .\nFILTER(' + propGravId + 'Int  == ' + value + ') .\n;' //TODO: might be bugged, test
+            return propGravId + ' knora-api:intValueAsInt ' + propGravId + 'Int .\nFILTER(' + propGravId + 'Int  = ' + value + ') .\n'; //TODO: might be bugged, test
     }
 }
+
 export async function getFilterByNameAndVal(propName, value, dateDepth = ''){
     let obj = await getObjectTypeForProp(propName);
     return getFilterByNameValAndObj(propName, value, obj, dateDepth);

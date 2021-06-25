@@ -11,8 +11,7 @@
      */
     onMount(() => {
         if (checkResult(results)) {
-            console.log(results);
-            allResources = addResources(results['@graph']);
+            allResources = addResources(results);
         } else {
             error = true;
         }
@@ -25,7 +24,7 @@
      * @returns {boolean}
      */
     function checkResult(results) {
-        return results && results.hasOwnProperty('@graph') && Array.isArray(results['@graph']);
+        return results && Array.isArray(results);
     }
 
     /**
@@ -45,25 +44,24 @@
      * @returns {*}
      */
     function convertResourceObj(res) {
-        console.log(res);
         return res;
     }
 </script>
-
-<main>
+{#each allResources as res}
     <section>
-        Multiple Resources
+        <div>{res['@id']}</div>
+        <div>{res['rdfs:label']}</div>
     </section>
-</main>
+{/each}
 
 <style>
     section {
-        margin: 1rem 0;
+        margin: 0.5rem 0;
         padding: 1.5rem;
+        border: 1px solid darkslateblue;
         /*display: grid;*/
         /*grid-template-columns: auto 1fr;*/
         /*gap: 1rem;*/
-        border: 1px solid darkgray;
         /*font-size: smaller;*/
     }
 </style>
