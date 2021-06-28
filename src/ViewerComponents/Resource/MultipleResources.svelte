@@ -58,7 +58,7 @@
     section {
         margin: 0.5rem 0;
         padding: 1.5rem;
-        border: 1px solid darkslateblue;
+        border: 1px solid darkgray;
         /*display: grid;*/
         /*grid-template-columns: auto 1fr;*/
         /*gap: 1rem;*/

@@ -67,6 +67,9 @@
         const representations = form["ResultsRepresentation"];
         let s = "";
         for (const key in representations) { //all entries in this dict are arrays
+            if (key === 'MultipleImages') {
+                s += '?mainres knora-api:hasStillImageFileValue ?imgfile .\n';
+            }
             s += flattenAllPropNamesOfRep(representations[key], existingString, isOptional);
         }
         console.log(s);

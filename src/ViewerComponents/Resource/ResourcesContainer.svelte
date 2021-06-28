@@ -1,5 +1,5 @@
 <script>
-    import MultipleResources from "./MultipleResources.svelte";
+    import MultipleResources from './MultipleResources.svelte';
 
     export let requestInfos, jsonFile;
     let promise;
@@ -94,6 +94,7 @@
             {#if isEmpty(data)}
                 No data found
             {:else}
+                <!-- Pagination Buttons -->
                 <button disabled={checkPrevious()} on:click={() => previous()}>&lt;</button>
                 <button disabled={checkNext(data)} on:click={() => next()}>&gt;</button>
 
@@ -108,6 +109,7 @@
 
 <style>
     .container {
+        margin-top: 1rem;
         border: 1px solid lightgray;
         padding: 1rem;
     }

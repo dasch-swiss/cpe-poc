@@ -15,7 +15,7 @@
     onMount(() => {
         if (checkResult(results)) {
             console.log(results);
-            allImages = addImages(results['@graph']);
+            allImages = addImages(results);
         } else {
             error = true;
         }
@@ -28,8 +28,8 @@
      * @returns {boolean}
      */
     function checkResult(results) {
-        if (results && results.hasOwnProperty('@graph') && Array.isArray(results['@graph'])) {
-            return results['@graph'].every(obj => obj['knora-api:hasStillImageFileValue']);
+        if (results && Array.isArray(results)) {
+            return results.every(obj => obj['knora-api:hasStillImageFileValue']);
         } else {
             return false;
         }
@@ -143,8 +143,6 @@
 <style>
     section {
         margin: 1rem 0;
-        padding: 1.5rem;
-        border: 1px solid darkgray;
     }
 
     .images-container {
