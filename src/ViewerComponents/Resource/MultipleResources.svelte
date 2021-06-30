@@ -1,7 +1,7 @@
 <script>
     import {onMount} from 'svelte';
 
-    export let results;
+    export let results, jsonFile;
     export let ontology, server, user, shortname, shortcode;
     let error = false;
     let allResources = [];

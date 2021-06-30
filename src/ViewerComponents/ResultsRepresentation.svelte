@@ -9,14 +9,14 @@
     <!-- Checking property -->
     {#if jsonFile.hasOwnProperty('MultipleResources')}
         {#each jsonFile['MultipleResources'] as res}
-            <ResourcesContainer {requestInfos} {jsonFile}/>
+            <ResourcesContainer {requestInfos} jsonFile={res}/>
         {/each}
     {/if}
 
     <!-- Checking property -->
     {#if jsonFile.hasOwnProperty('MultipleImages')}
         {#each jsonFile['MultipleImages'] as img}
-            <ImagesContainer {requestInfos} {jsonFile}/>
+            <ImagesContainer {requestInfos} jsonFile={img}/>
         {/each}
     {/if}
 {/if}

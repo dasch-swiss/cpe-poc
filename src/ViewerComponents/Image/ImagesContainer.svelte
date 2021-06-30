@@ -1,5 +1,6 @@
 <script>
-    import MultipleImages from './MultipleImages.svelte'
+    import MultipleImages from './MultipleImages.svelte';
+    import Loading from '../Loading.svelte';
 
     export let requestInfos, jsonFile;
     let promise;
@@ -90,7 +91,7 @@
 {#if requestInfos}
     <div class="container">
         {#await promise}
-            <div>...loading</div>
+            <Loading/>
         {:then data}
             {#if isEmpty(data)}
                 No images found
@@ -102,8 +103,13 @@
                 <MultipleImages results={data['@graph']}/>
             {/if}
         {:catch error}
-            <div>There was an error</div>
-            <button on:click={() => initialize(current_offset)}>Try it again</button>
+            <div class="error">
+                <div class="error-header">Something went wrong</div>
+                <div class="error-text">Image data couldn't be loaded. Let's give it another shot!</div>
+                <div class="error-btn-container">
+                    <button on:click={() => initialize(current_offset)}>Try again</button>
+                </div>
+            </div>
         {/await}
     </div>
 {/if}
@@ -113,5 +119,23 @@
         margin-top: 1rem;
         border: 1px solid lightgray;
         padding: 1rem;
+    }
+
+
+    .error {
+        text-align: center;
+    }
+
+    .error-header {
+        font-size: larger;
+    }
+
+    .error-text {
+        margin: 0.5rem;
+    }
+
+    .error-btn-container > button {
+        background-color: dodgerblue;
+        color: white;
     }
 </style>
