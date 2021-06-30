@@ -5,15 +5,24 @@
     export let requestInfos, jsonFile;
     let promise;
     let current_offset = 0;
+    const result_per_request = 25;
 
-    $: requestInfos && initialize(0);
+    $: requestInfos && initialize();
 
     /**
-     * Initialize the request and assigns to variable 'promise'
+     * Initializes the process by setting offset and calls prepareRequest.
+     */
+    function initialize() {
+        current_offset = 0;
+        prepareRequest(current_offset);
+    }
+
+    /**
+     * Prepares the request and assigns to variable 'promise'
      *
      * @param offset
      */
-    function initialize(offset) {
+    function prepareRequest(offset) {
         promise = requestData(offset);
     }
 
@@ -57,14 +66,14 @@
      * Increases the offset and starts a new request with the new offset.
      */
     function next() {
-        initialize(current_offset += 1);
+        prepareRequest(current_offset += 1);
     }
 
     /**
      * Decreases the offset and starts a new request with the new offset.
      */
     function previous() {
-        initialize(current_offset -= 1);
+        prepareRequest(current_offset -= 1);
     }
 
     /**
@@ -85,6 +94,15 @@
     function checkNext(data) {
         return !(data.hasOwnProperty('knora-api:mayHaveMoreResults') && data['knora-api:mayHaveMoreResults']);
     }
+
+    /**
+     * Get range of the displayed results.
+     *
+     * @param data
+     */
+    function getAmountRange(data) {
+        return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+    }
 </script>
 
 {#if requestInfos}
@@ -99,6 +117,9 @@
                 <button disabled={checkPrevious()} on:click={() => previous()}>&lt;</button>
                 <button disabled={checkNext(data)} on:click={() => next()}>&gt;</button>
 
+                {getAmountRange(data)}
+
+                <!-- TODO: In case there is only on result property "@graph" is not present -->
                 <MultipleResources results={data['@graph']} {jsonFile}/>
             {/if}
         {:catch error}
@@ -106,7 +127,7 @@
                 <div class="error-header">Something went wrong</div>
                 <div class="error-text">Resource data couldn't be loaded. Let's give it another shot!</div>
                 <div class="error-btn-container">
-                    <button on:click={() => initialize(current_offset)}>Try again</button>
+                    <button on:click={() => prepareRequest(current_offset)}>Try again</button>
                 </div>
             </div>
         {/await}
@@ -133,6 +154,7 @@
     }
 
     .error-btn-container > button {
+        margin: 0.5rem;
         background-color: dodgerblue;
         color: white;
     }
