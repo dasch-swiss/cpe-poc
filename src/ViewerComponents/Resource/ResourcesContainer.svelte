@@ -147,6 +147,7 @@
 
     .error-header {
         font-size: larger;
+        margin-top: 0.5rem;
     }
 
     .error-text {

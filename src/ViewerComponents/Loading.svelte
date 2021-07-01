@@ -1,4 +1,4 @@
-<div class="loading">...loading</div>
+<div class="loading">...searching</div>
 
 <style>
     .loading {
