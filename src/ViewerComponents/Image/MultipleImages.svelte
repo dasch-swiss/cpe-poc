@@ -4,7 +4,7 @@
 
     export let results;
     const square_size = 150;
-    const image_size = 800;
+    const image_size = 700;
     let error = false;
     let allImages = [];
     let openedImageID;
@@ -94,7 +94,6 @@
         const imgDisplay = document.getElementById('full-image');
         imgDisplay.src = getIIIfFullURL(img['url'], image_size);
         clicked.style.display = 'block';
-        imgDisplay.height = image_size.toString();
         openedImageID = img['id'];
     }
 
@@ -128,9 +127,9 @@
                 {/each}
             </div>
             <div id="overlay-container">
-                <div class="full-image-container">
-                    <div on:click={closeImageOverlay} class="close">&times;</div>
-                    <img on:click={() => openFullImage()} id="full-image" alt="Single image">
+                <div class="full-image-container" style="--full-size: {image_size}px">
+                    <div class="close" on:click={closeImageOverlay}>&times;</div>
+                    <img id="full-image"on:click={() => openFullImage()} alt="detail of clicked image">
                     <div class="detail-text">Click for details</div>
                 </div>
             </div>
@@ -180,34 +179,33 @@
     }
 
     .full-image-container {
+        width: 80%;
+        margin: auto;
+        max-width: var(--full-size);
     }
 
     .close {
-        margin: auto;
-        display: block;
-        /*position:absolute;*/
-        /*top: 15px;*/
-        /*right: 240px;*/
         color: #f1f1f1;
         font-size: 30px;
         font-weight: bold;
-        /*transition: 0.3s;*/
+        text-align: right;
     }
 
-    .close:hover, .close:focus {
+    .close:hover, .close:focus, .detail-text:hover, .detail-text:focus {
         color: #bbb;
         text-decoration: none;
         cursor: pointer
     }
 
     #full-image {
-        margin: auto;
         display: block;
-        /*max-width: 80%;*/
-        /*max-height: 80%;*/
+        width: 100%;
+        height: auto;
     }
 
     .detail-text {
-        color: white;
+        color: #f1f1f1;
+        margin: 0.5rem;
+        text-align: center;
     }
 </style>
