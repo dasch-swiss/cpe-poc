@@ -48,6 +48,7 @@
     }
 </script>
 {#each allResources as res}
+    <!-- TODO Show the appropriate properties-->
     <section>
         <div>{res['@id']}</div>
         <div>{res['rdfs:label']}</div>

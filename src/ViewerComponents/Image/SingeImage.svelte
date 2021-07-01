@@ -1,6 +1,7 @@
 <script>
     import {onMount} from 'svelte';
     import {getResByIri, login} from '../../dsp-services.js';
+    import {generateID} from "../ViewUtility";
     import {token} from '../../store';
     import OpenSeadragon from 'openseadragon';
 
@@ -10,22 +11,13 @@
     let viewer
 
     /**
-     * Generates an unique ID and starts getting the data.
+     * Assigns an unique ID  to the container and starts getting the data.
      */
     onMount(() => {
         // TODO Make sure the id is unique & move it to an service
         container.id = generateID();
         getData();
     })
-
-    /**
-     * Generates the a ID.
-     *
-     * @returns {string}
-     */
-    function generateID() {
-        return Math.random().toString(36).substring(8);
-    }
 
     /**
      * Gets the image data after it fetched token.

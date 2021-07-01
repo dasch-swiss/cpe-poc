@@ -142,7 +142,6 @@
         padding: 1rem;
     }
 
-
     .error {
         text-align: center;
     }
