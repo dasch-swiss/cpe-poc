@@ -77,21 +77,21 @@
     }
 
     /**
-     * Checks if current offset is 0.
+     * Prevents showing previous images if current offset is 0.
      *
      * @returns {boolean}
      */
-    function checkPrevious() {
+    function preventPrevious() {
         return current_offset === 0;
     }
 
     /**
-     * Checks if data has more results by checking the flag.
+     * Prevents showing next results if data does not have flag for more result.
      *
      * @param data
      * @returns {boolean}
      */
-    function checkNext(data) {
+    function preventNext(data) {
         return !(data.hasOwnProperty('knora-api:mayHaveMoreResults') && data['knora-api:mayHaveMoreResults']);
     }
 
@@ -115,8 +115,8 @@
                 No images found
             {:else}
                 <!-- Pagination Buttons -->
-                <button disabled={checkPrevious()} on:click={() => previous()}>&lt;</button>
-                <button disabled={checkNext(data)} on:click={() => next()}>&gt;</button>
+                <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
+                <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
 
                 {getAmountRange(data)}
 
