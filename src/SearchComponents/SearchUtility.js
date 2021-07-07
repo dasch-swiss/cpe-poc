@@ -11,8 +11,8 @@ export function getPropString(prop){
 
 export function getPropStringHelper(prop, parent){
     let toReturn = '';
-    if ("linkResource" in prop){
-        if ("incoming" in prop["linkResource"] && prop["linkResource"]["incoming"]){
+    if ("linkedResource" in prop){
+        if ("incoming" in prop["linkedResource"] && prop["linkedResource"]["incoming"]){
             toReturn += '?' + prop['propName'] +  ' ' + shortName + ':' + prop['propName'] + ' ' + parent + ' .\n'  ;
         } else {
             toReturn += parent + ' ' + shortName + ':' + prop['propName'] + ' ?' + prop['propName'] + ' .\n';
@@ -26,7 +26,6 @@ export function getPropStringHelper(prop, parent){
 }
 
 export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
-
     const propGravId = '?' + propName.replace(ontology + ':', '');
     switch(obj){
         case 'knora-api:DateValue':

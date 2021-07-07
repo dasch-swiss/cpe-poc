@@ -12,17 +12,18 @@
     import PdfViewer from 'svelte-pdf';
     import ExpertSearch from "./ExpertSearch.svelte";
     import GravsearchTemplate from "./GravsearchTemplate.svelte";
-    import ResourceViewer from "../ViewerComponents/ResourceViewer.svelte";
-    import ImageViewer from "../ViewerComponents/ImageViewer.svelte";
+    import SingleResource from "../ViewerComponents/Resource/SingleResource.svelte";
+    import SingleImage from "../ViewerComponents/Image/SingeImage.svelte";
     import SimilarSearch from "./SimilarSearch.svelte";
 </script>
+
 {#if json} <!-- For Safety. This way this component can be called with falsy or undefined json -->
     {#each json['ClickableImage'] || [] as img}
         <ClickableImage src={img['src']} link={img['link']}/>
     {/each}
     {#each json['SearchForm'] || [] as form} <!-- Loops through the json-Searchform array or an empty array if undefined -->
         <!-- Creates the SearchForm and assigns the dict, passes parameters if the ID matches -->
-        <SearchForm form="{form}" predefProp={params['slot1'] === form['Id']? params['slot2'] : ''} predefVal={params['slot1'] === form['Id'] ? params['slot3'] : ''} {server} {ontology} {shortCode} {shortName}/>
+        <SearchForm form="{form}" predefProp={params['slot1'] === form['Id']? params['slot2'] : ''} predefVal={params['slot1'] === form['Id'] ? params['slot3'] : ''} {server} {ontology} {shortCode} {shortName} {user}/>
     {/each}
     <!-- Same as above for SinglePropertySearch, does not support params for URI yet (as they are not needed at this point) -->
     {#each json['SinglePropertySearch'] || [] as search}
@@ -47,7 +48,7 @@
         <SimilarSearch iri={sim['Iri']} props={sim['Props']} {user} {ontology} {server} {shortCode} {shortName}/>
     {/each}
     {#each json['ResourceViewers'] || [] as res}
-        <ResourceViewer
+        <SingleResource
                 resource={res}
                 server={server}
                 ontology={ontology}
@@ -56,7 +57,7 @@
                 shortcode={shortCode}/>
     {/each}
     {#each json['ImageViewers'] || [] as res}
-        <ImageViewer
+        <SingleImage
                 resource={res}
                 server={server}
                 ontology={ontology}
@@ -65,6 +66,3 @@
                 shortcode={shortCode}/>
     {/each}
 {/if}
-
-
-

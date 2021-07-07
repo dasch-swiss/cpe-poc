@@ -94,7 +94,7 @@
               },
               {
                 "propName": "tdk_onto:bildKampagne",
-                "linkResource": {
+                "linkedResource": {
                   "Props": [
                     {
                       "propName": "tdk_onto:kampagneTeilnehmer"
@@ -124,7 +124,7 @@
             "Props": [
               {
                 "propName": "bildSMFund",
-                "linkResource": {
+                "linkedResource": {
                   "Props": [
                     {
                       "propName": "smNr"
@@ -171,7 +171,7 @@
             "Props": [
               {
                 "propName": "bildSMFund",
-                "linkResource": {
+                "linkedResource": {
                   "Props": [
                     {
                       "propName": "smNr"
@@ -190,7 +190,7 @@
               }
             ],
             "ResultsRepresentation": {
-              "ResourceViewers": [
+              "MultipleResources": [
                 {
                   "Props": [
                     {
@@ -207,7 +207,7 @@
                     },
                     {
                       "propName": "bildKampagne",
-                      "linkResource": {
+                      "linkedResource": {
                         "Props": [
                           {
                             "propName": "kampagneTeilnehmer"
@@ -220,6 +220,9 @@
                     }
                   ]
                 }
+              ],
+              "MultipleImages": [
+                {"Props":  []}
               ]
             }
           },
@@ -228,7 +231,7 @@
             "Props": [
               {
                 "propName": "smZeichnung",
-                "linkResource": {
+                "linkedResource": {
                   "incoming": "true",
                   "Props": [
                     {
@@ -240,7 +243,14 @@
                   ]
                 }
               }
-            ]
+            ],
+            "ResultsRepresentation": {
+              "MultipleResources": [
+                {
+                  "Props": []
+                }
+              ]
+            }
           }
         ]
       }

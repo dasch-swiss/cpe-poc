@@ -25,8 +25,8 @@
     }
 
     async function getPropValue(prop, data, linkQueue = []){
-        if (prop.hasOwnProperty("linkResource")){
-            for (const linkProp of prop["linkResource"]["Props"]){
+        if (prop.hasOwnProperty("linkedResource")){
+            for (const linkProp of prop["linkedResource"]["Props"]){
                 const linkedIri = data[ontology + ':' + prop["propName"] + 'Value']['knora-api:linkValueHasTarget']['@id'];
                 const newData = await getResByIri(linkedIri, $token);
                 await getPropValue(linkProp, newData, linkQueue.concat([prop["propName"]]));

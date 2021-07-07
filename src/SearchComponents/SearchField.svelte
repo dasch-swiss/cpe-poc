@@ -63,7 +63,7 @@
     }
 
     export function isEmpty() {
-        if (prop.hasOwnProperty("linkResource")) {
+        if (prop.hasOwnProperty("linkedResource")) {
             for (const child of children) {
                 if (!child.isEmpty()) {
                     return false;
@@ -78,7 +78,7 @@
     let promise = getLabelForProp(prop['propName']);
     let secondPromise = getObjectTypeForProp(prop['propName']);
 </script>
-{#if !prop.hasOwnProperty("linkResource")}
+{#if !prop.hasOwnProperty("linkedResource")}
     {#await promise}
     {:then propLabel}
         <p>{$language === 'en' ? "Enter search value for" : "Suchwert eingeben für" } {propLabel[$language]}</p>
@@ -120,7 +120,7 @@
         {/if}
     {/await}
 {:else}
-    {#each prop["linkResource"]["Props"] as link}
+    {#each prop["linkedResource"]["Props"] as link}
         <SearchField bind:this={children[children.length]} prop={link} {predefProp} {predefVal}
                      parent={'?' + prop['propName']}/>
     {/each}

@@ -3,24 +3,40 @@
         This represents a search form. It contains SearchFields for the properties to filter for, as well as button to
         fire the search.
      */
-    import SearchField from './SearchField.svelte'
     import {onMount} from 'svelte';
     import {getLabelForResource} from "../dsp-services";
+    import {language} from "../store.js";
+    import SearchField from './SearchField.svelte'
+    import ResultsRepresentation from "../ViewerComponents/ResultsRepresentation.svelte";
 
     let props = []; //Stores the props to access their functions.
-    let results, query;
+    let query;
+    let requestInfos;
+
     export let form; //The json containing the information to build the SearchForm
     export let predefProp;
     export let predefVal;
-    export let ontology, server, shortCode, shortName;
-    import {language} from "../store.js";
-    import ResultsRepresentation from "./ResultsRepresentation.svelte";
+    export let ontology, server, shortCode, shortName, user;
+
+    onMount(async () => {
+        if (predefProp !== '' && predefVal !== '') {
+            await setRequestInfos();
+        }
+    });
+    let promise = getLabelForResource(form['ResName']);
+
+    async function setRequestInfos() {
+        requestInfos = {
+            url: `https://${server}/v2/searchextended`,
+            gravsearch: await createQuery(),
+            method: 'POST'
+        };
+    }
 
     /*
         A function to create the query considering the state of the nested SearchFields.
         @return: the gravsearch query
      */
-
     async function createQuery() {
         let toReturn = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\n' +
             'PREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' +
@@ -51,6 +67,10 @@
         const representations = form["ResultsRepresentation"];
         let s = "";
         for (const key in representations) { //all entries in this dict are arrays
+            if (key === 'MultipleImages') {
+                s += '?mainres knora-api:hasStillImageFileValue ?imgfile .\n';
+                break;
+            }
             s += flattenAllPropNamesOfRep(representations[key], existingString, isOptional);
         }
         console.log(s);
@@ -76,8 +96,8 @@
                 }
                 toReturn += s;
             }
-            if (prop.hasOwnProperty("linkResource")) {
-                toReturn += flattenAllPropNamesOfRepHelper(prop["linkResource"], "?" + prop["propName"], existingString, isOptional);
+            if (prop.hasOwnProperty("linkedResource")) {
+                toReturn += flattenAllPropNamesOfRepHelper(prop["linkedResource"], "?" + prop["propName"], existingString, isOptional);
             }
             if (isOptional && existingString.indexOf(s) === -1) {
                 toReturn += "}\n";
@@ -86,38 +106,16 @@
         return toReturn;
     }
 
-    /*
-        Fires the query.
-     */
-    async function fireQuery() {
-        const res = await fetch('https://' + server + '/v2/searchextended', {
-            method: 'POST',
-            body: await createQuery()
-
-        })
-        const json = await res.json()
-        console.log(json)
-        results = json["@graph"];
-    }
-
-
-    onMount(async () => {
-        if (predefProp !== '' && predefVal !== '') {
-            await fireQuery();
-        }
-
-    });
-    let promise = getLabelForResource(form['ResName']);
 </script>
 
 <main>
-    {#await promise}
-    {:then resLabel}
+    {#await promise then resLabel}
         <h1>{$language === 'en' ? 'Search for' : 'Suchen nach'} {resLabel[$language]}</h1>
     {/await}
     {#each form['Props'] as prop} <!-- Create a SearchField for each prop in the json -->
         <SearchField bind:this={props[props.length]} prop={prop} {predefProp} {predefVal} parent="?mainres"/>
     {/each}
-    <button on:click={fireQuery}>{$language === 'en' ? "Search" : "Suchen"}</button>
-    <ResultsRepresentation query={query} results={results} json={form["ResultsRepresentation"]}/>
+    <button on:click={setRequestInfos}>{$language === 'en' ? "Search" : "Suchen"}</button>
+
+    <ResultsRepresentation {requestInfos} jsonFile={form["ResultsRepresentation"]}/>
 </main>

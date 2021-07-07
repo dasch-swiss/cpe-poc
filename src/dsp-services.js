@@ -1,5 +1,4 @@
-import {json, lists, ontologies, token} from "./store.js";
-import {language} from './store';
+import {json} from "./store.js";
 import {get} from 'svelte/store'
 const j = get(json);
 const ontologyIri = j['DSP']['Ontology'];
@@ -14,6 +13,12 @@ export class ListNode {
 }
 /*
 TODO: Need to implement a general getter for Prop and Res, where one can pass what to return via argument
+ */
+/**
+ * Logins to the server and returns the token.
+ *
+ * @param user
+ * @returns {Promise<any>}
  */
 export async function login(user) {
     const res = await fetch(`https://${server}/v2/authentication`,
@@ -34,6 +39,11 @@ export async function login(user) {
     return json.token;
 }
 
+/**
+ * Requests all the lists of a project and returns it.
+ *
+ * @returns {Promise<any>}
+ */
 export async function getList() {
     const res = await fetch(`https://${server}/admin/lists?${new URLSearchParams({projectIri: 'http://rdfh.ch/projects/' + shortCode})}`);
 
@@ -46,6 +56,11 @@ export async function getList() {
     return json.lists;
 }
 
+/**
+ * Requests the ontology of a project and returns it.
+ *
+ * @returns {Promise<any>}
+ */
 export async function getOntology() {
     const res = await fetch('https://' + server + '/v2/ontologies/allentities/' + encodeURIComponent('http://' + server + '/ontology/' + shortCode + '/' + ontologyIri + '/v2') + '?allLanguages=true', {
         method: 'GET'
@@ -60,6 +75,13 @@ export async function getOntology() {
     return json['@graph'];
 }
 
+/**
+ * Requests the resource by the iri and returns it.
+ *
+ * @param iri
+ * @param token
+ * @returns {Promise<any>}
+ */
 export async function getResByIri(iri, token) {
     // Checks if token is valid
     if (!token) {
@@ -80,6 +102,13 @@ export async function getResByIri(iri, token) {
     return await res.json();
 }
 
+/**
+ * Requests the list node by the iri and returns it.
+ *
+ * @param iri
+ * @param token
+ * @returns {Promise<any>}
+ */
 export async function getListNode(iri, token) {
     // Checks if token is valid
     if (!token) {
@@ -91,6 +120,11 @@ export async function getListNode(iri, token) {
             'Authorization': `Bearer ${token}`
         })
     });
+
+    // Checks if request succeeded
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
 
     return await res.json();
 }

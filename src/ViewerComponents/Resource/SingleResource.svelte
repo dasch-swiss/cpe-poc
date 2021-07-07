@@ -1,33 +1,52 @@
 <script>
     import {onMount} from 'svelte';
-    import {login, getList, getOntology, getResByIri, getListNode} from "../dsp-services";
-    import {language, token, lists, ontologies} from '../store';
+    import {login, getList, getOntology, getResByIri, getListNode} from "../../dsp-services";
+    import {language, token, lists, ontologies} from '../../store';
 
     export let resource, ontology, server, user, shortname, shortcode;
+    export let search_result;
     let properties = {}
     let error = false;
 
+    /**
+     * Checks if data comes from a search result or resource (= json file) and starts getting the data.
+     */
     onMount(() => {
-        getData();
+        if (resource) {
+            getData();
+        } else if (search_result) {
+            getData(search_result);
+        } else {
+            console.log("No valid input to show");
+        }
+
     })
 
     /**
      * Gets the resource data after it fetched token, list, ontology.
      */
-    async function getData() {
+    async function getData(search) {
         try {
             error = false;
             // Requests token and saves into the store
-            const logResult = await login(user);
-            token.set(logResult);
+            // TODO Check if token is not empty but invalid
+            if (!$token) {
+                const logResult = await login(user);
+                token.set(logResult);
+            }
             // Requests the list and saves into the store
-            const listResult = await getList();
-            lists.set(listResult);
+            if (!$lists) {
+                const listResult = await getList();
+                lists.set(listResult);
+            }
             // Requests the ontology and saves into the store
-            const ontResult = await getOntology();
-            ontologies.set(ontResult);
+            if (!$ontologies) {
+                const ontResult = await getOntology();
+                ontologies.set(ontResult);
+            }
             // Requests the resource
-            const resData = await getResByIri(resource['Id'], $token);
+            const iri = search ? search['@id'] : resource['Id'];
+            const resData = await getResByIri(iri , $token);
             console.log(resData);
 
             // Adds important properties
@@ -38,7 +57,7 @@
                 },
                 '@id': {
                     labels: {'en': 'Resource ID', 'de': 'Resource ID'},
-                    values: new Array(resource['Id'])
+                    values: new Array(iri)
                 }
             };
 
@@ -57,7 +76,7 @@
      * @param resData resource data from the request
      */
     function defaultOrCustomProps(resData) {
-        if (resource.hasOwnProperty('Props')) {
+        if (resource && resource.hasOwnProperty('Props')) {
             processCustomProp(resData, resource['Props']);
         } else {
             processDefaultProp(resData);
@@ -143,14 +162,14 @@
                 break;
             case 'knora-api:TextValue':
                 // Simple Text
-                $ontologies.forEach(ontology => {
-                    if (ontology['@id'] === pName) {
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
                         if (properties[pName]) {
                             properties[pName]['values'].push(propValue['knora-api:valueAsString'])
                         } else {
                             properties[pName] = {
                                 values: new Array(propValue['knora-api:valueAsString']),
-                                labels: changeLabels(ontology['rdfs:label']),
+                                labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
                             }
                         }
@@ -160,14 +179,14 @@
                 // TODO -> ['knora-api:textValueAsXml'] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<text><p>test with <strong>markup</strong></p></text>"
                 break;
             case 'knora-api:IntValue':
-                $ontologies.forEach(ontology => {
-                    if (ontology['@id'] === pName) {
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
                         if (properties[pName]) {
                             properties[pName]['values'].push(propValue['knora-api:intValueAsInt']);
                         } else {
                             properties[pName] = {
                                 values: [propValue['knora-api:intValueAsInt']],
-                                labels: changeLabels(ontology['rdfs:label']),
+                                labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
                             }
                         }
@@ -186,14 +205,14 @@
                 // ['knora-api:dateValueHasStartMonth'] = 5;
                 // ['knora-api:dateValueHasStartYear'] = 2018;
 
-                $ontologies.forEach(ontology => {
-                    if (ontology['@id'] === pName) {
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
                         if (properties[pName]) {
                             properties[pName]['values'].push(propValue['knora-api:valueAsString']);
                         } else {
                             properties[pName] = {
                                 values: new Array(propValue['knora-api:valueAsString']),
-                                labels: changeLabels(ontology['rdfs:label']),
+                                labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
                             };
                         }
@@ -220,23 +239,23 @@
                 break;
             case 'knora-api:LinkValue':
                 if (customProp) {
-                    if (!customProp['linkResource'] ) {
+                    if (!customProp['linkedResource'] ) {
                         return;
                     }
 
                     // TODO try catch should be inserted
                     const reqLinkTarget = await getResByIri(propValue['knora-api:linkValueHasTarget']['@id'], $token);
-                    processCustomProp(reqLinkTarget, customProp['linkResource']['Props']);
+                    processCustomProp(reqLinkTarget, customProp['linkedResource']['Props']);
 
                 } else {
-                    $ontologies.forEach(ontology => {
-                        if (ontology['@id'] === pName) {
+                    $ontologies.forEach(onto => {
+                        if (onto['@id'] === pName) {
                             if (properties[pName]) {
                                 properties[pName]['values'].push(propValue['knora-api:linkValueHasTarget']['@id']);
                             } else {
                                 properties[pName] = {
                                     values: new Array(propValue['knora-api:linkValueHasTarget']['@id']),
-                                    labels:  changeLabels(ontology['rdfs:label']),
+                                    labels:  changeLabels(onto['rdfs:label']),
                                     customName: cName ? cName : null
                                 };
                             }
@@ -271,7 +290,6 @@
 
         return result;
     }
-
 </script>
 
 <main>
@@ -286,7 +304,7 @@
         <div>
             {#if Object.entries(properties).length > 0}
                 <section>
-                    {#if resource['customTitle']}
+                    {#if resource && resource['customTitle']}
                         <div class='res-title'>{resource['customTitle']}</div>
                     {/if}
                     {#each Object.entries(properties) as [key, value]}
