@@ -101,7 +101,6 @@
      * Closes the overlay with the image.
      */
     function closeImageOverlay() {
-        console.log('Closes overlay');
         const clicked = document.getElementById('overlay-container');
         clicked.style.display = 'none';
         openedImageID = null;
