@@ -18,7 +18,7 @@
     }
 
     /**
-     * Prepares the request and assigns to variable 'promise'
+     * Prepares the request and assigns to variable 'promise'.
      *
      * @param offset
      */
@@ -43,9 +43,9 @@
         // Checks if request succeeded
         if (!res.ok) {
             console.error(json);
-            return new Promise(() => {
-                throw new Error(`${res.status.toString()}: ${res.statusText}`);
-            })
+            return new Promise.reject(
+                new Error(`${res.status.toString()}: ${res.statusText}`)
+            )
         }
 
         console.log(json);

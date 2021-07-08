@@ -47,6 +47,7 @@
         return res;
     }
 </script>
+
 {#each allResources as res}
     <!-- TODO Show the appropriate properties-->
     <section>

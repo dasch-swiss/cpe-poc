@@ -30,12 +30,16 @@ export async function login(user) {
             body: JSON.stringify({'email': user['Email'], 'password': user['Pwd']})
         })
 
+    const json = await res.json();
+
     // Checks if request succeeded
     if (!res.ok) {
-        throw new Error(res.statusText);
+        console.error(json);
+        return new Promise.reject(
+            new Error(`${res.status.toString()}: ${res.statusText}`)
+        )
     }
 
-    const json = await res.json();
     return json.token;
 }
 
