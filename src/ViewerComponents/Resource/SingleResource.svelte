@@ -46,7 +46,7 @@
             }
             // Requests the resource
             const iri = search ? search['@id'] : resource['Id'];
-            const resData = await getResByIri(iri , $token);
+            const resData = await getResByIri(iri, $token);
             console.log(resData);
 
             // Adds important properties
@@ -89,18 +89,20 @@
      * @param resData resource data from the request
      * @param customProps properties from the JSON file
      */
-    function processCustomProp(resData, customProps) {
-        customProps.forEach(customProp => {
+    async function processCustomProp(resData, customProps) {
+        for (let customProp of customProps) {
             const propName = resData.hasOwnProperty(`${customProp['propName']}Value`) ? `${customProp['propName']}Value` : customProp['propName'];
 
             if (resData[propName]) {
                 if (Array.isArray(resData[propName])) {
-                    resData[propName].forEach(reqProperty => saveProp(null, reqProperty, customProp));
+                    for (let reqProperty of resData[propName]) {
+                        await saveProp(null, reqProperty, customProp)
+                    }
                 } else {
-                    saveProp(null, resData[propName], customProp);
+                    await saveProp(null, resData[propName], customProp);
                 }
             }
-        })
+        }
     }
 
     /**
@@ -108,15 +110,16 @@
      *
      * @param resData resource data from the request
      */
-    function processDefaultProp(resData) {
+    async function processDefaultProp(resData) {
         for (const [key, value] of Object.entries(resData)) {
-
-            if (key.includes(`${ontology}:`)){
+            if (key.includes(`${ontology}:`)) {
                 const correctedKey = key.replace('Value', '');
                 if (Array.isArray(value)) {
-                    value.forEach(val => saveProp(correctedKey, val, null));
+                    for (let val of value) {
+                        await saveProp(correctedKey, val, null)
+                    }
                 } else {
-                    saveProp(correctedKey, value, null);
+                    await saveProp(correctedKey, value, null);
                 }
             }
         }
@@ -239,13 +242,13 @@
                 break;
             case 'knora-api:LinkValue':
                 if (customProp) {
-                    if (!customProp['linkedResource'] ) {
+                    if (!customProp['linkedResource']) {
                         return;
                     }
 
                     // TODO try catch should be inserted
                     const reqLinkTarget = await getResByIri(propValue['knora-api:linkValueHasTarget']['@id'], $token);
-                    processCustomProp(reqLinkTarget, customProp['linkedResource']['Props']);
+                    await processCustomProp(reqLinkTarget, customProp['linkedResource']['Props']);
 
                 } else {
                     $ontologies.forEach(onto => {
@@ -255,7 +258,7 @@
                             } else {
                                 properties[pName] = {
                                     values: new Array(propValue['knora-api:linkValueHasTarget']['@id']),
-                                    labels:  changeLabels(onto['rdfs:label']),
+                                    labels: changeLabels(onto['rdfs:label']),
                                     customName: cName ? cName : null
                                 };
                             }
@@ -305,7 +308,7 @@
             {#if Object.entries(properties).length > 0}
                 <section>
                     {#if resource && resource['customTitle']}
-                        <div class='res-title'>{resource['customTitle']}</div>
+                        <div class="res-title">{resource['customTitle']}</div>
                     {/if}
                     {#each Object.entries(properties) as [key, value]}
                         <div class='prop-header'>{value.customName ? value.customName : value.labels[$language]}</div>
