@@ -1,6 +1,7 @@
 <script>
     import MultipleResources from './MultipleResources.svelte';
     import Loading from '../Loading.svelte';
+    import {json} from '../../store.js';
 
     export let requestInfos, jsonFile;
     let promise;
@@ -43,7 +44,7 @@
         // Checks if request succeeded
         if (!res.ok) {
             console.error(json);
-            return new Promise.reject(
+            return Promise.reject(
                 new Error(`${res.status.toString()}: ${res.statusText}`)
             )
         }
@@ -120,7 +121,14 @@
                 {getAmountRange(data)}
 
                 <!-- TODO: In case there is only on result property "@graph" is not present -->
-                <MultipleResources results={data['@graph']} {jsonFile}/>
+                <MultipleResources
+                        results={data['@graph']}
+                        {jsonFile}
+                        ontology={$json['DSP']['Ontology']}
+                        server={$json['DSP']['Server']}
+                        shortcode = {$json['DSP']['ShortCode']}
+                        shortname = {$json['DSP']['ShortName']}
+                        user = {$json['DSP']['User']}/>
             {/if}
         {:catch error}
             <div class="error">

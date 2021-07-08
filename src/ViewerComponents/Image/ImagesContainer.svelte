@@ -43,7 +43,7 @@
         // Checks if request succeeded
         if (!res.ok) {
             console.error(json);
-            return new Promise.reject(
+            return Promise.reject(
                 new Error(`${res.status.toString()}: ${res.statusText}`)
             )
         }

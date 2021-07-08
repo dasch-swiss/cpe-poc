@@ -16,10 +16,10 @@
             getData();
         } else if (search_result) {
             getData(search_result);
+            console.log(search_result);
         } else {
             console.log("No valid input to show");
         }
-
     })
 
     /**
@@ -47,7 +47,6 @@
             // Requests the resource
             const iri = search ? search['@id'] : resource['Id'];
             const resData = await getResByIri(iri, $token);
-            console.log(resData);
 
             // Adds important properties
             properties = {
