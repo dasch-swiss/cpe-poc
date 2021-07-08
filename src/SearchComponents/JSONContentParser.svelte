@@ -15,6 +15,7 @@
     import ResourceViewer from "../ViewerComponents/ResourceViewer.svelte";
     import ImageViewer from "../ViewerComponents/ImageViewer.svelte";
     import SimilarSearch from "./SimilarSearch.svelte";
+    import Map from "../ViewerComponents/Map.svelte";
 </script>
 {#if json} <!-- For Safety. This way this component can be called with falsy or undefined json -->
     {#each json['ClickableImage'] || [] as img}
@@ -63,6 +64,9 @@
                 user={user}
                 shortname={shortName}
                 shortcode={shortCode}/>
+    {/each}
+    {#each json["Map"] || [] as map}
+        <Map src={map["src"]} areas={map["areas"]} />
     {/each}
 {/if}
 
