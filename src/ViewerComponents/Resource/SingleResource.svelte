@@ -90,7 +90,8 @@
      */
     async function processCustomProp(resData, customProps) {
         for (let customProp of customProps) {
-            const propName = resData.hasOwnProperty(`${customProp['propName']}Value`) ? `${customProp['propName']}Value` : customProp['propName'];
+            const customPropKey = `${ontology}:${customProp['propName']}`;
+            const propName = resData.hasOwnProperty(`${customPropKey}Value`) ? `${customPropKey}Value` : customPropKey;
 
             if (resData[propName]) {
                 if (Array.isArray(resData[propName])) {
@@ -133,7 +134,7 @@
      * @returns {Promise<void>}
      */
     async function saveProp(propName, propValue, customProp) {
-        const pName = customProp ? customProp['propName'] : propName
+        const pName = customProp ? `${ontology}:${customProp['propName']}` : propName
         const cName = customProp && customProp['customName'] ? customProp['customName'] : null;
 
         switch (propValue['@type']) {
