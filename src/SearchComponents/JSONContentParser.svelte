@@ -45,7 +45,7 @@
         <GravsearchTemplate template={temp['Template']} parameters={temp['Params']}/>
     {/each}
     {#each json['SimilarSearch'] || [] as sim}
-        <SimilarSearch iri={sim['Iri']} props={sim['Props']} {user} {ontology} {server} {shortCode} {shortName}/>
+        <SimilarSearch jsonFile={sim} iri={sim['Iri']} props={sim['Props']} {user} {ontology} {server} {shortCode} {shortName}/>
     {/each}
     {#each json['ResourceViewers'] || [] as res}
         <SingleResource

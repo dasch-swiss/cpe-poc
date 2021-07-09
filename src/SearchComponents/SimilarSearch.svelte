@@ -3,14 +3,17 @@
     import {getResByIri, login} from "../dsp-services";
     import {token} from "../store";
     import {getFilterByNameValAndObj, getPropString, getPropStringHelper} from "./SearchUtility";
+    import ResultsRepresentation from "../ViewerComponents/ResultsRepresentation.svelte";
 
-    export let iri;
-    export let props;
+    export let jsonFile;
+    let iri = jsonFile['Iri'];
+    let props = jsonFile['Props'];
     export let user, ontology, server, shortCode, shortName;
     let resType;
     let data;
     let searchInfo = [];
-    
+    let requestInfos = [];
+
     async function getData() {
         const logResult = await login(user);  // TODO: Login should happen at app start and only be checked in dsp-services, not in components
         token.set(logResult);
@@ -21,20 +24,20 @@
         for (const prop of props) {
             await getPropValue(prop, data);
         }
-        await search();
+        getQueries();
     }
 
-    async function getPropValue(prop, data, linkQueue = []){
-        if (prop.hasOwnProperty("linkedResource")){
-            for (const linkProp of prop["linkedResource"]["Props"]){
+    async function getPropValue(prop, data, linkQueue = []) {
+        if (prop.hasOwnProperty("linkedResource")) {
+            for (const linkProp of prop["linkedResource"]["Props"]) {
                 const linkedIri = data[ontology + ':' + prop["propName"] + 'Value']['knora-api:linkValueHasTarget']['@id'];
                 const newData = await getResByIri(linkedIri, $token);
                 await getPropValue(linkProp, newData, linkQueue.concat([prop["propName"]]));
             }
         } else {
-            if(data.hasOwnProperty(ontology + ':' + prop['propName'])){
+            if (data.hasOwnProperty(ontology + ':' + prop['propName'])) {
                 // TODO: Support all property types
-                switch(data[ontology + ':' + prop['propName']]["@type"]){
+                switch (data[ontology + ':' + prop['propName']]["@type"]) {
                     case "knora-api:TextValue":
                         prop["value"] = data[ontology + ':' + prop['propName']]["knora-api:valueAsString"];
                         break;
@@ -51,34 +54,28 @@
                     prop["linkQueue"] = linkQueue;
                 }
                 searchInfo.push(prop);
-                console.log(searchInfo);
             }
         }
     }
 
-    function getStringForProp(prop){
+    function getStringForProp(prop) {
         let parent = '?mainres';
         let toReturn = '';
-        if (prop.hasOwnProperty("linkQueue")){
+        if (prop.hasOwnProperty("linkQueue")) {
             let curr;
             const temp = [...prop["linkQueue"]];
-            while (temp.length > 0){
+            while (temp.length > 0) {
                 curr = temp.shift();
                 toReturn += parent + ' ' + shortName + ':' + curr + ' ?' + curr + ' .\n';
                 parent = '?' + curr;
             }
         }
         toReturn += getPropStringHelper(prop, parent);
-        console.log(prop);
         return toReturn;
     }
 
-    async function search(){
-        let searchResults = [];
-        for (const prop of searchInfo){
-            if (searchResults.length >= 25){
-                break;
-            }
+    function getQueries() {
+        for (const prop of searchInfo) {
             let query = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\n' +
                 'PREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' +
                 'PREFIX knora-api-simple: <http://api.knora.org/ontology/knora-api/simple/v2#>\n' +
@@ -89,19 +86,22 @@
             query += getStringForProp(prop);
             query += getFilterByNameValAndObj(prop["propName"], prop["value"], prop["type"]);
             query += '}';
-            console.log(query);
-            const res = await fetch( 'https://' + server + '/v2/searchextended', {
-                method: 'POST',
-                body: query
+            requestInfos.push(
+                {
+                    url: 'https://' + server + '/v2/searchextended',
+                    gravsearch: query,
+                    method: 'POST'
 
-            })
-            const json = await res.json();
-            console.log(json);
-            searchResults = searchResults.concat(json["@graph"]);
+                }
+            )
         }
-        searchResults = searchResults.slice(0, 25);
-        console.log(searchResults);
+        console.log(requestInfos);
     }
+
     let dataPromise = getData();
 </script>
-
+{#await dataPromise then d}
+    {#each requestInfos as requestInfo}
+        <ResultsRepresentation requestInfos={requestInfo} jsonFile={jsonFile["ResultsRepresentation"]}/>
+    {/each}
+{/await}

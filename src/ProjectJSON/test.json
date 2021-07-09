@@ -138,7 +138,42 @@
               {
                 "propName": "bildGrab"
               }
-            ]
+            ],
+            "ResultsRepresentation": {
+              "MultipleImages": [
+                {
+                  "Props": [
+                    {
+                      "propName": "bildAutor"
+                    },
+                    {
+                      "propName": "bildRaum"
+                    },
+                    {
+                      "propName": "bildGrab"
+                    },
+                    {
+                      "propName": "bildBemerkung"
+                    },
+                    {
+                      "propName": "bildKampagne",
+                      "linkedResource": {
+                        "Props": [
+                          {
+                            "propName": "kampagneTeilnehmer"
+                          },
+                          {
+                            "propName": "kampagneUmgebung"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "ShowNone": true,
+                  "ShowPagination": true
+                }
+              ]
+            }
           }
         ]
       }
@@ -218,11 +253,15 @@
                         ]
                       }
                     }
-                  ]
+                  ],
+                  "ShowNone": false,
+                  "ShowPagination": false
                 }
               ],
               "MultipleImages": [
-                {"Props":  []}
+                {
+                  "Props": []
+                }
               ]
             }
           },

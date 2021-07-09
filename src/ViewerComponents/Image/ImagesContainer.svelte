@@ -112,14 +112,17 @@
             <Loading/>
         {:then data}
             {#if isEmpty(data)}
-                No images found
+                {#if !jsonFile.hasOwnProperty("ShowNone") || jsonFile["ShowNone"]}
+                    No images found
+                {/if}
             {:else}
+                {#if !jsonFile.hasOwnProperty("ShowPagination") || jsonFile["ShowPagination"]}
                 <!-- Pagination Buttons -->
                 <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
                 <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
 
                 {getAmountRange(data)}
-
+                {/if}
                 <!-- TODO: In case there is only on result property "@graph" is not present -->
                 <MultipleImages results={data['@graph']}/>
             {/if}
