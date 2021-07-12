@@ -114,29 +114,28 @@
     }
 </script>
 
-<main>
-    <section>
-        {#if allImages.length > 0}
-            <div class="images-container" style="--size: {square_size}px">
-                {#each allImages as img, i}
-                    <img on:click={() => openImageOverlay(img)}
-                         class="small-image"
-                         src="{getIIIfSquareURL(img['url'], square_size)}"
-                         alt="result image number {i + 1}">
-                {/each}
+<section>
+    {#if allImages.length > 0}
+        <div class="images-container" style="--size: {square_size}px">
+            {#each allImages as img, i}
+                <img on:click={() => openImageOverlay(img)}
+                     class="small-image"
+                     src="{getIIIfSquareURL(img['url'], square_size)}"
+                     alt="result image number {i + 1}">
+            {/each}
+        </div>
+        <div id="overlay-container">
+            <div class="full-image-container" style="--full-size: {image_size}px">
+                <div class="close" on:click={closeImageOverlay}>&times;</div>
+                <img id="full-image"on:click={() => openFullImage()} alt="detail of clicked image">
+                <div class="detail-text">Click for details</div>
             </div>
-            <div id="overlay-container">
-                <div class="full-image-container" style="--full-size: {image_size}px">
-                    <div class="close" on:click={closeImageOverlay}>&times;</div>
-                    <img id="full-image"on:click={() => openFullImage()} alt="detail of clicked image">
-                    <div class="detail-text">Click for details</div>
-                </div>
-            </div>
-        {:else }
-            <div>No Results</div>
-        {/if}
-    </section>
-</main>
+        </div>
+    {:else }
+        <div>No Results</div>
+    {/if}
+</section>
+
 
 <style>
     section {
