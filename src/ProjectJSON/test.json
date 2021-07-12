@@ -175,6 +175,27 @@
               ]
             }
           }
+        ],
+        "Map": [
+          {
+            "src": "img\\tdk_map.png",
+            "areas": [
+              {
+                "top": 137,
+                "left": 253,
+                "right": 331,
+                "bottom": 178,
+                "link": "/expert"
+              },
+              {
+                "top": 167,
+                "left": 481,
+                "right": 550,
+                "bottom": 261,
+                "link": "/handbook"
+              }
+            ]
+          }
         ]
       }
     },
