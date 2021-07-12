@@ -109,7 +109,7 @@
 {#if requestInfos}
     <div class="container">
         {#await promise}
-            <Loading/>
+            <Loading loading_text="...searching"/>
         {:then data}
             {#if isEmpty(data)}
                 No images found
