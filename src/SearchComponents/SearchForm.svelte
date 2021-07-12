@@ -44,22 +44,23 @@
             'CONSTRUCT {\n' +
             '?mainres knora-api:isMainResource true .\n'; // Standard beginning of a gravsearchquery. Including knora-api as well as knora-api-simple for corner cases (such as filtering for dates). TODO: prefix and api-url need to be passed as arguments
         for (const prop of props) {
-            toReturn += prop.getString(); // add the prop string for every prop.
+            if (!prop.isEmpty()){
+                toReturn += prop.getString();
+            }
         }
-        const oldString = toReturn; // to check whether properties from the viewer need to be added
-        toReturn += getResultRepresentationString(oldString, false);
         toReturn += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + shortName + ':' + form['ResName'] + ' .\n' // Standard for every query. CONSTRUCT section is closed, WHERE section openend.
         for (const prop of props) {
-            toReturn += prop.getOptionalString();
+            if (!prop.isEmpty()){
+                toReturn += prop.getString();
+            }
             toReturn += await prop.getFilter()
         }
-        toReturn += getResultRepresentationString(oldString, true);
         toReturn += '}'
         console.log(toReturn);
         query = toReturn;
         return toReturn;
     }
-
+/*
     function getResultRepresentationString(existingString, isOptional) {
         if (!form.hasOwnProperty("ResultsRepresentation")) {
             return "";
@@ -73,7 +74,6 @@
             }
             s += flattenAllPropNamesOfRep(representations[key], existingString, isOptional);
         }
-        console.log(s);
         return s;
     }
 
@@ -105,7 +105,7 @@
         }
         return toReturn;
     }
-
+*/
 </script>
 
 <main>

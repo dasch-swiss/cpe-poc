@@ -19,7 +19,9 @@
     export function getString() {
         let toReturn = getPropStringHelper(prop, parent);
         for (const child of children) {
-            toReturn += child.getString();
+            if (!child.isEmpty()) {
+                toReturn += child.getString();
+            }
         }
         return toReturn;
     }

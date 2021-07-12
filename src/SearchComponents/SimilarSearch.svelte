@@ -2,7 +2,7 @@
     // TODO: Support properties that are incoming links
     import {getResByIri, login} from "../dsp-services";
     import {token} from "../store";
-    import {getFilterByNameValAndObj, getPropString, getPropStringHelper} from "./SearchUtility";
+    import {getFilterByNameValAndObj, getPropStringHelper} from "./SearchUtility";
     import ResultsRepresentation from "../ViewerComponents/ResultsRepresentation.svelte";
 
     export let jsonFile;
@@ -94,8 +94,8 @@
 
                 }
             )
+            console.log(query);
         }
-        console.log(requestInfos);
     }
 
     let dataPromise = getData();
