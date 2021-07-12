@@ -12,20 +12,13 @@
      * Checks if data comes from a search result or resource (= json file) and starts getting the data.
      */
     onMount(() => {
-        if (resource) {
-            getData();
-        } else if (search_result) {
-            getData(search_result);
-            console.log(search_result);
-        } else {
-            console.log("No valid input to show");
-        }
+        getData(search_result);
     })
 
     /**
      * Gets the resource data after it fetched token, list, ontology.
      */
-    async function getData(search) {
+    async function getData(search = null) {
         try {
             error = false;
             // Requests token and saves into the store

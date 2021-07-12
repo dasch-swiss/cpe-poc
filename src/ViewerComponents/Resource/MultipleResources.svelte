@@ -50,9 +50,8 @@
 </script>
 
 {#each allResources as res}
-    <!-- TODO Show the appropriate properties-->
     <SingleResource
-            resource={null}
+            resource={jsonFile}
             search_result={res}
             {ontology}
             {server}
