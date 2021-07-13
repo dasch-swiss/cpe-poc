@@ -79,7 +79,7 @@
     }
 
     /**
-     * Checks if data is an empty object
+     * Checks if data is an empty object.
      *
      * @param data
      * @returns {boolean}
@@ -127,7 +127,11 @@
      * @param data
      */
     function getAmountRange(data) {
-        return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        if (data.hasOwnProperty('@graph')) {
+            return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        } else {
+            return `${current_offset * result_per_request + 1}`;
+        }
     }
 
     /**
@@ -138,13 +142,27 @@
      * @returns {boolean}
      */
     function checkStillImage(data) {
-        if (data && Array.isArray(data)) {
-            return data.every(obj => obj['knora-api:hasStillImageFileValue']);
+        if (data.hasOwnProperty('@graph') && Array.isArray(data['@graph'])) {
+            return data['@graph'].every(obj => obj['knora-api:hasStillImageFileValue']);
         } else {
-            return false;
+            return data.hasOwnProperty('knora-api:hasStillImageFileValue');
         }
     }
 
+    /**
+     * Wraps the data in an array if there is one or no result.
+     *
+     * @param data
+     */
+    function wrapData(data) {
+        if (data.hasOwnProperty('@graph')) {
+            return data['@graph'];
+        } else if (data['@id']) {
+            return [data];
+        } else {
+            return [];
+        }
+    }
 </script>
 
 {#if requestInfos}
@@ -158,19 +176,19 @@
                 {/if}
             {:else}
                 <!-- Checks if data have image information -->
-                {#if checkStillImage(data['@graph'])}
+                {#if checkStillImage(data)}
                     {#if !jsonFile.hasOwnProperty("ShowPagination") || jsonFile["ShowPagination"]}
-                        <!-- Pagination Buttons -->
+                        <!-- Pagination buttons -->
                         <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
                         <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
-
+                        <!-- Pagination range & amount -->
                         {getAmountRange(data)}
                         {#await promise_amount then data}
                             of {data['schema:numberOfItems']}
                         {/await}
                     {/if}
-                    <!-- TODO: In case there is only on result property "@graph" is not present -->
-                    <MultipleImages results={data['@graph']}/>
+
+                    <MultipleImages results={wrapData(data)}/>
                 {:else}
                     <div class="error">
                         <div class="error-header">Something went wrong</div>

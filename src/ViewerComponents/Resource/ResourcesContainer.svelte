@@ -128,7 +128,26 @@
      * @param data
      */
     function getAmountRange(data) {
-        return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        if (data.hasOwnProperty('@graph')) {
+            return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        } else {
+            return `${current_offset * result_per_request + 1}`;
+        }
+    }
+
+    /**
+     * Wraps the data in an array if there is one or no result.
+     *
+     * @param data
+     */
+    function wrapData(data) {
+        if (data['@graph']) {
+            return data['@graph'];
+        } else if (data['@id']) {
+            return [data];
+        } else {
+            return [];
+        }
     }
 </script>
 
@@ -143,18 +162,18 @@
                 {/if}
             {:else}
                 {#if !jsonFile.hasOwnProperty("ShowPagination") || jsonFile["ShowPagination"]}
-                    <!-- Pagination Buttons -->
+                    <!-- Pagination buttons -->
                     <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
                     <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
-
+                    <!-- Pagination range & amount -->
                     {getAmountRange(data)}
                     {#await promise_amount then data}
                         of {data['schema:numberOfItems']}
                     {/await}
                 {/if}
-                <!-- TODO: In case there is only on result property "@graph" is not present -->
+
                 <MultipleResources
-                        results={data['@graph']}
+                        results={wrapData(data)}
                         {jsonFile}
                         ontology={$json['DSP']['Ontology']}
                         server={$json['DSP']['Server']}
