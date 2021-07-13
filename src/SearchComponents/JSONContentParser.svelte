@@ -15,6 +15,7 @@
     import SingleResource from "../ViewerComponents/Resource/SingleResource.svelte";
     import SingleImage from "../ViewerComponents/Image/SingeImage.svelte";
     import SimilarSearch from "./SimilarSearch.svelte";
+    import Map from "../ViewerComponents/Map.svelte";
 </script>
 
 {#if json} <!-- For Safety. This way this component can be called with falsy or undefined json -->
@@ -45,7 +46,7 @@
         <GravsearchTemplate template={temp['Template']} parameters={temp['Params']}/>
     {/each}
     {#each json['SimilarSearch'] || [] as sim}
-        <SimilarSearch iri={sim['Iri']} props={sim['Props']} {user} {ontology} {server} {shortCode} {shortName}/>
+        <SimilarSearch jsonFile={sim} iri={sim['Iri']} props={sim['Props']} {user} {ontology} {server} {shortCode} {shortName}/>
     {/each}
     {#each json['ResourceViewers'] || [] as res}
         <SingleResource
@@ -64,5 +65,8 @@
                 user={user}
                 shortname={shortName}
                 shortcode={shortCode}/>
+    {/each}
+    {#each json["Map"] || [] as map}
+        <Map src={map["src"]} areas={map["areas"]} />
     {/each}
 {/if}

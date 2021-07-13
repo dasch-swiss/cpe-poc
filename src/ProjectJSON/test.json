@@ -138,6 +138,62 @@
               {
                 "propName": "bildGrab"
               }
+            ],
+            "ResultsRepresentation": {
+              "MultipleImages": [
+                {
+                  "Props": [
+                    {
+                      "propName": "bildAutor"
+                    },
+                    {
+                      "propName": "bildRaum"
+                    },
+                    {
+                      "propName": "bildGrab"
+                    },
+                    {
+                      "propName": "bildBemerkung"
+                    },
+                    {
+                      "propName": "bildKampagne",
+                      "linkedResource": {
+                        "Props": [
+                          {
+                            "propName": "kampagneTeilnehmer"
+                          },
+                          {
+                            "propName": "kampagneUmgebung"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "ShowNone": true,
+                  "ShowPagination": true
+                }
+              ]
+            }
+          }
+        ],
+        "Map": [
+          {
+            "src": "img\\tdk_map.png",
+            "areas": [
+              {
+                "top": 137,
+                "left": 253,
+                "right": 331,
+                "bottom": 178,
+                "link": "/expert"
+              },
+              {
+                "top": 167,
+                "left": 481,
+                "right": 550,
+                "bottom": 261,
+                "link": "/handbook"
+              }
             ]
           }
         ]
@@ -218,11 +274,15 @@
                         ]
                       }
                     }
-                  ]
+                  ],
+                  "ShowNone": false,
+                  "ShowPagination": false
                 }
               ],
               "MultipleImages": [
-                {"Props":  []}
+                {
+                  "Props": []
+                }
               ]
             }
           },

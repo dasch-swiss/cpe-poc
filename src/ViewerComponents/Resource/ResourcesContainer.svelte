@@ -112,14 +112,17 @@
             <Loading loading_text="...searching"/>
         {:then data}
             {#if isEmpty(data)}
-                No data found
+                {#if !jsonFile.hasOwnProperty("ShowNone") || jsonFile["ShowNone"]}
+                    No data found
+                {/if}
             {:else}
-                <!-- Pagination Buttons -->
-                <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
-                <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
+                {#if !jsonFile.hasOwnProperty("ShowPagination") || jsonFile["ShowPagination"]}
+                    <!-- Pagination Buttons -->
+                    <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
+                    <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
 
-                {getAmountRange(data)}
-
+                    {getAmountRange(data)}
+                {/if}
                 <!-- TODO: In case there is only on result property "@graph" is not present -->
                 <MultipleResources
                         results={data['@graph']}

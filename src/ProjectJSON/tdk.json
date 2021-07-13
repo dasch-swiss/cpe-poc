@@ -1,0 +1,73 @@
+{
+  "DSP": {
+    "Server": "api.0805-test-server.dasch.swiss",
+    "Ontology": "tdk_onto",
+    "ShortCode": "0805",
+    "ShortName": "tdk",
+    "User": {
+      "Email": "tdk0805import@example.com",
+      "Pwd": "test"
+    }
+  },
+  "Header": {
+    "Content": {
+      "ClickableImage": [
+        {
+          "src": "img\\Unibas logo.png",
+          "link": "/"
+        }
+      ],
+      "LinkButton": [
+        {
+          "link": "/expert",
+          "label": {
+            "en": "Expert Search",
+            "de": "Expertensuche"
+          }
+        },
+        {
+          "link": "/publikationen",
+          "label": {
+            "en": "Publications",
+            "de": "Publikationen"
+          }
+        },
+        {
+          "link": "/handbook",
+          "label": {
+            "en": "Hand book",
+            "de": "Handbuch"
+          }
+        }
+      ],
+      "LanguageSelector": [
+        {
+          "languages": [
+            {
+              "label": "English",
+              "value": "en"
+            },
+            {
+              "label": "Deutsch",
+              "value": "de"
+            }
+          ]
+        }
+      ],
+      "DropDownLinker": [
+        {
+          "style": "dropdown",
+          "links": [
+            {
+              "label": {
+                "en": "Tomb",
+                "de": "Grab"
+              }
+
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

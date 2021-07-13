@@ -104,6 +104,21 @@
         return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
     }
 
+    /**
+     * Checks if the data has hasStillImageFileValue property, so the images passed to the child component and
+     * can be displayed in the end.
+     *
+     * @param data
+     * @returns {boolean}
+     */
+    function checkStillImage(data) {
+        if (data && Array.isArray(data)) {
+            return data.every(obj => obj['knora-api:hasStillImageFileValue']);
+        } else {
+            return false;
+        }
+    }
+
 </script>
 
 {#if requestInfos}
@@ -112,16 +127,27 @@
             <Loading loading_text="...searching"/>
         {:then data}
             {#if isEmpty(data)}
-                No images found
+                {#if !jsonFile.hasOwnProperty("ShowNone") || jsonFile["ShowNone"]}
+                    No images found
+                {/if}
             {:else}
-                <!-- Pagination Buttons -->
-                <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
-                <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
+                <!-- Checks if data have image information -->
+                {#if checkStillImage(data['@graph'])}
+                    {#if !jsonFile.hasOwnProperty("ShowPagination") || jsonFile["ShowPagination"]}
+                        <!-- Pagination Buttons -->
+                        <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
+                        <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
 
-                {getAmountRange(data)}
-
-                <!-- TODO: In case there is only on result property "@graph" is not present -->
-                <MultipleImages results={data['@graph']}/>
+                        {getAmountRange(data)}
+                    {/if}
+                    <!-- TODO: In case there is only on result property "@graph" is not present -->
+                    <MultipleImages results={data['@graph']}/>
+                {:else}
+                    <div class="error">
+                        <div class="error-header">Something went wrong</div>
+                        <div class="error-text">Data are not images!</div>
+                    </div>
+                {/if}
             {/if}
         {:catch error}
             <div class="error">
