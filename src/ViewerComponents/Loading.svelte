@@ -1,5 +1,5 @@
 <script>
-    export let loading_text
+    export let loading_text = '...loading';
 </script>
 
 <div class="loading">{loading_text}</div>
