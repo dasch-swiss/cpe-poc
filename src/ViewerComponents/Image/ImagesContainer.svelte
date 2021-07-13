@@ -3,7 +3,7 @@
     import Loading from '../Loading.svelte';
 
     export let requestInfos, jsonFile;
-    let promise;
+    let promise_data, promise_amount;
     let current_offset = 0;
     const result_per_request = 25;
 
@@ -14,6 +14,7 @@
      */
     function initialize() {
         current_offset = 0;
+        promise_amount = requestDataCount();
         prepareRequest(current_offset);
     }
 
@@ -23,7 +24,7 @@
      * @param offset
      */
     function prepareRequest(offset) {
-        promise = requestData(offset);
+        promise_data = requestData(offset);
     }
 
     /**
@@ -36,6 +37,31 @@
         const res = await fetch(requestInfos['url'], {
             method: requestInfos['method'],
             body: requestInfos['gravsearch'] + `\n OFFSET ${offset}`
+        })
+
+        const json = await res.json();
+
+        // Checks if request succeeded
+        if (!res.ok) {
+            console.error(json);
+            return Promise.reject(
+                new Error(`${res.status.toString()}: ${res.statusText}`)
+            )
+        }
+
+        console.log(json);
+        return json;
+    }
+
+    /**
+     * Requests the data count with the parameter given from parent component and the offset 0.
+     *
+     * @returns {Promise<unknown>}
+     */
+    async function requestDataCount() {
+        const res = await fetch(requestInfos['url'] + '/count', {
+            method: requestInfos['method'],
+            body: requestInfos['gravsearch'] + `\n OFFSET 0`
         })
 
         const json = await res.json();
@@ -123,7 +149,7 @@
 
 {#if requestInfos}
     <div class="container">
-        {#await promise}
+        {#await promise_data}
             <Loading loading_text="...searching"/>
         {:then data}
             {#if isEmpty(data)}
@@ -139,6 +165,9 @@
                         <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
 
                         {getAmountRange(data)}
+                        {#await promise_amount then data}
+                            of {data['schema:numberOfItems']}
+                        {/await}
                     {/if}
                     <!-- TODO: In case there is only on result property "@graph" is not present -->
                     <MultipleImages results={data['@graph']}/>
