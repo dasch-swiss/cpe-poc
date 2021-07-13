@@ -82,9 +82,11 @@
                 'CONSTRUCT {\n' +
                 '?mainres knora-api:isMainResource true .\n';
             query += getStringForProp(prop);
+            query += addStillImageFile();
             query += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + shortName + ':' + resType + ' .\n';
             query += getStringForProp(prop);
             query += getFilterByNameValAndObj(prop["propName"], prop["value"], prop["type"]);
+            query += addStillImageFile();
             query += '}';
             requestInfos.push(
                 {
@@ -96,6 +98,19 @@
             )
             console.log(query);
         }
+    }
+
+    function addStillImageFile() {
+        let line = '';
+        const representations = jsonFile["ResultsRepresentation"];
+
+        for (const key in representations) {
+            if (key === 'MultipleImages') {
+                line += '?mainres knora-api:hasStillImageFileValue ?imgfile .\n';
+            }
+        }
+
+        return line;
     }
 
     let dataPromise = getData();
