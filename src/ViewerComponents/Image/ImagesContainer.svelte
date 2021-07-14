@@ -1,5 +1,6 @@
 <script>
     import MultipleImages from './MultipleImages.svelte';
+    import {wrapData} from "../ViewUtility";
     import Loading from '../Loading.svelte';
 
     export let requestInfos, jsonFile;
@@ -146,21 +147,6 @@
             return data['@graph'].every(obj => obj['knora-api:hasStillImageFileValue']);
         } else {
             return data.hasOwnProperty('knora-api:hasStillImageFileValue');
-        }
-    }
-
-    /**
-     * Wraps the data in an array if there is one or no result.
-     *
-     * @param data
-     */
-    function wrapData(data) {
-        if (data.hasOwnProperty('@graph')) {
-            return data['@graph'];
-        } else if (data['@id']) {
-            return [data];
-        } else {
-            return [];
         }
     }
 </script>

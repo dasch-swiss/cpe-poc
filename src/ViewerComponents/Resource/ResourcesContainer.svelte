@@ -1,6 +1,7 @@
 <script>
     import MultipleResources from './MultipleResources.svelte';
     import Loading from '../Loading.svelte';
+    import {wrapData} from "../ViewUtility";
     import {json} from '../../store.js';
 
     export let requestInfos, jsonFile;
@@ -62,7 +63,7 @@
     async function requestDataCount() {
         const res = await fetch(requestInfos['url'] + '/count', {
             method: requestInfos['method'],
-            body: requestInfos['gravsearch'] + `\n OFFSET 0`
+            body: requestInfos['gravsearch']
         })
 
         const json = await res.json();
@@ -132,21 +133,6 @@
             return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
         } else {
             return `${current_offset * result_per_request + 1}`;
-        }
-    }
-
-    /**
-     * Wraps the data in an array if there is one or no result.
-     *
-     * @param data
-     */
-    function wrapData(data) {
-        if (data['@graph']) {
-            return data['@graph'];
-        } else if (data['@id']) {
-            return [data];
-        } else {
-            return [];
         }
     }
 </script>

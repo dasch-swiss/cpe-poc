@@ -20,7 +20,7 @@
             const ontResult = await getOntology();
             ontologies.set(ontResult);
         } catch (e) {
-
+        //    TODO What to do if the requests all fail. Blocking app? Retry button?
         }
     })
 </script>
