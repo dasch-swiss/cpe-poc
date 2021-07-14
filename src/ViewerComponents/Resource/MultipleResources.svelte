@@ -1,5 +1,6 @@
 <script>
     import {onMount} from 'svelte';
+    import SingleResource from './SingleResource.svelte';
 
     export let results, jsonFile;
     export let ontology, server, user, shortname, shortcode;
@@ -47,22 +48,17 @@
         return res;
     }
 </script>
+
 {#each allResources as res}
-    <!-- TODO Show the appropriate properties-->
-    <section>
-        <div>{res['@id']}</div>
-        <div>{res['rdfs:label']}</div>
-    </section>
+    <SingleResource
+            resource={jsonFile}
+            search_result={res}
+            {ontology}
+            {server}
+            {shortcode}
+            {shortname}
+            {user}/>
 {/each}
 
 <style>
-    section {
-        margin: 0.5rem 0;
-        padding: 1.5rem;
-        border: 1px solid darkgray;
-        /*display: grid;*/
-        /*grid-template-columns: auto 1fr;*/
-        /*gap: 1rem;*/
-        /*font-size: smaller;*/
-    }
 </style>

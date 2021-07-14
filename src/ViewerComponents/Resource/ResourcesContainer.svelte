@@ -1,9 +1,11 @@
 <script>
     import MultipleResources from './MultipleResources.svelte';
     import Loading from '../Loading.svelte';
+    import {wrapData} from "../ViewUtility";
+    import {json} from '../../store.js';
 
     export let requestInfos, jsonFile;
-    let promise;
+    let promise_data, promise_amount;
     let current_offset = 0;
     const result_per_request = 25;
 
@@ -14,16 +16,17 @@
      */
     function initialize() {
         current_offset = 0;
+        promise_amount = requestDataCount();
         prepareRequest(current_offset);
     }
 
     /**
-     * Prepares the request and assigns to variable 'promise'
+     * Prepares the request and assigns to variable 'promise'.
      *
      * @param offset
      */
     function prepareRequest(offset) {
-        promise = requestData(offset);
+        promise_data = requestData(offset);
     }
 
     /**
@@ -43,9 +46,34 @@
         // Checks if request succeeded
         if (!res.ok) {
             console.error(json);
-            return new Promise(() => {
-                throw new Error(`${res.status.toString()}: ${res.statusText}`);
-            })
+            return Promise.reject(
+                new Error(`${res.status.toString()}: ${res.statusText}`)
+            )
+        }
+
+        console.log(json);
+        return json;
+    }
+
+    /**
+     * Requests the data count with the parameter given from parent component and the offset 0.
+     *
+     * @returns {Promise<unknown>}
+     */
+    async function requestDataCount() {
+        const res = await fetch(requestInfos['url'] + '/count', {
+            method: requestInfos['method'],
+            body: requestInfos['gravsearch']
+        })
+
+        const json = await res.json();
+
+        // Checks if request succeeded
+        if (!res.ok) {
+            console.error(json);
+            return Promise.reject(
+                new Error(`${res.status.toString()}: ${res.statusText}`)
+            )
         }
 
         console.log(json);
@@ -101,14 +129,18 @@
      * @param data
      */
     function getAmountRange(data) {
-        return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        if (data.hasOwnProperty('@graph')) {
+            return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        } else {
+            return `${current_offset * result_per_request + 1}`;
+        }
     }
 </script>
 
 {#if requestInfos}
     <div class="container">
-        {#await promise}
-            <Loading/>
+        {#await promise_data}
+            <Loading loading_text="...searching"/>
         {:then data}
             {#if isEmpty(data)}
                 {#if !jsonFile.hasOwnProperty("ShowNone") || jsonFile["ShowNone"]}
@@ -116,14 +148,24 @@
                 {/if}
             {:else}
                 {#if !jsonFile.hasOwnProperty("ShowPagination") || jsonFile["ShowPagination"]}
-                    <!-- Pagination Buttons -->
+                    <!-- Pagination buttons -->
                     <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
                     <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
-
+                    <!-- Pagination range & amount -->
                     {getAmountRange(data)}
+                    {#await promise_amount then data}
+                        of {data['schema:numberOfItems']}
+                    {/await}
                 {/if}
-                <!-- TODO: In case there is only on result property "@graph" is not present -->
-                <MultipleResources results={data['@graph']} {jsonFile}/>
+
+                <MultipleResources
+                        results={wrapData(data)}
+                        {jsonFile}
+                        ontology={$json['DSP']['Ontology']}
+                        server={$json['DSP']['Server']}
+                        shortcode = {$json['DSP']['ShortCode']}
+                        shortname = {$json['DSP']['ShortName']}
+                        user = {$json['DSP']['User']}/>
             {/if}
         {:catch error}
             <div class="error">

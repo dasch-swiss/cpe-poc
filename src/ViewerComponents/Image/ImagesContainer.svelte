@@ -1,9 +1,10 @@
 <script>
     import MultipleImages from './MultipleImages.svelte';
+    import {wrapData} from "../ViewUtility";
     import Loading from '../Loading.svelte';
 
     export let requestInfos, jsonFile;
-    let promise;
+    let promise_data, promise_amount;
     let current_offset = 0;
     const result_per_request = 25;
 
@@ -14,16 +15,17 @@
      */
     function initialize() {
         current_offset = 0;
+        promise_amount = requestDataCount();
         prepareRequest(current_offset);
     }
 
     /**
-     * Prepares the request and assigns to variable 'promise'
+     * Prepares the request and assigns to variable 'promise'.
      *
      * @param offset
      */
     function prepareRequest(offset) {
-        promise = requestData(offset);
+        promise_data = requestData(offset);
     }
 
     /**
@@ -43,9 +45,9 @@
         // Checks if request succeeded
         if (!res.ok) {
             console.error(json);
-            return new Promise(() => {
-                throw new Error(`${res.status.toString()}: ${res.statusText}`);
-            })
+            return Promise.reject(
+                new Error(`${res.status.toString()}: ${res.statusText}`)
+            )
         }
 
         console.log(json);
@@ -53,7 +55,32 @@
     }
 
     /**
-     * Checks if data is an empty object
+     * Requests the data count with the parameter given from parent component and the offset 0.
+     *
+     * @returns {Promise<unknown>}
+     */
+    async function requestDataCount() {
+        const res = await fetch(requestInfos['url'] + '/count', {
+            method: requestInfos['method'],
+            body: requestInfos['gravsearch'] + `\n OFFSET 0`
+        })
+
+        const json = await res.json();
+
+        // Checks if request succeeded
+        if (!res.ok) {
+            console.error(json);
+            return Promise.reject(
+                new Error(`${res.status.toString()}: ${res.statusText}`)
+            )
+        }
+
+        console.log(json);
+        return json;
+    }
+
+    /**
+     * Checks if data is an empty object.
      *
      * @param data
      * @returns {boolean}
@@ -101,7 +128,11 @@
      * @param data
      */
     function getAmountRange(data) {
-        return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        if (data.hasOwnProperty('@graph')) {
+            return `${current_offset * result_per_request + 1}-${current_offset * result_per_request + data['@graph'].length}`;
+        } else {
+            return `${current_offset * result_per_request + 1}`;
+        }
     }
 
     /**
@@ -112,19 +143,18 @@
      * @returns {boolean}
      */
     function checkStillImage(data) {
-        if (data && Array.isArray(data)) {
-            return data.every(obj => obj['knora-api:hasStillImageFileValue']);
+        if (data.hasOwnProperty('@graph') && Array.isArray(data['@graph'])) {
+            return data['@graph'].every(obj => obj['knora-api:hasStillImageFileValue']);
         } else {
-            return false;
+            return data.hasOwnProperty('knora-api:hasStillImageFileValue');
         }
     }
-
 </script>
 
 {#if requestInfos}
     <div class="container">
-        {#await promise}
-            <Loading/>
+        {#await promise_data}
+            <Loading loading_text="...searching"/>
         {:then data}
             {#if isEmpty(data)}
                 {#if !jsonFile.hasOwnProperty("ShowNone") || jsonFile["ShowNone"]}
@@ -132,16 +162,19 @@
                 {/if}
             {:else}
                 <!-- Checks if data have image information -->
-                {#if checkStillImage(data['@graph'])}
+                {#if checkStillImage(data)}
                     {#if !jsonFile.hasOwnProperty("ShowPagination") || jsonFile["ShowPagination"]}
-                        <!-- Pagination Buttons -->
+                        <!-- Pagination buttons -->
                         <button disabled={preventPrevious()} on:click={() => previous()}>&lt;</button>
                         <button disabled={preventNext(data)} on:click={() => next()}>&gt;</button>
-
+                        <!-- Pagination range & amount -->
                         {getAmountRange(data)}
+                        {#await promise_amount then data}
+                            of {data['schema:numberOfItems']}
+                        {/await}
                     {/if}
-                    <!-- TODO: In case there is only on result property "@graph" is not present -->
-                    <MultipleImages results={data['@graph']}/>
+
+                    <MultipleImages results={wrapData(data)}/>
                 {:else}
                     <div class="error">
                         <div class="error-header">Something went wrong</div>

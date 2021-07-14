@@ -48,6 +48,7 @@
                 toReturn += prop.getString();
             }
         }
+        toReturn += addStillImageFile();
         toReturn += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + shortName + ':' + form['ResName'] + ' .\n' // Standard for every query. CONSTRUCT section is closed, WHERE section openend.
         for (const prop of props) {
             if (!prop.isEmpty()){
@@ -55,10 +56,24 @@
             }
             toReturn += await prop.getFilter()
         }
+        toReturn += addStillImageFile();
         toReturn += '}'
         console.log(toReturn);
         query = toReturn;
         return toReturn;
+    }
+
+    function addStillImageFile() {
+        let line = '';
+        const representations = form["ResultsRepresentation"];
+
+        for (const key in representations) {
+            if (key === 'MultipleImages') {
+                line += '?mainres knora-api:hasStillImageFileValue ?imgfile .\n';
+            }
+        }
+
+        return line;
     }
 /*
     function getResultRepresentationString(existingString, isOptional) {

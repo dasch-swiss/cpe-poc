@@ -40,75 +40,75 @@
       "Content": {
         "ResourceViewers": [
           {
-            "Id": "http://rdfh.ch/0826/IYYDlxMtRsCkqyqGSpZm5w",
+            "Id": "http://rdfh.ch/0826/8Tf4BRxYQCm60wZiZqubVg",
             "customTitle": "Resource information",
             "Props": [
               {
-                "propName": "teimww:hasPrefixDisplayedTitle",
+                "propName": "hasPrefixDisplayedTitle",
                 "linkResource": {}
               },
               {
-                "propName": "teimww:hasDisplayedTitle",
+                "propName": "hasDisplayedTitle",
                 "linkResource": null
               },
               {
-                "propName": "teimww:hasText"
+                "propName": "hasText"
               },
               {
-                "propName": "teimww:hasTextHist"
+                "propName": "hasTextHist"
               },
               {
-                "propName": "teimww:hasPage"
+                "propName": "hasPage"
               },
               {
-                "propName": "teimww:hasPageHist"
+                "propName": "hasPageHist"
               },
               {
-                "propName": "teimww:hasFunctionVoice"
+                "propName": "hasFunctionVoice"
               },
               {
-                "propName": "teimww:hasResearchField"
+                "propName": "hasResearchField"
               },
               {
-                "propName": "teimww:hasStatus"
+                "propName": "hasStatus"
               },
               {
-                "propName": "teimww:hasMarking"
+                "propName": "hasMarking"
               },
               {
-                "propName": "teimww:contains",
+                "propName": "contains",
                 "linkResource": {
                   "Props": [
                     {
-                      "propName": "teimww:hasLexiaTitle"
+                      "propName": "hasLexiaTitle"
                     }
                   ]
                 }
               },
               {
-                "propName": "teimww:occursIn",
+                "propName": "occursIn",
                 "linkResource": {
                   "Props": [
                     {
-                      "propName": "teimww:hasBookTitle"
+                      "propName": "hasBookTitle"
                     },
                     {
-                      "propName": "teimww:hasCreationDate",
+                      "propName": "hasCreationDate",
                       "customName": "Date"
                     },
                     {
-                      "propName": "teimww:hasLanguage",
+                      "propName": "hasLanguage",
                       "customName": "The language of book"
                     },
                     {
-                      "propName": "teimww:hasBookInternalId"
+                      "propName": "hasBookInternalId"
                     },
                     {
-                      "propName": "teimww:isWrittenBy",
+                      "propName": "isWrittenBy",
                       "linkResource": {
                         "Props": [
                           {
-                            "propName": "teimww:hasLastName",
+                            "propName": "hasLastName",
                             "customName": "Author name"
                           }
                         ]
@@ -118,7 +118,7 @@
                 }
               },
               {
-                "propName": "teimww:isMentionedIn",
+                "propName": "isMentionedIn",
                 "linkResource": {
                   "Props": []
                 }
@@ -126,62 +126,64 @@
             ]
           },
           {
-            "Id": "http://rdfh.ch/0826/Dm7E0MhcQQSTZr2i2DxgJg"
+            "Id": "http://rdfh.ch/0826/Kd4QcDvcQASGExXfKLuJKw",
+            "customTitle": "This is a book"
           },
           {
-            "Id": "http://rdfh.ch/0826/Q41W8bMTSa2lpgEZ2AYenA"
+            "Id": "http://rdfh.ch/0826/vhWe5ENMQLinb6hCusmJbQ",
+            "customTitle": "Person"
           },
           {
-            "Id": "http://rdfh.ch/0826/-K_x-wlkRLWdcXXwlyGiHw",
+            "Id": "http://rdfh.ch/0826/1nmuKX5uQqWn9TeAYjYHfQ",
             "Props": [
               {
-                "propName": "teimww:hasPrefixDisplayedTitle",
+                "propName": "hasPrefixDisplayedTitle",
                 "linkResource": {}
               },
               {
-                "propName": "teimww:hasDisplayedTitle",
+                "propName": "hasDisplayedTitle",
                 "linkResource": null
               },
               {
-                "propName": "teimww:hasText"
+                "propName": "hasText"
               },
               {
-                "propName": "teimww:hasTextHist"
+                "propName": "hasTextHist"
               },
               {
-                "propName": "teimww:hasPage"
+                "propName": "hasPage"
               },
               {
-                "propName": "teimww:hasPageHist"
+                "propName": "hasPageHist"
               },
               {
-                "propName": "teimww:hasFunctionVoice"
+                "propName": "hasFunctionVoice"
               },
               {
-                "propName": "teimww:hasResearchField"
+                "propName": "hasResearchField"
               },
               {
-                "propName": "teimww:hasStatus"
+                "propName": "hasStatus"
               },
               {
-                "propName": "teimww:hasMarking"
+                "propName": "hasMarking"
               },
               {
-                "propName": "teimww:contains",
+                "propName": "contains",
                 "linkResource": {
                   "Props": [
                     {
-                      "propName": "teimww:hasLexiaTitle"
+                      "propName": "hasLexiaTitle"
                     }
                   ]
                 }
               },
               {
-                "propName": "teimww:occursIn",
+                "propName": "occursIn",
                 "linkResource": {
                   "Props": [
                     {
-                      "propName": "teimww:hasBookTitle"
+                      "propName": "hasBookTitle"
                     }
                   ]
                 }

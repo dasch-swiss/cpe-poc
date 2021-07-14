@@ -11,10 +11,9 @@
     let viewer
 
     /**
-     * Assigns an unique ID  to the container and starts getting the data.
+     * Assigns an unique ID to the container and starts getting the data.
      */
     onMount(() => {
-        // TODO Make sure the id is unique & move it to an service
         container.id = generateID();
         getData();
     })

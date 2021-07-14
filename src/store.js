@@ -1,5 +1,5 @@
-import {writable} from 'svelte/store'
-import * as j from './ProjectJSON/test.json'
+import {writable} from 'svelte/store';
+import * as j from './ProjectJSON/test.json';
 
 export const language = writable('en');
 export const json = writable(j);
