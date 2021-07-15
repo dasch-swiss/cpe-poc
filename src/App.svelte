@@ -4,7 +4,6 @@
     import Router from 'svelte-spa-router';
     import routes from './routes';
 
-    //import * as json from './mls.json' // imports the json file and directly loads it into the variable json.
     import JSONContentParser from "./SearchComponents/JSONContentParser.svelte";
     import {json, lists, ontologies, token} from './store.js';
     import {getList, getOntology, login} from "./dsp-services";

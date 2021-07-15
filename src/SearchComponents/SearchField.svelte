@@ -1,59 +1,42 @@
 <script>
-    /* Assumes text property */
+    // provides a search field for the search form, recursively in case of linked properties
     import {getLabelForProp, getListByPropName, getObjectTypeForProp} from "../dsp-services";
-    import {getFilterByNameAndVal, getPropString, getPropStringHelper} from './SearchUtility';
-
-    export let parent;
-    export let prop, predefProp, predefVal;
-    let dateDepth;
-    let children = [];
-    let value = "";
-    let name = prop["propName"]; // helper to avoid refreshing on await command in html.
+    import {getFilterByNameAndVal, getPropString} from './SearchUtility';
     import {language} from '../store.js'
     import SearchField from "./SearchField.svelte";
+
+    export let parent; //holds the parent gravsearch identifier for creating the gravsearch string
+    export let prop, predefProp, predefVal;
+    let dateDepth; //for date properties, this tells us whether the date was given with month or year precision
+    let children = []; //in case of linked resources
+    let value = ""; //stores the value to filter for
+    let name = prop["propName"]; // helper to avoid refreshing on await command in html.
+
 
     /*
         This function return the gravsearch string that references this value. It takes into account whether its a property of the main resource or if the main resource is linked.
         @return: the gravsearch string
     */
     export function getString() {
-        let toReturn = getPropStringHelper(prop, parent);
+        let toReturn = getPropString(prop, parent);
         for (const child of children) {
-            if (!child.isEmpty()) {
+            if (!child.isEmpty()) { //empty children are not added to the string
                 toReturn += child.getString();
             }
         }
         return toReturn;
     }
 
-    export function getOptionalString() {
-        let toReturn = '';
-        if (isEmpty()) {
-            toReturn += 'OPTIONAL {\n';
-        }
-        toReturn += getPropStringHelper(prop, parent);
-        for (const child of children) {
-            toReturn += child.getOptionalString();
-        }
-        if (isEmpty()) {
-            toReturn += '}\n';
-        }
-        return toReturn;
-    }
-
     /*
-       A helper function to create the query when the search needs to be fired. Returns the filter string. Currently only
-       supports text properties.
+       A helper function to create the query when the search needs to be fired. Returns the filter string.
 
-
-       @propName: the name of the property to create the filter form
        @return: returns the filter string
     */
     export async function getFilter() {
         if (isEmpty()) {
             return '';
         }
-        if (children.length > 0) {
+        if (children.length > 0) { // if the prop has children, this is not the property with the filter but rather its children
             let toReturn = "";
             for (const child of children) {
                 toReturn += await child.getFilter();
@@ -61,9 +44,12 @@
             return toReturn;
         }
         return await getFilterByNameAndVal(prop['propName'], value, dateDepth);
-
     }
 
+    /*
+    Checks whether this property is empty, meaning it itself as well as all its children do not have a value to filter for
+    @return: the boolean
+     */
     export function isEmpty() {
         if (prop.hasOwnProperty("linkedResource")) {
             for (const child of children) {
@@ -76,16 +62,17 @@
         return value === "";
     }
 
-    value = predefProp === prop['propName'] ? predefVal : '';
-    let promise = getLabelForProp(prop['propName']);
-    let secondPromise = getObjectTypeForProp(prop['propName']);
+    value = predefProp === prop['propName'] ? predefVal : ''; //the value might be predefined by another component
+    let labelPromise = getLabelForProp(prop['propName']);
+    let objectPromise = getObjectTypeForProp(prop['propName']);
 </script>
-{#if !prop.hasOwnProperty("linkedResource")}
-    {#await promise}
+
+{#if !prop.hasOwnProperty("linkedResource")} <!-- Since if there are children, we don't need to display anything for this prop itself -->
+    {#await labelPromise}
     {:then propLabel}
         <p>{$language === 'en' ? "Enter search value for" : "Suchwert eingeben für" } {propLabel[$language]}</p>
     {/await}
-    {#await secondPromise}
+    {#await objectPromise}
     {:then obj}
         {#if obj === 'knora-api:DateValue'}
             <select bind:value={dateDepth} on:change={()=> {value = null;}}>
@@ -121,6 +108,7 @@
             <input placeholder="{$language === 'en' ? 'Enter search value' : 'Suchwert eingeben'}" bind:value={value}/>
         {/if}
     {/await}
+    <!-- TODO: Support more property types -->
 {:else}
     {#each prop["linkedResource"]["Props"] as link}
         <SearchField bind:this={children[children.length]} prop={link} {predefProp} {predefVal}

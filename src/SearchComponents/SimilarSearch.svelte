@@ -1,42 +1,50 @@
 <script>
-    // TODO: Support properties that are incoming links
+    /*
+    A component that takes an iri and searches for other resources with the same values for some given properties.
+    TODO: Support properties that are incoming links
+    */
+
+
     import {getResByIri, login} from "../dsp-services";
     import {token} from "../store";
-    import {getFilterByNameValAndObj, getPropStringHelper} from "./SearchUtility";
+    import {getFilterByNameValAndObj, getPropString} from "./SearchUtility";
     import ResultsRepresentation from "../ViewerComponents/ResultsRepresentation.svelte";
 
-    export let jsonFile;
+    export let jsonFile; // contains the relevant part of the json.
+    export let user, ontology, server, shortCode, shortName;
     let iri = jsonFile['Iri'];
     let props = jsonFile['Props'];
-    export let user, ontology, server, shortCode, shortName;
     let resType;
-    let data;
-    let searchInfo = [];
-    let requestInfos = [];
+    let data; // contains the data available for the resource corresponding to the given iri.
+    let searchInfo = []; // helper array that stores the information to create the queries.
+    let requestInfos = []; // holds the output for the viewer components
 
     async function getData() {
-        const logResult = await login(user);  // TODO: Login should happen at app start and only be checked in dsp-services, not in components
-        token.set(logResult);
         // Requests the resource
         data = await getResByIri(iri, $token);
-        let linkedIri = '';
         resType = data["@type"].replace(ontology + ':', '');
         for (const prop of props) {
-            await getPropValue(prop, data);
+            await prepareProp(prop, data);
         }
         getQueries();
     }
 
-    async function getPropValue(prop, data, linkQueue = []) {
+    /*
+    Augment the prop with information about its type and value and store it in the searchInfo array. Gets called
+    recursively for linked properties.
+    @prop: the property as provided in the json
+    @data: the information about the parent resource as received by the api
+    @linkQueue: stores the path to reach this property if it is reached via linked properties.
+     */
+    async function prepareProp(prop, data, linkQueue = []) {
         if (prop.hasOwnProperty("linkedResource")) {
             for (const linkProp of prop["linkedResource"]["Props"]) {
                 const linkedIri = data[ontology + ':' + prop["propName"] + 'Value']['knora-api:linkValueHasTarget']['@id'];
                 const newData = await getResByIri(linkedIri, $token);
-                await getPropValue(linkProp, newData, linkQueue.concat([prop["propName"]]));
+                await prepareProp(linkProp, newData, linkQueue.concat([prop["propName"]]));
             }
         } else {
-            if (data.hasOwnProperty(ontology + ':' + prop['propName'])) {
-                // TODO: Support all property types
+            if (data.hasOwnProperty(ontology + ':' + prop['propName'])) { //reached the property that actually needs to be filtered for. TODO: Support all property types
                 switch (data[ontology + ':' + prop['propName']]["@type"]) {
                     case "knora-api:TextValue":
                         prop["value"] = data[ontology + ':' + prop['propName']]["knora-api:valueAsString"];
@@ -58,10 +66,14 @@
         }
     }
 
+    /*
+    Returns the gravsearch query string for a property stored in searchInfo.
+    @return: the string to be added to the gravsearch query.
+     */
     function getStringForProp(prop) {
         let parent = '?mainres';
         let toReturn = '';
-        if (prop.hasOwnProperty("linkQueue")) {
+        if (prop.hasOwnProperty("linkQueue")) { //if the property to be filtered for was a linked property, we need to add the path to reach it to the query.
             let curr;
             const temp = [...prop["linkQueue"]];
             while (temp.length > 0) {
@@ -70,19 +82,21 @@
                 parent = '?' + curr;
             }
         }
-        toReturn += getPropStringHelper(prop, parent);
+        toReturn += getPropString(prop, parent);
         return toReturn;
     }
-
+    /*
+    For each of the properties provided in the json, the query is created and stored in the requestInfos.
+     */
     function getQueries() {
         for (const prop of searchInfo) {
             let query = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\n' +
                 'PREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' +
                 'PREFIX knora-api-simple: <http://api.knora.org/ontology/knora-api/simple/v2#>\n' +
                 'CONSTRUCT {\n' +
-                '?mainres knora-api:isMainResource true .\n';
+                '?mainres knora-api:isMainResource true .\n'; //maybe add this default string to a server.
             query += getStringForProp(prop);
-            query += addStillImageFile();
+            query += addStillImageFile(); // if a image viewer is used, here we need to add the still image information
             query += '} WHERE {\n?mainres a knora-api:Resource .\n?mainres a ' + shortName + ':' + resType + ' .\n';
             query += getStringForProp(prop);
             query += getFilterByNameValAndObj(prop["propName"], prop["value"], prop["type"]);
@@ -96,10 +110,12 @@
 
                 }
             )
-            console.log(query);
         }
     }
-
+    /*
+    Checks whether an ImageViewer is used in conjunction with this component and adds the necessary string.
+    @return: the string to be added.
+     */
     function addStillImageFile() {
         let line = '';
         const representations = jsonFile["ResultsRepresentation"];
@@ -113,9 +129,9 @@
         return line;
     }
 
-    let dataPromise = getData();
+    let queriesPromise = getData();
 </script>
-{#await dataPromise then d}
+{#await queriesPromise then d}
     {#each requestInfos as requestInfo}
         <ResultsRepresentation requestInfos={requestInfo} jsonFile={jsonFile["ResultsRepresentation"]}/>
     {/each}

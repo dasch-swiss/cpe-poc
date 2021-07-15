@@ -1,4 +1,7 @@
 <script>
+    /*
+    Helper that represents the properties and the option to add filter for the ExpertSearch component
+     */
 
     import {getListByPropName, getPropsWithObjAndLabelsForRes} from "../dsp-services";
     import {language} from "../store.js";
@@ -30,6 +33,9 @@
         return deleted;
     }
 
+    /*
+    Creates the string to create the query in the ExpertSearch component, including the property and the filter string
+     */
     export function getString(){
         if (!chosenProp || !operator){
             return '';
@@ -41,8 +47,7 @@
         toReturn += parentGravId + ' ' + getPropName() + ' ' + getPropGravId() + ' .\n';
         if (hasChild() && child){
             toReturn += child.getString();
-        }else if (operator === 'Equals' && enteredValue){
-            //toReturn += getFilterString();
+        } else if (operator === 'Equals' && enteredValue){
             toReturn += getFilterByNameValAndObj(chosenProp['propName'], enteredValue, chosenProp['object'], dateDepth);
         }
         return toReturn;
@@ -51,11 +56,15 @@
     function hasChild() {
         return chosenProp && chosenProp['object'].search(ontology + ':') !== -1;
     }
-
+    /*
+    Notification method to let the ExpertSearch component know to update its query
+     */
     function notify(){
         dispatch('message', {text: 'updated'});
     }
-
+    /*
+    Gets the properties a child could have for the dropdown menu
+     */
     async function getChildProps() {
         if (!hasChild()) {
             return [];

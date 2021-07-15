@@ -5,11 +5,17 @@ const jVal = get(json);
 let ontology = jVal['DSP']['Ontology'];
 let shortName = jVal['DSP']['ShortName'];
 
-export function getPropString(prop){
-    return getPropStringHelper(prop, "?mainres");
-}
+/*
+Defines some functions that are useful for different search components
+ */
 
-export function getPropStringHelper(prop, parent){
+/*
+Forms the gravsearch string for a property
+@prop: The property to get the string for, is a object with at least "propName" as key
+@parent: The gravsearch id for the parent in the gravsearch, defaults to "?mainres"
+@return: The gravsearch string
+ */
+export function getPropString(prop, parent = "?mainres"){
     let toReturn = '';
     if ("linkedResource" in prop){
         if ("incoming" in prop["linkedResource"] && prop["linkedResource"]["incoming"]){
@@ -25,6 +31,14 @@ export function getPropStringHelper(prop, parent){
     return toReturn;
 }
 
+/*
+Creates a gravsearch filter string given a property name, its value and its object.
+@propName: the name of the prop as string
+@value: the value as string
+@obj: the object type of the property
+@dateDepth: defines whether a date property isdefined on month or year level.
+@return: the filter string
+ */
 export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
     const propGravId = '?' + propName.replace(ontology + ':', '');
     switch(obj){
@@ -39,12 +53,17 @@ export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
             return propGravId + ' knora-api:intValueAsInt ' + propGravId + 'Int .\nFILTER(' + propGravId + 'Int  = ' + value + ') .\n'; //TODO: might be bugged, test
     }
 }
-
+/*
+If the object type is unknown, this function first queries the object type and then calls getFilterByNameValAndObj. See above
+for parameters.
+ */
 export async function getFilterByNameAndVal(propName, value, dateDepth = ''){
     let obj = await getObjectTypeForProp(propName);
     return getFilterByNameValAndObj(propName, value, obj, dateDepth);
 }
-
+/*
+Helper function for getFilterByNameValAndObj, do not use elsewhere.
+ */
 function getDatesFromValue(value, dateDepth){
     let dateAfter = '';
     let dateBefore = '';

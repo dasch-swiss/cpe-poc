@@ -1,14 +1,20 @@
 <script>
-    export let template, parameters;
+    /*
+    This component takes a query template and some parameters as argument. It provides input fields where the parameters
+    of the query can be adjusted before they are sent. TODO: This is still work in progress.
+     */
     import {language} from "../store.js";
-
-    let params = {};
-    const server = "api.dasch.swiss";
+    export let template, parameters; //the template and the parameters given by the json
+    export let server;
+    let params = {}; // Stores the values and sets all the values to ''.
     for (const p of parameters){
         params[p] = '';
     }
-    const Status = { COPY: 0, INWATCH: 1, OUTWATCH: 2, INSIDE: 3 }
+
     let search = '';
+    /*
+    TODO: This function needs to be replaced with a function that hands the query to a viewer.
+     */
     async function fireQuery() {
         const res = await fetch( 'https://' + server + '/v2/searchextended', {
             method: 'POST',
@@ -18,9 +24,14 @@
         const json = await res.json()
         console.log(json)
     }
+
+    /*
+    Compiles the gravsearch from the template and puts the parameters as provided
+     */
     function compile() {
+        const Status = { COPY: 0, INWATCH: 1, OUTWATCH: 2, INSIDE: 3 };
         for (const p of parameters){
-            params[p] = document.getElementById("ipfield" + p).value;
+            params[p] = document.getElementById("ipfield" + p).value; //as it can not be known what the parameters are called and how many they are, we have to use this hack.
         }
         let output = '';
         let status = Status.COPY;
@@ -60,7 +71,7 @@
                         } else if (parts[0] === '#endif') {
                             skip = false;
                         } else {
-                            // issue error
+                            // TODO: issue error
                         }
                     } else {
                         if (params.hasOwnProperty(token)) {
