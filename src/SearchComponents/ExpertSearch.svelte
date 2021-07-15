@@ -1,5 +1,8 @@
 <script>
-    //TODO: Catch form errors like unchosen properties or operators
+    /*
+    This component provides a "out of the box" expert search, that uses the ontology to let the user create gravsearch queries
+    or lets the user type in their own simplified gravsearch.
+     */
     import {language} from "../store.js";
     import ExpertSearchPropHelper from "./ExpertSearchPropHelper.svelte";
     import {
@@ -9,38 +12,49 @@
 
 
     export let ontology, server, shortName, shortCode;
-    let helpers = [];
+    let helpers = []; //Stores the ExpertSearchPropHelper instances, which represent the properties in the form.
     let query = "";
-    let gravInput = "";
+    let gravInput = ""; //Stores the gravsearch input the user provides
     let noOfProps = 1; //This number does not reflect how many properties are actually shown, as it accounts for deleted ones as well (See comment in ExpertSearchPropHelper)
-    let selectedResource;
+    let selectedResource; //Stores what the main resource of the query is
 
+    /*
+    Adds a property, instantiates a new ExpertSearchPropHelper
+     */
     function addProp() {
         noOfProps++;
     }
 
+    /*
+    Gets the query of the from as it should be displayed on the page. Not the finalized gravsearch
+     */
     function getQuery() {
         let string = '';
         for (const helper of helpers) {
-            if (!helper.isDeleted()) {
+            if (!helper.isDeleted()) { //Deleted helpers should not appear in the query
                 string += helper.getString() + '\n';
             }
         }
-        string = replaceOntoWithShortName(string);
+        string = replaceOntoWithShortName(string); // The ontology name needs to be replaced with the identifier
         query = string;
     }
-
+    /*
+    Replaces the onto string with the shortname string
+     */
     function replaceOntoWithShortName(s) {
         let onto = ontology + ':';
         let pre = shortName + ':';
         return s.replaceAll(onto, pre);
     }
 
+    /*
+    Finalizes the gravsearch query by taking the inputs and translating it into gravsearch syntax
+     */
     async function getFinalQuery() {
         const enteredString = query + gravInput;
-        let queryString = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\nPREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' + '\nCONSTRUCT {\n';
+        let queryString = 'PREFIX knora-api: <http://api.knora.org/ontology/knora-api/v2#>\nPREFIX ' + shortName + ': <http://' + server + '/ontology/' + shortCode + '/' + ontology + '/v2#>\n' + '\nCONSTRUCT {\n'; //TODO: Maybe move to a service
         if (enteredString === '') {
-            queryString += '?mainres knora-api:isMainResource true .} WHERE {\n ?mainres a knora-api:Resource .\n?mainres a ' + selectedResource + ' .}';
+            queryString += '?mainres knora-api:isMainResource true .} WHERE {\n ?mainres a knora-api:Resource .\n?mainres a ' + selectedResource + ' .}'; //Default query if no input but the selection of the resource type was given
         } else {
             const mainres = enteredString.substring(0, enteredString.indexOf(' '));
             const lines = enteredString.split('\n');
@@ -76,6 +90,7 @@
             queryString += '}';
         }
         queryString = replaceOntoWithShortName(queryString);
+        //TODO: Insert ViewerComponent here, rather than sending the query
         const res = await fetch('https://' + server + '/v2/searchextended', {
             method: 'POST',
             body: queryString

@@ -1,5 +1,5 @@
 import {writable} from 'svelte/store';
-import * as j from './ProjectJSON/test.json';
+import * as j from './ProjectJSON/test.json'; //Here the json for the app is imported. Adjust json here if you need to work with another one.
 
 export const language = writable('en');
 export const json = writable(j);

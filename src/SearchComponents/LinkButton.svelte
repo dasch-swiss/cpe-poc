@@ -1,4 +1,8 @@
 <script>
+    /*
+    Provides a button that links to a url. Only urls on this app are supported.
+
+     */
     import {push} from 'svelte-spa-router'
     import {language} from "../store.js";
 

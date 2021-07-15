@@ -1,3 +1,6 @@
+/*
+Contains methods that communicate with the dsp-api
+ */
 import {json} from "./store.js";
 import {get} from 'svelte/store'
 const j = get(json);
@@ -11,9 +14,6 @@ export class ListNode {
         this.id = id;
     }
 }
-/*
-TODO: Need to implement a general getter for Prop and Res, where one can pass what to return via argument
- */
 /**
  * Logins to the server and returns the token.
  *
@@ -133,6 +133,10 @@ export async function getListNode(iri, token) {
     return await res.json();
 }
 
+//TODO: Many of the methods below could be combined in one function, where the user can state what to return
+/*
+Returns the label of a property by providing its name
+ */
 export async function getLabelForProp(propName){
     const temp = await getPropByName(propName);
     const toReturn = {};
@@ -141,12 +145,17 @@ export async function getLabelForProp(propName){
     }
     return toReturn;
 }
-
+/*
+Returns the object type of a property by providing its name
+ */
 export async function getObjectTypeForProp(propName){
     const temp = await getPropByName(propName);
     return temp['knora-api:objectType']['@id'];
 }
 
+/*
+Returns the label for a resource type by providing its name
+ */
 export async function getLabelForResource(resName){
     const temp = await getResByName(resName);
     const toReturn = {};
@@ -155,7 +164,9 @@ export async function getLabelForResource(resName){
     }
     return toReturn;
 }
-
+/*
+Returns an array filled with the prop names of a resource type by providing its name
+ */
 export async function getPropNamesForResourceByName(resName){
     if (!ontology){
         ontology = await getOntology();
@@ -166,7 +177,7 @@ export async function getPropNamesForResourceByName(resName){
     }
     for (const o of ontology) {
         if (o.hasOwnProperty('knora-api:isResourceProperty') && o['knora-api:isResourceProperty']  && o['knora-api:subjectType']['@id'] === resName) {
-            if (o['knora-api:objectType']['@id'] === 'knora-api:LinkValue'){
+            if (o['knora-api:objectType']['@id'] === 'knora-api:LinkValue'){ //Filtering out the linkvalues to not double count
                 continue;
             }
             toReturn.push(o['@id']);
@@ -174,7 +185,9 @@ export async function getPropNamesForResourceByName(resName){
     }
     return toReturn;
 }
-
+/*
+Returns an array filled with objects with the keys "propName", "label" and "object"
+ */
 export async function getPropsWithObjAndLabelsForRes(resName){
     let toReturn = [];
     const props = await getPropNamesForResourceByName(resName);
@@ -187,6 +200,9 @@ export async function getPropsWithObjAndLabelsForRes(resName){
     return toReturn;
 }
 
+/*
+TODO: This function is deprecated and will be removed after SinglePropertySearch has been reworked.
+ */
 export async function getLabelsForProperties(props){
     for (const prop of props){
         prop['label'] = {};
@@ -197,8 +213,9 @@ export async function getLabelsForProperties(props){
     }
     return props;
 }
+
 /*
-Array of resnames (strings)
+Takes an array of resource type names (strings) and returns an object with key "ResName" and "label"
  */
 export async function getLabelsForResources(resources){
     let toReturn = [];
@@ -211,15 +228,16 @@ export async function getLabelsForResources(resources){
         }
         toReturn.push(toAdd);
     }
-    console.log(toReturn);
     return toReturn;
 }
 
+/* Returns all resource types in the format described in the description of getLabelsForResources */
 export async function getAllResourcesWithLabels(){
     let resources = await getAllResourceNames();
     return await getLabelsForResources(resources);
 }
 
+/* returns all resource type names in the ontology as an array */
 export async function getAllResourceNames(){
     if (!ontology){
         ontology = await getOntology();
@@ -232,7 +250,7 @@ export async function getAllResourceNames(){
     }
     return toReturn;
 }
-
+/* Returns property as in the ontology by providing its name */
 export async function getPropByName(name){
     if (!ontology){
         ontology = await getOntology();
@@ -247,10 +265,14 @@ export async function getPropByName(name){
             }
         }
     }
+    //TODO: error handling
     console.log('Didnt find property with name ---' + name + '---');
     return null;
 }
 
+/*
+Returns a resource type as in the ontology by name
+ */
 export async function getResByName(name){
     if (!ontology){
         ontology = await getOntology();
@@ -268,7 +290,9 @@ export async function getResByName(name){
     console.log('Didnt find resource with name ---' + name + '---');
     return null;
 }
-
+/*
+Returns an array of list nodes by providing the iri of the root node
+ */
 export async function getListByIri(iri){
     let toReturn = [];
     const res = await fetch('https://' + server + '/v2/lists/' + encodeURIComponent(iri) + '?allLanguages=true' , {
@@ -281,11 +305,17 @@ export async function getListByIri(iri){
     return toReturn;
 }
 
+/*
+Returns the iri of the root node of a list by providing the name of a property that uses it for its values
+ */
 export async function getListIriByPropName(name){
     const prop = await getPropByName(name);
     return prop['salsah-gui:guiAttribute'].replace('hlist=', '').slice(1, -1); //TODO: This might be unsafe for other projects!
 }
 
+/*
+Returns an array of list nodes by providing the iri of a property that uses it for its values
+ */
 export async function getListByPropName(name){
   const iri = await getListIriByPropName(name);
   return await getListByIri(iri);

@@ -1,4 +1,7 @@
 <script>
+    /*
+    TODO: This component does not satisfy for what it was created and will be reworked.
+     */
     import {push} from 'svelte-spa-router'
     export let props;
     export let link;
