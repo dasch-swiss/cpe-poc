@@ -1,7 +1,7 @@
 <script>
     import {onMount} from 'svelte';
     import {getResByIri, login} from '../../dsp-services.js';
-    import {generateID} from "../ViewUtility";
+    import {generateID} from '../ViewUtility';
     import {token} from '../../store';
     import OpenSeadragon from 'openseadragon';
 

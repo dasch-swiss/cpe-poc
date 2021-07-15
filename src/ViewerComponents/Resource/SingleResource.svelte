@@ -1,7 +1,20 @@
 <script>
     import {onMount} from 'svelte';
-    import {login, getList, getOntology, getResByIri, getListNode} from "../../dsp-services";
+    import {login, getList, getOntology, getResByIri, getListNode} from '../../dsp-services';
     import {language, token, lists, ontologies} from '../../store';
+    import TextValue from '../Values/TextValue.svelte';
+    import IntValue from '../Values/IntValue.svelte';
+    import DateValue from '../Values/DateValue.svelte';
+    import ListValue from '../Values/ListValue.svelte';
+    import LinkValue from '../Values/LinkValue.svelte';
+    import UriValue from '../Values/UriValue.svelte';
+    import DecimalValue from '../Values/DecimalValue.svelte';
+    import BooleanValue from '../Values/BooleanValue.svelte';
+    import ColorValue from '../Values/ColorValue.svelte';
+    import TimeValue from '../Values/TimeValue.svelte';
+    import GeomValue from '../Values/GeomValue.svelte';
+    import GeonameValue from '../Values/GeonameValue.svelte';
+    import IntervalValue from '../Values/IntervalValue.svelte';
 
     export let resource, ontology, server, user, shortname, shortcode;
     export let search_result;
@@ -44,10 +57,12 @@
             // Adds important properties
             properties = {
                 'knora-api:arkUrl': {
+                    type: 'knora-api:UriValue',
                     labels: {'en': 'ARK Url', 'de': 'ARK Url'},
-                    values: new Array(`<a href=${resData['knora-api:arkUrl']['@value']} target='_blank'>${resData['knora-api:arkUrl']['@value']}</a>`)
+                    values: new Array(resData['knora-api:arkUrl']['@value'])
                 },
                 '@id': {
+                    type: 'knora-api:TextValue',
                     labels: {'en': 'Resource ID', 'de': 'Resource ID'},
                     values: new Array(iri)
                 }
@@ -132,29 +147,147 @@
 
         switch (propValue['@type']) {
             case 'knora-api:DecimalValue':
-                // TODO -> ['knora-api:decimalValueAsDecimal']['@value'] = '1.5'
+                // ['knora-api:decimalValueAsDecimal']['@value'] = '1.5'
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push(propValue['knora-api:decimalValueAsDecimal']['@value'])
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:DecimalValue',
+                                values: new Array(propValue['knora-api:decimalValueAsDecimal']['@value']),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:BooleanValue':
-                // TODO -> ['knora-api:booleanValueAsBoolean'] = true
+                // ['knora-api:booleanValueAsBoolean'] = true
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push(propValue['knora-api:booleanValueAsBoolean'])
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:BooleanValue',
+                                values: new Array(propValue['knora-api:booleanValueAsBoolean']),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:ColorValue':
-                // TODO -> ['knora-api:colorValueAsColor'] = '#ff3333'
+                // ['knora-api:colorValueAsColor'] = '#ff3333'
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push(propValue['knora-api:colorValueAsColor'])
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:ColorValue',
+                                values: new Array(propValue['knora-api:colorValueAsColor']),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:TimeValue':
-                // TODO -> ['knora-api:timeValueAsTimeStamp']['@value'] = '2019-08-30T10:45:20.173572Z'
+                // ['knora-api:timeValueAsTimeStamp']['@value'] = '2019-08-30T10:45:20.173572Z'
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push(propValue['knora-api:timeValueAsTimeStamp']['@value'])
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:TimeValue',
+                                values: new Array(propValue['knora-api:timeValueAsTimeStamp']['@value']),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:UriValue':
-                // TODO -> ['knora-api:uriValueAsUri']['@value'] = 'http://www.google.ch'
+                // ['knora-api:uriValueAsUri']['@value'] = 'http://www.google.ch'
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push(propValue['knora-api:uriValueAsUri']['@value'])
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:UriValue',
+                                values: new Array(propValue['knora-api:uriValueAsUri']['@value']),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:GeomValue':
-                // TODO -> ['knora-api:geometryValueAsGeometry'] = "{\"status\":\"active\",\"lineColor\":\"#ff3333\",\"lineWidth\":2,\"points\":[{\"x\":0.08098591549295775,\"y\":0.16741071428571427},{\"x\":0.7394366197183099,\"y\":0.7299107142857143}],\"type\":\"rectangle\",\"original_index\":0}"
+                // ['knora-api:geometryValueAsGeometry'] = "{\"status\":\"active\",\"lineColor\":\"#ff3333\",\"lineWidth\":2,\"points\":[{\"x\":0.08098591549295775,\"y\":0.16741071428571427},{\"x\":0.7394366197183099,\"y\":0.7299107142857143}],\"type\":\"rectangle\",\"original_index\":0}"
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push(propValue['knora-api:geometryValueAsGeometry'])
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:GeomValue',
+                                values: new Array(propValue['knora-api:geometryValueAsGeometry']),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:GeonameValue':
-                // TODO -> ['knora-api:geonameValueAsGeonameCode'] = '2661604'
+                // ['knora-api:geonameValueAsGeonameCode'] = '2661604'
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push(propValue['knora-api:geonameValueAsGeonameCode'])
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:GeonameValue',
+                                values: new Array(propValue['knora-api:geonameValueAsGeonameCode']),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:IntervalValue':
-                // TODO -> ['knora-api:intervalValueHasStart']['@value'] = '0'
-                // TODO -> ['knora-api:intervalValueHasEnd']['@value'] = '216000'
+                // ['knora-api:intervalValueHasStart']['@value'] = '0'
+                // ['knora-api:intervalValueHasEnd']['@value'] = '216000'
+                $ontologies.forEach(onto => {
+                    if (onto['@id'] === pName) {
+                        if (properties[pName]) {
+                            properties[pName]['values'].push({
+                                startVal: propValue['knora-api:intervalValueHasStart']['@value'],
+                                endVal: propValue['knora-api:intervalValueHasEnd']['@value'],
+                            })
+                        } else {
+                            properties[pName] = {
+                                type: 'knora-api:IntervalValue',
+                                values: new Array({
+                                    startVal: propValue['knora-api:intervalValueHasStart']['@value'],
+                                    endVal: propValue['knora-api:intervalValueHasEnd']['@value'],
+                                }),
+                                labels: changeLabels(onto['rdfs:label']),
+                                customName: cName ? cName : null
+                            }
+                        }
+                    }
+                })
                 break;
             case 'knora-api:TextValue':
                 // Simple Text
@@ -164,6 +297,7 @@
                             properties[pName]['values'].push(propValue['knora-api:valueAsString'])
                         } else {
                             properties[pName] = {
+                                type: 'knora-api:TextValue',
                                 values: new Array(propValue['knora-api:valueAsString']),
                                 labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
@@ -181,6 +315,7 @@
                             properties[pName]['values'].push(propValue['knora-api:intValueAsInt']);
                         } else {
                             properties[pName] = {
+                                type: 'knora-api:IntValue',
                                 values: [propValue['knora-api:intValueAsInt']],
                                 labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
@@ -204,10 +339,33 @@
                 $ontologies.forEach(onto => {
                     if (onto['@id'] === pName) {
                         if (properties[pName]) {
-                            properties[pName]['values'].push(propValue['knora-api:valueAsString']);
+                            properties[pName]['values'].push({
+                                valueAsString: propValue['knora-api:valueAsString'],
+                                calendar: propValue['knora-api:dateValueHasCalendar'],
+                                endDay: propValue['knora-api:dateValueHasEndDay'],
+                                endEra: propValue['knora-api:dateValueHasEndEra'],
+                                endMonth: propValue['knora-api:dateValueHasEndMonth'],
+                                endYear: propValue['knora-api:dateValueHasEndYear'],
+                                startDay: propValue['knora-api:dateValueHasStartDay'],
+                                startEra: propValue['knora-api:dateValueHasStartEra'],
+                                startMonth: propValue['knora-api:dateValueHasStartMonth'],
+                                startYear: propValue['knora-api:dateValueHasStartYear']
+                            });
                         } else {
                             properties[pName] = {
-                                values: new Array(propValue['knora-api:valueAsString']),
+                                type: 'knora-api:DateValue',
+                                values: new Array({
+                                    valueAsString: propValue['knora-api:valueAsString'],
+                                    calendar: propValue['knora-api:dateValueHasCalendar'],
+                                    endDay: propValue['knora-api:dateValueHasEndDay'],
+                                    endEra: propValue['knora-api:dateValueHasEndEra'],
+                                    endMonth: propValue['knora-api:dateValueHasEndMonth'],
+                                    endYear: propValue['knora-api:dateValueHasEndYear'],
+                                    startDay: propValue['knora-api:dateValueHasStartDay'],
+                                    startEra: propValue['knora-api:dateValueHasStartEra'],
+                                    startMonth: propValue['knora-api:dateValueHasStartMonth'],
+                                    startYear: propValue['knora-api:dateValueHasStartYear']
+                                }),
                                 labels: changeLabels(onto['rdfs:label']),
                                 customName: cName ? cName : null
                             };
@@ -225,6 +383,7 @@
                             properties[listObject['knora-api:hasRootNode']['@id']]['values'].push(listObject['rdfs:label']);
                         } else {
                             properties[listObject['knora-api:hasRootNode']['@id']] = {
+                                type: 'knora-api:ListValue',
                                 values: new Array(listObject['rdfs:label']),
                                 labels: changeLabels(list['labels']),
                                 customName: cName ? cName : null
@@ -250,6 +409,7 @@
                                 properties[pName]['values'].push(propValue['knora-api:linkValueHasTarget']['@id']);
                             } else {
                                 properties[pName] = {
+                                    type: 'knora-api:LinkValue',
                                     values: new Array(propValue['knora-api:linkValueHasTarget']['@id']),
                                     labels: changeLabels(onto['rdfs:label']),
                                     customName: cName ? cName : null
@@ -306,9 +466,59 @@
                     {#each Object.entries(properties) as [key, value]}
                         <div class='prop-header'>{value.customName ? value.customName : value.labels[$language]}</div>
                         <div>
-                            {#each value.values as val}
-                                <div>{@html val}</div>
-                            {/each}
+                            {#if value.type === 'knora-api:DecimalValue'}
+                                {#each value.values as val}
+                                    <DecimalValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:BooleanValue'}
+                                {#each value.values as val}
+                                    <BooleanValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:ColorValue'}
+                                {#each value.values as val}
+                                    <ColorValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:TimeValue'}
+                                {#each value.values as val}
+                                    <TimeValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:UriValue'}
+                                {#each value.values as val}
+                                    <UriValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:GeomValue'}
+                                {#each value.values as val}
+                                    <GeomValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:GeonameValue'}
+                                {#each value.values as val}
+                                    <GeonameValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:IntervalValue'}
+                                {#each value.values as val}
+                                    <IntervalValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:TextValue'}
+                                {#each value.values as val}
+                                    <TextValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:IntValue'}
+                                {#each value.values as val}
+                                    <IntValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:DateValue'}
+                                {#each value.values as val}
+                                    <DateValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:ListValue'}
+                                {#each value.values as val}
+                                    <ListValue displayValue={val}/>
+                                {/each}
+                            {:else if value.type === 'knora-api:LinkValue'}
+                                {#each value.values as val}
+                                    <LinkValue displayValue={val}/>
+                                {/each}
+                            {/if}
                         </div>
                     {/each}
                 </section>

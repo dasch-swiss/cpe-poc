@@ -1,6 +1,6 @@
 <script>
-    import ResourcesContainer from "./Resource/ResourcesContainer.svelte";
-    import ImagesContainer from "./Image/ImagesContainer.svelte";
+    import ResourcesContainer from './Resource/ResourcesContainer.svelte';
+    import ImagesContainer from './Image/ImagesContainer.svelte';
 
     export let requestInfos, jsonFile;
 </script>
