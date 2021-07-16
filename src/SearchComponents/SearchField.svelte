@@ -1,22 +1,33 @@
+<!-- Provides a search field for the search form, recursively in case of linked properties -->
 <script>
-    // provides a search field for the search form, recursively in case of linked properties
     import {getLabelForProp, getListByPropName, getObjectTypeForProp} from "../dsp-services";
     import {getFilterByNameAndVal, getPropString} from './SearchUtility';
     import {language} from '../store.js'
     import SearchField from "./SearchField.svelte";
 
-    export let parent; //holds the parent gravsearch identifier for creating the gravsearch string
+    /** Holds the parent gravsearch identifier for creating the gravsearch string */
+    export let parent;
+
     export let prop, predefProp, predefVal;
-    let dateDepth; //for date properties, this tells us whether the date was given with month or year precision
-    let children = []; //in case of linked resources
-    let value = ""; //stores the value to filter for
-    let name = prop["propName"]; // helper to avoid refreshing on await command in html.
 
+    /** For date properties, this tells us whether the date was given with month or year precision */
+    let dateDepth;
 
-    /*
-        This function return the gravsearch string that references this value. It takes into account whether its a property of the main resource or if the main resource is linked.
-        @return: the gravsearch string
-    */
+    /** In case of linked resources */
+    let children = [];
+
+    /** Stores the value to filter for */
+    let value = "";
+
+    /** Helper to avoid refreshing on await command in html. */
+    let name = prop["propName"];
+
+    /**
+     * This function return the gravsearch string that references this value. It takes into account whether its a
+     * property of the main resource or if the main resource is linked.
+     *
+     * @returns {*} The gravsearch string
+     */
     export function getString() {
         let toReturn = getPropString(prop, parent);
         for (const child of children) {
@@ -27,11 +38,11 @@
         return toReturn;
     }
 
-    /*
-       A helper function to create the query when the search needs to be fired. Returns the filter string.
-
-       @return: returns the filter string
-    */
+    /**
+     * A helper function to create the query when the search needs to be fired. Returns the filter string.
+     *
+     * @returns {*} Returns the filter string
+     */
     export async function getFilter() {
         if (isEmpty()) {
             return '';
@@ -46,9 +57,10 @@
         return await getFilterByNameAndVal(prop['propName'], value, dateDepth);
     }
 
-    /*
-    Checks whether this property is empty, meaning it itself as well as all its children do not have a value to filter for
-    @return: the boolean
+    /**
+     * Checks whether this property is empty, meaning it itself as well as all its children do not have a value to filter for
+     *
+     * @returns {boolean}
      */
     export function isEmpty() {
         if (prop.hasOwnProperty("linkedResource")) {
@@ -62,7 +74,9 @@
         return value === "";
     }
 
-    value = predefProp === prop['propName'] ? predefVal : ''; //the value might be predefined by another component
+    /** The value might be predefined by another component */
+    value = predefProp === prop['propName'] ? predefVal : '';
+
     let labelPromise = getLabelForProp(prop['propName']);
     let objectPromise = getObjectTypeForProp(prop['propName']);
 </script>

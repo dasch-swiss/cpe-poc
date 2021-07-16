@@ -1,3 +1,6 @@
+/**
+ * Image object containing most important property of an image.
+ */
 export class Image {
     constructor(id, url, x, y) {
         this.id = id;

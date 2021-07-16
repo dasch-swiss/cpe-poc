@@ -1,6 +1,7 @@
+<!-- Component gets the requests info and fetches the data. Afterward passes to the MultipleImages component -->
 <script>
     import MultipleImages from './MultipleImages.svelte';
-    import {wrapData} from "../ViewUtility";
+    import {wrapData} from '../ViewUtility';
     import Loading from '../Loading.svelte';
 
     export let requestInfos, jsonFile;

@@ -1,8 +1,10 @@
-/*
-Contains methods that communicate with the dsp-api
+/**
+ * Contains methods that communicate with the dsp-api
  */
+
 import {json} from "./store.js";
-import {get} from 'svelte/store'
+import {get} from 'svelte/store';
+
 const j = get(json);
 const ontologyIri = j['DSP']['Ontology'];
 const server = j['DSP']['Server'];
@@ -14,6 +16,7 @@ export class ListNode {
         this.id = id;
     }
 }
+
 /**
  * Logins to the server and returns the token.
  *
@@ -133,9 +136,13 @@ export async function getListNode(iri, token) {
     return await res.json();
 }
 
-//TODO: Many of the methods below could be combined in one function, where the user can state what to return
-/*
-Returns the label of a property by providing its name
+/** TODO: Many of the methods below could be combined in one function, where the user can state what to return */
+
+/**
+ * Returns the label of a property by providing its name.
+ *
+ * @param propName
+ * @returns {Promise<{}>}
  */
 export async function getLabelForProp(propName){
     const temp = await getPropByName(propName);
@@ -145,16 +152,23 @@ export async function getLabelForProp(propName){
     }
     return toReturn;
 }
-/*
-Returns the object type of a property by providing its name
+
+/**
+ * Returns the object type of a property by providing its name.
+ *
+ * @param propName
+ * @returns {Promise<*>}
  */
 export async function getObjectTypeForProp(propName){
     const temp = await getPropByName(propName);
     return temp['knora-api:objectType']['@id'];
 }
 
-/*
-Returns the label for a resource type by providing its name
+/**
+ * Returns the label for a resource type by providing its name.
+ *
+ * @param resName
+ * @returns {Promise<{}>}
  */
 export async function getLabelForResource(resName){
     const temp = await getResByName(resName);
@@ -164,8 +178,12 @@ export async function getLabelForResource(resName){
     }
     return toReturn;
 }
-/*
-Returns an array filled with the prop names of a resource type by providing its name
+
+/**
+ * Returns an array filled with the prop names of a resource type by providing its name.
+ *
+ * @param resName
+ * @returns {Promise<*[]>}
  */
 export async function getPropNamesForResourceByName(resName){
     if (!ontology){
@@ -185,8 +203,12 @@ export async function getPropNamesForResourceByName(resName){
     }
     return toReturn;
 }
-/*
-Returns an array filled with objects with the keys "propName", "label" and "object"
+
+/**
+ * Returns an array filled with objects with the keys "propName", "label" and "object".
+ *
+ * @param resName
+ * @returns {Promise<*[]>}
  */
 export async function getPropsWithObjAndLabelsForRes(resName){
     let toReturn = [];
@@ -200,8 +222,11 @@ export async function getPropsWithObjAndLabelsForRes(resName){
     return toReturn;
 }
 
-/*
-TODO: This function is deprecated and will be removed after SinglePropertySearch has been reworked.
+/**
+ * TODO: This function is deprecated and will be removed after SinglePropertySearch has been reworked.
+ *
+ * @param props
+ * @returns {Promise<*>}
  */
 export async function getLabelsForProperties(props){
     for (const prop of props){
@@ -214,8 +239,11 @@ export async function getLabelsForProperties(props){
     return props;
 }
 
-/*
-Takes an array of resource type names (strings) and returns an object with key "ResName" and "label"
+/**
+ * Takes an array of resource type names (strings) and returns an object with key "ResName" and "label".
+ *
+ * @param resources
+ * @returns {Promise<*[]>}
  */
 export async function getLabelsForResources(resources){
     let toReturn = [];
@@ -231,13 +259,21 @@ export async function getLabelsForResources(resources){
     return toReturn;
 }
 
-/* Returns all resource types in the format described in the description of getLabelsForResources */
+/**
+ * Returns all resource types in the format described in the description of getLabelsForResources.
+ *
+ * @returns {Promise<*[]>}
+ */
 export async function getAllResourcesWithLabels(){
     let resources = await getAllResourceNames();
     return await getLabelsForResources(resources);
 }
 
-/* returns all resource type names in the ontology as an array */
+/**
+ * Returns all resource type names in the ontology as an array.
+ *
+ * @returns {Promise<*[]>}
+ */
 export async function getAllResourceNames(){
     if (!ontology){
         ontology = await getOntology();
@@ -250,7 +286,13 @@ export async function getAllResourceNames(){
     }
     return toReturn;
 }
-/* Returns property as in the ontology by providing its name */
+
+/**
+ * Returns property as in the ontology by providing its name.
+ *
+ * @param name
+ * @returns {Promise<{"knora-api:isResourceProperty"}|*|null>}
+ */
 export async function getPropByName(name){
     if (!ontology){
         ontology = await getOntology();
@@ -270,8 +312,11 @@ export async function getPropByName(name){
     return null;
 }
 
-/*
-Returns a resource type as in the ontology by name
+/**
+ * Returns a resource type as in the ontology by name.
+ *
+ * @param name
+ * @returns {Promise<null|{"knora-api:isResourceClass"}|*>}
  */
 export async function getResByName(name){
     if (!ontology){
@@ -290,8 +335,12 @@ export async function getResByName(name){
     console.log('Didnt find resource with name ---' + name + '---');
     return null;
 }
-/*
-Returns an array of list nodes by providing the iri of the root node
+
+/**
+ * Returns an array of list nodes by providing the iri of the root node.
+ *
+ * @param iri
+ * @returns {Promise<*[]>}
  */
 export async function getListByIri(iri){
     let toReturn = [];
@@ -305,16 +354,20 @@ export async function getListByIri(iri){
     return toReturn;
 }
 
-/*
-Returns the iri of the root node of a list by providing the name of a property that uses it for its values
+/**
+ * Returns the iri of the root node of a list by providing the name of a property that uses it for its values.
+ *
+ * @param name
  */
 export async function getListIriByPropName(name){
     const prop = await getPropByName(name);
     return prop['salsah-gui:guiAttribute'].replace('hlist=', '').slice(1, -1); //TODO: This might be unsafe for other projects!
 }
 
-/*
-Returns an array of list nodes by providing the iri of a property that uses it for its values
+/**
+ * Returns an array of list nodes by providing the iri of a property that uses it for its values.
+ *
+ * @param name
  */
 export async function getListByPropName(name){
   const iri = await getListIriByPropName(name);

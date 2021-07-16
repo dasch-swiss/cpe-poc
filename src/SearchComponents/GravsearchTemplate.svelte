@@ -1,19 +1,24 @@
+<!--This component takes a query template and some parameters as argument. It provides input fields where -->
+<!--the parameters of the query can be adjusted before they are sent. TODO: This is still work in progress. -->
 <script>
-    /*
-    This component takes a query template and some parameters as argument. It provides input fields where the parameters
-    of the query can be adjusted before they are sent. TODO: This is still work in progress.
-     */
     import {language} from "../store.js";
-    export let template, parameters; //the template and the parameters given by the json
+
+    /** The template and the parameters given by the json */
+    export let template, parameters;
+
     export let server;
-    let params = {}; // Stores the values and sets all the values to ''.
+
+     /** Stores the values and sets all the values to ''. */
+    let params = {};
+
     for (const p of parameters){
         params[p] = '';
     }
 
     let search = '';
-    /*
-    TODO: This function needs to be replaced with a function that hands the query to a viewer.
+
+    /**
+     * TODO: This function needs to be replaced with a function that hands the query to a viewer.
      */
     async function fireQuery() {
         const res = await fetch( 'https://' + server + '/v2/searchextended', {
@@ -25,8 +30,8 @@
         console.log(json)
     }
 
-    /*
-    Compiles the gravsearch from the template and puts the parameters as provided
+    /**
+     * Compiles the gravsearch from the template and puts the parameters as provided.
      */
     function compile() {
         const Status = { COPY: 0, INWATCH: 1, OUTWATCH: 2, INSIDE: 3 };

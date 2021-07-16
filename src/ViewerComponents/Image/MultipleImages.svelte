@@ -1,3 +1,4 @@
+<!-- Displays the images in a grid layout and provides a full image overlay viewer -->
 <script>
     import {onMount} from 'svelte';
     import {Image} from '../model';

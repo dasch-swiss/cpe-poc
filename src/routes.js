@@ -1,10 +1,12 @@
-/*
-Defines the routes that are provided on the app. For each Page in the json, a route is created with 3 slots to provide
-some parameters to the components
+/**
+ * Defines the routes that are provided on the app. For each Page in the json, a route is created with 3 slots
+ * to provide some parameters to the components
  */
-import {json} from './store.js'
-import {get} from 'svelte/store'
-import Page from './SearchComponents/Page.svelte'
+
+import {json} from './store.js';
+import {get} from 'svelte/store';
+import Page from './SearchComponents/Page.svelte';
+
 let routes = {};
 const jVal = get(json);
 

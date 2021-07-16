@@ -1,40 +1,52 @@
+<!-- Helper that represents the properties and the option to add filter for the ExpertSearch component. -->
 <script>
-    /*
-    Helper that represents the properties and the option to add filter for the ExpertSearch component
-     */
-
     import {getListByPropName, getPropsWithObjAndLabelsForRes} from "../dsp-services";
     import {language} from "../store.js";
     import ExpertSearchPropHelper from "./ExpertSearchPropHelper.svelte";
     import {createEventDispatcher} from 'svelte';
     import {getFilterByNameValAndObj} from './SearchUtility';
-    const dispatch = createEventDispatcher();
+
+    /** TODO: This solution is a bit "hacky", even though it has its advantages. */
+    let deleted = false;
+
     export let props, ontology, parentGravId;
-    let deleted = false; //TODO: This solution is a bit "hacky", even though it has its advantages.
+    const dispatch = createEventDispatcher();
     let chosenProp;
     let operator;
     let enteredValue;
     let dateDepth;
     let child;
 
+    /**
+     * TODO: ???
+     */
     export function getPropName(){
         return chosenProp['propName'];
     }
 
+    /**
+     * TODO: ???
+     */
     export function getPropGravId(){
         return '?' + chosenProp['propName'].replace(ontology + ':', '');
     }
 
+    /**
+     * TODO: ???
+     */
     export function setDeleted() {
         deleted = true;
     }
 
+    /**
+     * TODO: ???
+     */
     export function isDeleted(){
         return deleted;
     }
 
-    /*
-    Creates the string to create the query in the ExpertSearch component, including the property and the filter string
+    /**
+     * Creates the string to create the query in the ExpertSearch component, including the property and the filter string.
      */
     export function getString(){
         if (!chosenProp || !operator){
@@ -53,17 +65,24 @@
         return toReturn;
     }
 
+    /**
+     * TODO: ???
+     */
     function hasChild() {
         return chosenProp && chosenProp['object'].search(ontology + ':') !== -1;
     }
-    /*
-    Notification method to let the ExpertSearch component know to update its query
+
+    /**
+     * Notification method to let the ExpertSearch component know to update its query.
      */
     function notify(){
         dispatch('message', {text: 'updated'});
     }
-    /*
-    Gets the properties a child could have for the dropdown menu
+
+    /**
+     * Gets the properties a child could have for the dropdown menu.
+     *
+     * @returns {Promise<*[]>}
      */
     async function getChildProps() {
         if (!hasChild()) {
@@ -77,6 +96,7 @@
         listPromise = getListByPropName(chosenProp['propName']);
     }
 </script>
+
 {#if (!deleted)}
     <select on:change="{() => {enteredValue = null; operator = ''; notify();}}" bind:value={chosenProp}>
         <option value="" disabled selected>{$language === 'en' ? 'Choose property' : 'Property wählen'}</option>
@@ -84,6 +104,7 @@
             <option value={prop}>{prop['label'][$language]}</option>
         {/each}
     </select>
+
     {#if chosenProp}
         <select bind:value={operator} on:change="{()=> {enteredValue = null; if (child) {child.setDeleted()}; notify();}}">
             <option value="" disabled selected>{$language === 'en' ? 'Choose filter option' : 'Filteroption wählen'}</option>
@@ -91,6 +112,7 @@
             <option value="Exists">{$language === 'en' ? 'Exists' : 'Existiert'}</option>
         </select>
     {/if}
+
     {#if operator && operator === 'Equals' && !hasChild()}
             {#if chosenProp['object'] === 'knora-api:DateValue'}
                 <select bind:value={dateDepth} on:change={()=> {enteredValue = null; notify();}}>
@@ -121,7 +143,7 @@
                 <input placeholder="{$language === 'en' ? 'Enter search value' : 'Suchwert eingeben'}" bind:value={enteredValue} on:change={() => notify()}/>
             {/if}
             <!-- TODO: Support all types -->
-        {/if}
+    {/if}
 
     {#if operator && operator === 'Equals' && hasChild()}
         {#await getChildProps()}
@@ -129,6 +151,7 @@
             <ExpertSearchPropHelper on:message={notify} bind:this={child} props={cp} parentGravId={getPropGravId()} {ontology}/>
             {/await}
     {/if}
+
     {#if parentGravId === '?mainres'}
     <button on:click={() => {setDeleted();notify();}}>X</button>
     {/if}

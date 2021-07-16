@@ -1,19 +1,21 @@
 import {getObjectTypeForProp} from "../dsp-services";
 import {json} from '../store.js';
 import {get} from 'svelte/store';
+
 const jVal = get(json);
 let ontology = jVal['DSP']['Ontology'];
 let shortName = jVal['DSP']['ShortName'];
 
-/*
-Defines some functions that are useful for different search components
+/**
+ * Defines some functions that are useful for different search components
  */
 
-/*
-Forms the gravsearch string for a property
-@prop: The property to get the string for, is a object with at least "propName" as key
-@parent: The gravsearch id for the parent in the gravsearch, defaults to "?mainres"
-@return: The gravsearch string
+/**
+ * Forms the gravsearch string for a property.
+ *
+ * @param prop The property to get the string for, is a object with at least "propName" as key
+ * @param parent The gravsearch id for the parent in the gravsearch, defaults to "?mainres"
+ * @returns {string} The gravsearch string
  */
 export function getPropString(prop, parent = "?mainres"){
     let toReturn = '';
@@ -31,13 +33,14 @@ export function getPropString(prop, parent = "?mainres"){
     return toReturn;
 }
 
-/*
-Creates a gravsearch filter string given a property name, its value and its object.
-@propName: the name of the prop as string
-@value: the value as string
-@obj: the object type of the property
-@dateDepth: defines whether a date property isdefined on month or year level.
-@return: the filter string
+/**
+ * Creates a gravsearch filter string given a property name, its value and its object.
+ *
+ * @param propName The name of the prop as string
+ * @param value The value as string
+ * @param obj The object type of the property
+ * @param dateDepth Defines whether a date property isdefined on month or year level.
+ * @returns {string} The filter string
  */
 export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
     const propGravId = '?' + propName.replace(ontology + ':', '');
@@ -53,16 +56,27 @@ export function getFilterByNameValAndObj(propName, value, obj, dateDepth=''){
             return propGravId + ' knora-api:intValueAsInt ' + propGravId + 'Int .\nFILTER(' + propGravId + 'Int  = ' + value + ') .\n'; //TODO: might be bugged, test
     }
 }
-/*
-If the object type is unknown, this function first queries the object type and then calls getFilterByNameValAndObj. See above
-for parameters.
+
+/**
+ * If the object type is unknown, this function first queries the object type and then calls
+ * getFilterByNameValAndObj. See above for parameters.
+ *
+ * @param propName
+ * @param value
+ * @param dateDepth
+ * @returns {Promise<string>}
  */
 export async function getFilterByNameAndVal(propName, value, dateDepth = ''){
     let obj = await getObjectTypeForProp(propName);
     return getFilterByNameValAndObj(propName, value, obj, dateDepth);
 }
-/*
-Helper function for getFilterByNameValAndObj, do not use elsewhere.
+
+/**
+ * Helper function for getFilterByNameValAndObj, do not use elsewhere.
+ *
+ * @param value
+ * @param dateDepth
+ * @returns {string[]}
  */
 function getDatesFromValue(value, dateDepth){
     let dateAfter = '';

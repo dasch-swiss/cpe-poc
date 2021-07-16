@@ -1,7 +1,8 @@
+<!-- Component gets the requests info and fetches the data. Afterward passes to the MultipleResources component -->
 <script>
     import MultipleResources from './MultipleResources.svelte';
     import Loading from '../Loading.svelte';
-    import {wrapData} from "../ViewUtility";
+    import {wrapData} from '../ViewUtility';
     import {json} from '../../store.js';
 
     export let requestInfos, jsonFile;

@@ -1,13 +1,14 @@
+<!--This component provides a image with clickable areas, where the different areas link to different urls (only urls on-->
+<!--this app are supported)-->
+
 <svg id="svg"></svg>
+
 <script>
-    /*
-    This component provides a image with clickable areas, where the different areas link to different urls (only urls on
-    this app are supported)
-     */
     import {onMount} from 'svelte';
     import {push} from 'svelte-spa-router';
 
-    export let areas, src; //The areas and the image source provided by the json
+    /** The areas and the image source provided by the json */
+    export let areas, src;
 
     onMount(() => {
         let svg = document.getElementById('svg');
@@ -48,20 +49,31 @@
 
         img.src = src;
     });
-    /*
-    Handles the click on a rectangle
+
+    /**
+     * TODO ???
+     *
+     * @param link
      */
     function handleClick(link) {
         push(link);
     }
 
-    // handles the mouse over over a rectangle
+    /**
+     * Handles the mouse over over a rectangle
+     *
+     * @param e
+     */
     function handleMouseOver(e) {
         e.target.style.fill = "rgba(200, 0, 0, 0.6)";
         e.target.style.cursor = "pointer";
     }
 
-    //handles the mouse out of of a rectangle
+    /**
+     * Handles the mouse out of of a rectangle
+     *
+     * @param e
+     */
     function handleMouseOut(e) {
         e.target.style.fill = "rgba(200, 0, 0, 0.3)";
     }

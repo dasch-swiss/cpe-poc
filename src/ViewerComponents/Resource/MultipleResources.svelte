@@ -1,3 +1,4 @@
+<!-- Displays the resources -->
 <script>
     import {onMount} from 'svelte';
     import SingleResource from './SingleResource.svelte';

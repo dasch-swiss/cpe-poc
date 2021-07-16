@@ -1,8 +1,6 @@
+<!-- This component provides a "out of the box" expert search, that uses the ontology to let the user create -->
+<!-- gravsearch queries or lets the user type in their own simplified gravsearch. -->
 <script>
-    /*
-    This component provides a "out of the box" expert search, that uses the ontology to let the user create gravsearch queries
-    or lets the user type in their own simplified gravsearch.
-     */
     import {language} from "../store.js";
     import ExpertSearchPropHelper from "./ExpertSearchPropHelper.svelte";
     import {
@@ -10,23 +8,32 @@
         getPropsWithObjAndLabelsForRes
     } from "../dsp-services";
 
-
     export let ontology, server, shortName, shortCode;
-    let helpers = []; //Stores the ExpertSearchPropHelper instances, which represent the properties in the form.
-    let query = "";
-    let gravInput = ""; //Stores the gravsearch input the user provides
-    let noOfProps = 1; //This number does not reflect how many properties are actually shown, as it accounts for deleted ones as well (See comment in ExpertSearchPropHelper)
-    let selectedResource; //Stores what the main resource of the query is
 
-    /*
-    Adds a property, instantiates a new ExpertSearchPropHelper
+    /** Stores the ExpertSearchPropHelper instances, which represent the properties in the form. */
+    let helpers = [];
+
+    /** Stores the gravsearch query */
+    let query = "";
+
+    /** Stores the gravsearch input the user provides. */
+    let gravInput = "";
+
+    /** This number does not reflect how many properties are actually shown, as it accounts for deleted ones as well (See comment in ExpertSearchPropHelper) */
+    let noOfProps = 1;
+
+    /** Stores what the main resource of the query is */
+    let selectedResource;
+
+    /**
+     * Adds a property, instantiates a new ExpertSearchPropHelper.
      */
     function addProp() {
         noOfProps++;
     }
 
-    /*
-    Gets the query of the from as it should be displayed on the page. Not the finalized gravsearch
+    /**
+     * Gets the query of the from as it should be displayed on the page. Not the finalized gravsearch.
      */
     function getQuery() {
         let string = '';
@@ -38,8 +45,9 @@
         string = replaceOntoWithShortName(string); // The ontology name needs to be replaced with the identifier
         query = string;
     }
-    /*
-    Replaces the onto string with the shortname string
+
+    /**
+     * Replaces the onto string with the shortname string.
      */
     function replaceOntoWithShortName(s) {
         let onto = ontology + ':';
@@ -47,8 +55,10 @@
         return s.replaceAll(onto, pre);
     }
 
-    /*
-    Finalizes the gravsearch query by taking the inputs and translating it into gravsearch syntax
+    /**
+     * Finalizes the gravsearch query by taking the inputs and translating it into gravsearch syntax.
+     *
+     * @returns {Promise<void>}
      */
     async function getFinalQuery() {
         const enteredString = query + gravInput;
@@ -100,6 +110,9 @@
         console.log(json)
     }
 
+    /**
+     * TODO: ???
+     */
     function setAllToDeleted(){
         for (const helper of helpers){
             helper.setDeleted();
@@ -108,13 +121,11 @@
     }
 
     let resourceProm = getAllResourcesWithLabels();
-
 </script>
-<select bind:value={selectedResource}
-        on:change={setAllToDeleted}>
+
+<select bind:value={selectedResource} on:change={setAllToDeleted}>
     <option value="" disabled selected>{$language === 'en' ? 'Choose resource' : 'Resource wählen'}</option>
-    {#await resourceProm}
-    {:then resources}
+    {#await resourceProm then resources}
         {#each resources as resource}
             <option value={resource['ResName']}>{resource['label'][$language]}</option>
         {/each}
@@ -122,8 +133,7 @@
 </select>
 {#if selectedResource}
     {#each {length: noOfProps} as e, i}
-        {#await getPropsWithObjAndLabelsForRes(selectedResource)}
-        {:then properties}
+        {#await getPropsWithObjAndLabelsForRes(selectedResource) then properties}
             <ExpertSearchPropHelper on:message={getQuery} bind:this={helpers[i]} props={properties}
                                     {ontology} parentGravId="?mainres"/>
         {/await}
