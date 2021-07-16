@@ -1,3 +1,4 @@
+<!-- This component displays the value of type text. -->
 <script>
     export let displayValue;
 </script>

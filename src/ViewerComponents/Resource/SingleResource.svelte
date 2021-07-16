@@ -1,3 +1,4 @@
+<!-- Displays a resource with the appropriate property type -->
 <script>
     import {onMount} from 'svelte';
     import {login, getList, getOntology, getResByIri, getListNode} from '../../dsp-services';
@@ -448,85 +449,83 @@
     }
 </script>
 
-<main>
-    {#if error}
-        <div class="error">
-            Oops! Unable to fetch the resource.
-            <div>
-                <button on:click={() => getData()}>Try again</button>
-            </div>
-        </div>
-    {:else}
+{#if error}
+    <div class="error">
+        Oops! Unable to fetch the resource.
         <div>
-            {#if Object.entries(properties).length > 0}
-                <section>
-                    {#if resource && resource['customTitle']}
-                        <div class="res-title">{resource['customTitle']}</div>
-                    {/if}
-                    {#each Object.entries(properties) as [key, value]}
-                        <div class='prop-header'>{value.customName ? value.customName : value.labels[$language]}</div>
-                        <div>
-                            {#if value.type === 'knora-api:DecimalValue'}
-                                {#each value.values as val}
-                                    <DecimalValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:BooleanValue'}
-                                {#each value.values as val}
-                                    <BooleanValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:ColorValue'}
-                                {#each value.values as val}
-                                    <ColorValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:TimeValue'}
-                                {#each value.values as val}
-                                    <TimeValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:UriValue'}
-                                {#each value.values as val}
-                                    <UriValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:GeomValue'}
-                                {#each value.values as val}
-                                    <GeomValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:GeonameValue'}
-                                {#each value.values as val}
-                                    <GeonameValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:IntervalValue'}
-                                {#each value.values as val}
-                                    <IntervalValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:TextValue'}
-                                {#each value.values as val}
-                                    <TextValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:IntValue'}
-                                {#each value.values as val}
-                                    <IntValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:DateValue'}
-                                {#each value.values as val}
-                                    <DateValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:ListValue'}
-                                {#each value.values as val}
-                                    <ListValue displayValue={val}/>
-                                {/each}
-                            {:else if value.type === 'knora-api:LinkValue'}
-                                {#each value.values as val}
-                                    <LinkValue displayValue={val}/>
-                                {/each}
-                            {/if}
-                        </div>
-                    {/each}
-                </section>
-            {/if}
-
+            <button on:click={() => getData()}>Try again</button>
         </div>
-    {/if}
-</main>
+    </div>
+{:else}
+    <div>
+        {#if Object.entries(properties).length > 0}
+            <section>
+                {#if resource && resource['customTitle']}
+                    <div class="res-title">{resource['customTitle']}</div>
+                {/if}
+                {#each Object.entries(properties) as [key, value]}
+                    <div class='prop-header'>{value.customName ? value.customName : value.labels[$language]}</div>
+                    <div>
+                        {#if value.type === 'knora-api:DecimalValue'}
+                            {#each value.values as val}
+                                <DecimalValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:BooleanValue'}
+                            {#each value.values as val}
+                                <BooleanValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:ColorValue'}
+                            {#each value.values as val}
+                                <ColorValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:TimeValue'}
+                            {#each value.values as val}
+                                <TimeValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:UriValue'}
+                            {#each value.values as val}
+                                <UriValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:GeomValue'}
+                            {#each value.values as val}
+                                <GeomValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:GeonameValue'}
+                            {#each value.values as val}
+                                <GeonameValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:IntervalValue'}
+                            {#each value.values as val}
+                                <IntervalValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:TextValue'}
+                            {#each value.values as val}
+                                <TextValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:IntValue'}
+                            {#each value.values as val}
+                                <IntValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:DateValue'}
+                            {#each value.values as val}
+                                <DateValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:ListValue'}
+                            {#each value.values as val}
+                                <ListValue displayValue={val}/>
+                            {/each}
+                        {:else if value.type === 'knora-api:LinkValue'}
+                            {#each value.values as val}
+                                <LinkValue displayValue={val}/>
+                            {/each}
+                        {/if}
+                    </div>
+                {/each}
+            </section>
+        {/if}
+
+    </div>
+{/if}
 
 <style>
     .error {

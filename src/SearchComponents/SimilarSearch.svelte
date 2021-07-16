@@ -1,24 +1,31 @@
+<!--A component that takes an iri and searches for other resources with the same values for some given properties.-->
+<!--TODO: Support properties that are incoming links-->
 <script>
-    /*
-    A component that takes an iri and searches for other resources with the same values for some given properties.
-    TODO: Support properties that are incoming links
-    */
-
-
-    import {getResByIri, login} from "../dsp-services";
+    import {getResByIri} from "../dsp-services";
     import {token} from "../store";
     import {getFilterByNameValAndObj, getPropString} from "./SearchUtility";
     import ResultsRepresentation from "../ViewerComponents/ResultsRepresentation.svelte";
 
-    export let jsonFile; // contains the relevant part of the json.
+    /** Contains the relevant part of the json. */
+    export let jsonFile;
+
     export let user, ontology, server, shortCode, shortName;
     let iri = jsonFile['Iri'];
     let props = jsonFile['Props'];
     let resType;
-    let data; // contains the data available for the resource corresponding to the given iri.
-    let searchInfo = []; // helper array that stores the information to create the queries.
-    let requestInfos = []; // holds the output for the viewer components
 
+    /** Contains the data available for the resource corresponding to the given iri. */
+    let data;
+
+    /** Helper array that stores the information to create the queries. */
+    let searchInfo = [];
+
+    /** Holds the output for the viewer components */
+    let requestInfos = [];
+
+    /**
+     * TODO ???
+     */
     async function getData() {
         // Requests the resource
         data = await getResByIri(iri, $token);
@@ -29,12 +36,13 @@
         getQueries();
     }
 
-    /*
-    Augment the prop with information about its type and value and store it in the searchInfo array. Gets called
-    recursively for linked properties.
-    @prop: the property as provided in the json
-    @data: the information about the parent resource as received by the api
-    @linkQueue: stores the path to reach this property if it is reached via linked properties.
+    /**
+     * Augment the prop with information about its type and value and store it in the searchInfo array. Gets
+     * called recursively for linked properties.
+     *
+     * @param prop The property as provided in the json
+     * @param data The information about the parent resource as received by the api
+     * @param linkQueue Stores the path to reach this property if it is reached via linked properties.
      */
     async function prepareProp(prop, data, linkQueue = []) {
         if (prop.hasOwnProperty("linkedResource")) {
@@ -66,9 +74,11 @@
         }
     }
 
-    /*
-    Returns the gravsearch query string for a property stored in searchInfo.
-    @return: the string to be added to the gravsearch query.
+    /**
+     * Returns the gravsearch query string for a property stored in searchInfo.
+     *
+     * @param prop
+     * @returns {*} The string to be added to the gravsearch query.
      */
     function getStringForProp(prop) {
         let parent = '?mainres';
@@ -85,8 +95,9 @@
         toReturn += getPropString(prop, parent);
         return toReturn;
     }
-    /*
-    For each of the properties provided in the json, the query is created and stored in the requestInfos.
+
+    /**
+     * For each of the properties provided in the json, the query is created and stored in the requestInfos.
      */
     function getQueries() {
         for (const prop of searchInfo) {
@@ -112,9 +123,11 @@
             )
         }
     }
-    /*
-    Checks whether an ImageViewer is used in conjunction with this component and adds the necessary string.
-    @return: the string to be added.
+
+    /**
+     * Checks whether an ImageViewer is used in conjunction with this component and adds the necessary string.
+     *
+     * @returns {string} The string to be added.
      */
     function addStillImageFile() {
         let line = '';
@@ -131,6 +144,7 @@
 
     let queriesPromise = getData();
 </script>
+
 {#await queriesPromise then d}
     {#each requestInfos as requestInfo}
         <ResultsRepresentation requestInfos={requestInfo} jsonFile={jsonFile["ResultsRepresentation"]}/>

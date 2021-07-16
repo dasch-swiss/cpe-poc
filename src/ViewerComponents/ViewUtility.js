@@ -1,3 +1,8 @@
+/**
+ * ID Generator and wrapper function.
+ */
+
+/** ID counter that will be increased everytime a new id will be generated */
 let id_counter = 0;
 
 /**
