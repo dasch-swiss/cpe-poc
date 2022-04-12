@@ -1,7 +1,8 @@
+<!-- Displays an image in the openseadragon-->
 <script>
     import {onMount} from 'svelte';
     import {getResByIri, login} from '../../dsp-services.js';
-    import {generateID} from "../ViewUtility";
+    import {generateID} from '../ViewUtility';
     import {token} from '../../store';
     import OpenSeadragon from 'openseadragon';
 
@@ -71,18 +72,16 @@
     // }
 </script>
 
-<main>
-    {#if error}
-        <div class="error">
-            Oops! Unable to fetch the image.
-            <div>
-                <button on:click={() => getData()}>Try again</button>
-            </div>
+{#if error}
+    <div class="error">
+        Oops! Unable to fetch the image.
+        <div>
+            <button on:click={() => getData()}>Try again</button>
         </div>
-    {:else}
-        <section bind:this={container}></section>
-    {/if}
-</main>
+    </div>
+{:else}
+    <section bind:this={container}></section>
+{/if}
 
 <style>
     .error {

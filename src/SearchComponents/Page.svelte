@@ -1,11 +1,10 @@
+<!--This component provides the entry point for each page in the json, finds its json part via its uri and -->
+<!--calls the jsoncontentparser-->
 <script>
-    /*
-    This component provides the entry point for each page in the json, finds its json part via its uri and calls the
-    jsoncontentparser
-     */
     import {location} from 'svelte-spa-router'
     import {json} from '../store.js'
     import JSONContentParser from './JSONContentParser.svelte'
+
     export let params;
     for (const key in params) {
         params[key] = decodeURI(params[key]);
@@ -27,6 +26,7 @@
         //TODO: Throw error
     }
 </script>
+
 <JSONContentParser
         json={j['Content']}
         params={params}

@@ -1,9 +1,7 @@
+<!-- This component is used on SearchComponents to link them to their ViewerComponent -->
 <script>
-    /*
-    This component is used on SearchComponents to link them to their ViewerComponent
-     */
-    import ResourcesContainer from "./Resource/ResourcesContainer.svelte";
-    import ImagesContainer from "./Image/ImagesContainer.svelte";
+    import ResourcesContainer from './Resource/ResourcesContainer.svelte';
+    import ImagesContainer from './Image/ImagesContainer.svelte';
 
     export let requestInfos, jsonFile;
 </script>

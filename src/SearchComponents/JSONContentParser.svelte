@@ -13,8 +13,10 @@
     import SimilarSearch from "./SimilarSearch.svelte";
     import Map from "../ViewerComponents/Map.svelte";
 
+    /** if arguments need to be passed from the URI. */
+    export let params;
+
     export let json;
-    export let params; //if arguments need to be passed from the URI.
     export let server, ontology, shortCode, shortName, user;
 
 </script>

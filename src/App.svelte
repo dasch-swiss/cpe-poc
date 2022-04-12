@@ -8,6 +8,9 @@
     import {json, lists, ontologies, token} from './store.js';
     import {getList, getOntology, login} from "./dsp-services";
 
+    /**
+     * Tries to fetch login, list and ontology at entry point.
+     */
     onMount(async () => {
         try {
             const logResult = await login($json['DSP']['User']);
@@ -27,6 +30,3 @@
 <JSONContentParser json={$json['Header']['Content']}/> <!-- Displays the Header content -->
 <Router {routes}/> <!-- Displays the 'Main' as it loads the respective route -->
 <JSONContentParser json={$json['Footer']['Content']}/> <!-- Displays the Footer content -->
-
-<style>
-</style>
